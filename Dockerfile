@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y -t jessie-backports \
 
 COPY httpd-shibd-foreground /usr/local/bin/
 COPY shibboleth/ /etc/shibboleth/
+COPY httpd.conf /usr/local/apache2/conf/
 
 # RUN test -d /var/run/lock || mkdir -p /var/run/lock \
 #     && test -d /var/lock/subsys/ || mkdir -p /var/lock/subsys/ \
@@ -22,7 +23,10 @@ COPY shibboleth/ /etc/shibboleth/
 #     && sed -i 's/<\/VirtualHost>/ErrorLogFormat \"httpd-ssl-error [%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\\ %a] %M% ,\\ referer\\ %{Referer}i\"\n<\/VirtualHost>/g' /etc/httpd/conf.d/ssl.conf \
 #     && sed -i 's/CustomLog logs\/ssl_request_log/CustomLog \/dev\/stdout/g' /etc/httpd/conf.d/ssl.conf \
 #     && sed -i 's/TransferLog logs\/ssl_access_log/TransferLog \/dev\/stdout/g' /etc/httpd/conf.d/ssl.conf
-    
-EXPOSE 80 443
+
+# TODO: [X] ports 
+EXPOSE 8080
+
+# TODO: [ ] split shibd & apache
 
 CMD ["httpd-shibd-foreground"]
