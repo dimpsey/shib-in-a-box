@@ -25,7 +25,7 @@ COPY httpd.conf /usr/local/apache2/conf/
 #     && sed -i 's/TransferLog logs\/ssl_access_log/TransferLog \/dev\/stdout/g' /etc/httpd/conf.d/ssl.conf
 
 # TODO: [X] ports 
-EXPOSE 8080
+EXPOSE 8080 1600
 
 # TODO: [ ] split shibd & apache
 

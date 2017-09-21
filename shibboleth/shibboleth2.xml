@@ -18,6 +18,9 @@
     For examples with the RequestMap XML syntax instead, see the example-shibboleth2.xml
     file, and the https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPRequestMapHowTo topic.
     -->
+    
+    <!-- FIXME: Need to work on the acl list so that it's more flexible to define. -->
+    <TCPListener address="0.0.0.0" port="1600" acl="0.0.0.0"/>
 
     <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
     <ApplicationDefaults entityID="https://sp.example.org/shibboleth"
@@ -121,10 +124,5 @@
 
     <!-- Low-level configuration about protocols and bindings available for use. -->
     <ProtocolProvider type="XML" validate="true" reloadChanges="false" path="protocols.xml"/>
-    
-    <Listener>
-        <!-- FIXME: Need to work on the acl list so that it's more flexible to define. -->
-        <TCPListener address="0.0.0.0" port="1600" acl="0.0.0.0"/>
-    </Listener>
 
 </SPConfig>

@@ -1,0 +1,21 @@
+version: "3"
+services:
+  httpd:
+    depends_on: 
+      - shibd
+    build: .
+    image: illinois-shib-sp-img
+    command: httpd -DFOREGROUND
+    ports:
+      - "80:8080"
+    networks:
+      - webnet
+  shibd:
+    image: illinois-shib-sp-img
+    command: /etc/init.d/shibd start
+    ports:
+      - "1600:1600"
+    networks:
+      - webnet
+networks:
+  webnet:
