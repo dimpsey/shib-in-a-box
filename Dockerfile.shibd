@@ -1,0 +1,6 @@
+FROM illinois-httpd-img
+
+MAINTAINER Technology Services, University of Illinois Urbana
+
+RUN /usr/sbin/shib-keygen
+COPY shibboleth2.xml.shibd /etc/shibboleth/shibboleth2.xml
