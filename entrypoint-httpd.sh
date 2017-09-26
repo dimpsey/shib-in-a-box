@@ -6,13 +6,13 @@
 # and start httpd in the foreground.
 #
 #
-# Files
+# FILES
 #
 #   /etc/shibboleth/shibboleth2.xml
 #           Configuration file for mod_shib to be edited, setting
 #           the IP address of the container running shibd.
 #
-# Environment
+# ENVIRONMENT
 #
 #   SHIBD_HOSTNAME
 #           Name of the container (host) running shibd. Set in 
