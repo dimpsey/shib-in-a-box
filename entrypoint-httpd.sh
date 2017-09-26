@@ -1,9 +1,24 @@
 #!/bin/bash
 
+# -----------------------------------------------------------------------------
 #
-# Edit shibboleth2.xml to put in the IP address of the container running
-# shibd and start httpd in the foreground.
+# Edit shibboleth2.xml to put in the IP address of the container running shibd 
+# and start httpd in the foreground.
 #
+#
+# Files
+#
+#   /etc/shibboleth/shibboleth2.xml
+#           Configuration file for mod_shib to be edited, setting
+#           the IP address of the container running shibd.
+#
+# Environment
+#
+#   SHIBD_HOSTNAME
+#           Name of the container (host) running shibd. Set in 
+#           docker-compose.yml.
+#
+# -----------------------------------------------------------------------------
 
 set -e 
 
