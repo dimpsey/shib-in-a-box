@@ -20,7 +20,7 @@
     -->
     
     <!-- FIXME: Need to work on the acl list so that it's more flexible to define. -->
-    <TCPListener address="shibd" port="1600" acl="0.0.0.0"/>
+    <TCPListener address="SHIBD_IP" port="1600" acl="0.0.0.0"/>
 
     <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
     <ApplicationDefaults entityID="https://sp.example.org/shibboleth"
