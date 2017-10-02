@@ -13,4 +13,4 @@ COPY shibboleth2.xml.shibd /etc/shibboleth/shibboleth2.xml
 USER _shibd
 EXPOSE 1600
 
-CMD [ "/usr/sbin/shibd -F -f" ]
+CMD [ "/usr/sbin/shibd", "-F", "-f" ]
