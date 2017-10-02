@@ -16,7 +16,6 @@ services:
       context: .
       dockerfile: Dockerfile.shibd
     image: illinois-shibd-sp-img
-    command: /usr/sbin/shibd -F -f 
     ports:
       - "1600:1600"
     networks:

@@ -14,6 +14,4 @@ COPY httpd.conf /usr/local/apache2/conf/
 # TODO: [X] ports 
 EXPOSE 8080
 
-# TODO: [ ] split shibd & apache
-
 CMD ["entrypoint-httpd.sh"]
