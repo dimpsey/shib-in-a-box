@@ -7,7 +7,7 @@ ENV DISCOVERY_SVC_URL https://discovery.itrust.illinois.edu
 RUN apt-get update && apt-get install -y -t jessie-backports \
        shibboleth-sp2-utils wget \
     && rm -rf /var/lib/apt/lists/* \
-    && /usr/sbin/shib-keygen
+    && /usr/sbin/shib-keygen \
     && wget -O /etc/shibboleth/itrust.pem \
        "${DISCOVERY_SVC_URL}/itrust-certs/itrust.pem" \
     && wget -O /etc/shibboleth/itrust-metadata.xml \

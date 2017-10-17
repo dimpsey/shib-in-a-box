@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+#
+# environment
+#
+#     Prints the environment, intended to be a cgi script.
+#
+#     NOTE: it's very BAD practice to print environment variables from
+#     a CGI script. This is intended to illustrate that a login from 
+#     shibboleth has occurred successfully.
+#
+# -----------------------------------------------------------------------------
+
+echo "Content-type: text/html; charset=iso-8859-1"
+echo ""
+echo "<!DOCTYPE html>"
+echo "<html><head><title>Hello World from AWS!</title></head>"
+echo "<body><h1>Your Attributes</h1>"
+echo "<p><table><tr><th>Variable</th><th>Value</th></tr>"
+env | sort | awk -F "=" '{ print "<tr><td>"$1"</td><td>"$2"</td></tr>" }'
+echo "</table></p></body></html>"
+

@@ -16,7 +16,7 @@ COPY entrypoint-httpd.sh /usr/local/bin/
 COPY shibboleth2.xml.httpd /etc/shibboleth/shibboleth2.xml
 COPY shibboleth/ /etc/shibboleth/
 COPY apache2/ /usr/local/apache2/conf/
-COPY show-shibboleth.sh /usr/local/apache2/cgi-bin/
+COPY environment /usr/local/apache2/cgi-bin/
 
 RUN chmod 600 /usr/local/apache2/conf/server.crt \
       /usr/local/apache2/conf/server.key \
@@ -24,9 +24,8 @@ RUN chmod 600 /usr/local/apache2/conf/server.crt \
       /etc/shibboleth/sp-key.pem \
       /etc/shibboleth/itrust.pem \
       /etc/shibboleth/itrust-metadata.xml \
-    && chmod 755 /usr/local/apache2/cgi-bin/show-shibboleth.sh
+    && chmod 755 /usr/local/apache2/cgi-bin/environment
 
-# TODO: [X] ports 
 EXPOSE 8080 8443
 
 CMD ["entrypoint-httpd.sh"]
