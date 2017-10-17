@@ -2,13 +2,24 @@ FROM debian:jessie-backports
 
 MAINTAINER Technology Services, University of Illinois Urbana
 
+ENV DISCOVERY_SVC_URL https://discovery.itrust.illinois.edu
+
 RUN apt-get update && apt-get install -y -t jessie-backports \
-       shibboleth-sp2-utils \
+       shibboleth-sp2-utils wget \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/sbin/shib-keygen
+    && wget -O /etc/shibboleth/itrust.pem \
+       "${DISCOVERY_SVC_URL}/itrust-certs/itrust.pem" \
+    && wget -O /etc/shibboleth/itrust-metadata.xml \
+       "${DISCOVERY_SVC_URL}/itrust-metadata/itrust-metadata.xml"
 
 COPY shibboleth/* /etc/shibboleth/
 COPY shibboleth2.xml.shibd /etc/shibboleth/shibboleth2.xml
+
+RUN chmod 644 /etc/shibboleth/sp-cert.pem \
+       /etc/shibboleth/itrust-metadata.xml \
+       /etc/shibboleth/itrust.pem \
+       /etc/shibboleth/sp-key.pem
 
 USER _shibd
 EXPOSE 1600
