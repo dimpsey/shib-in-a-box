@@ -18,11 +18,18 @@
 #           Name of the container (host) running shibd. Set in 
 #           docker-compose.yml.
 #
+#   SHIBD_ACL
+#           ACL for TCPListener. Set in docker-compose.yml.
+#
 # -----------------------------------------------------------------------------
 
 set -e 
 
 SHIBD_IP=$(getent ahosts $SHIBD_HOSTNAME | awk 'NR==1{ print $1 }')
 
-sed -i "s/SHIBD_IP/$SHIBD_IP/g" /etc/shibboleth/shibboleth2.xml
+sed -i -e "s/SHIBD_IP/$SHIBD_IP/g" \
+    -e "s/SHIBD_ACL/$SHIBD_ACL/g" \
+    -e "s/APP_SERVER_NAME/$APP_SERVER_NAME/g" \
+    -e "s/SHIBD_IDP/$SHIBD_IDP/g" /etc/shibboleth/shibboleth2.xml
+
 exec httpd -DFOREGROUND

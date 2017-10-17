@@ -3,12 +3,16 @@ services:
   httpd:
     environment:
       - SHIBD_HOSTNAME=shibd
+      - SHIBD_ACL=0.0.0.0
+      - APP_SERVER_NAME=sprint19.sandbox.aws.illinois.edu
+      - SHIBD_IDP=urn:mace:incommon:uiuc.edu
     depends_on: 
       - shibd
     build: .
     image: illinois-httpd-img
     ports:
       - "80:8080"
+      - "443:8443"
     networks:
       - webnet
   shibd:
