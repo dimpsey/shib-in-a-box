@@ -14,14 +14,6 @@ COPY shibboleth/ /etc/shibboleth/
 COPY apache2/ /usr/local/apache2/conf/
 COPY environment /usr/local/apache2/cgi-bin/
 
-# RUN chmod 600 /usr/local/apache2/conf/server.crt \
-#       /usr/local/apache2/conf/server.key \
-#       /etc/shibboleth/sp-cert.pem \
-#       /etc/shibboleth/sp-key.pem \
-#       /etc/shibboleth/itrust.pem \
-#       /etc/shibboleth/itrust-metadata.xml \
-#     && chmod 755 /usr/local/apache2/cgi-bin/environment
-
 RUN chmod 755 /usr/local/apache2/cgi-bin/environment
 
 EXPOSE 8080 8443

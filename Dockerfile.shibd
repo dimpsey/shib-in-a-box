@@ -14,11 +14,11 @@ COPY shibboleth2.xml.shibd /etc/shibboleth/shibboleth2.xml
 RUN wget -O /etc/shibboleth/itrust.pem \
        "${DISCOVERY_SVC_URL}/itrust-certs/itrust.pem" \
     && wget -O /etc/shibboleth/itrust-metadata.xml \
-       "${DISCOVERY_SVC_URL}/itrust-metadata/itrust-metadata.xml"
+       "${DISCOVERY_SVC_URL}/itrust-metadata/itrust-metadata.xml" \
     && chmod 644 /etc/shibboleth/sp-cert.pem \
        /etc/shibboleth/itrust-metadata.xml \
        /etc/shibboleth/itrust.pem \
-       /etc/shibboleth/sp-key.pem \
+       /etc/shibboleth/sp-key.pem 
 
 USER _shibd
 EXPOSE 1600

@@ -15,8 +15,8 @@
         <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
                   checkAddress="false" handlerSSL="false" cookieProps="http">
 
-            <SSO entityID="https://idp.example.org/idp/shibboleth"
-                 discoveryProtocol="SAMLDS" discoveryURL="https://ds.example.org/DS/WAYF">
+            <SSO entityID="urn:mace:incommon:uiuc.edu"
+                 discoveryProtocol="SAMLDS" discoveryURL="">
               SAML2 SAML1
             </SSO>
 
