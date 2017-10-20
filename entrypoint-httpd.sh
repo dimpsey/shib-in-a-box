@@ -2,9 +2,10 @@
 
 # -----------------------------------------------------------------------------
 #
-# Edit shibboleth2.xml to put in the IP address of the container running shibd 
-# and start httpd in the foreground.
+# entrypoint-httpd.sh
 #
+#     Edit shibboleth2.xml to put in the IP address of the container 
+#     running shibd and start httpd in the foreground.
 #
 # FILES
 #
@@ -14,19 +15,19 @@
 #
 # ENVIRONMENT
 #
-#   APP_SERVER_NAME
-#           Server name used as the HTTP host. Set in
-#           docker-compose.yml
-#
 #   SHIBD_ACL
 #           ACL for TCPListener. Set in docker-compose.yml.
 #
+#   SHIBD_ENTITYID
+#         Entity ID value this SP was/will be registered to iTrust
+#         with. Set in docker-compose.yml.
+#
 #   SHIBD_HOSTNAME
-#           Name of the container (host) running shibd. Set in 
-#           docker-compose.yml.
+#         Name of the shibd host container. Set in 
+#         docker-compose.yml.
 #
 #   SHIBD_IDP
-#           Identifier fro the shibboleth IdP to use. Set in 
+#           Identifier for the shibboleth IdP to use. Set in 
 #           docker-compose.yml.
 #
 # -----------------------------------------------------------------------------
@@ -36,7 +37,7 @@ set -e
 SHIBD_IP=$(getent ahosts $SHIBD_HOSTNAME | awk 'NR==1{ print $1 }')
 
 sed -i -e "s/SHIBD_IP/$SHIBD_IP/g" \
-    -e "s/APP_SERVER_NAME/$APP_SERVER_NAME/g" \
+    -e "s/SHIBD_ENTITYID/$SHIBD_ENTITYID/g" \
     -e "s/SHIBD_ACL/$SHIBD_ACL/g" \
     -e "s/SHIBD_IDP/$SHIBD_IDP/g" /etc/shibboleth/shibboleth2.xml
 

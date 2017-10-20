@@ -23,4 +23,4 @@ RUN wget -O /etc/shibboleth/itrust.pem \
 USER _shibd
 EXPOSE 1600
 
-CMD [ "/usr/sbin/shibd", "-F", "-f" ]
+CMD ["entrypoint-shibd.sh"] 

@@ -5,17 +5,16 @@
     xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
     clockSkew="180">
 
-    <TCPListener address="0.0.0.0" port="1600" acl="0.0.0.0/0"/>
+    <TCPListener address="0.0.0.0" port="1600" acl="SHIBD_ACL"/>
 
-    <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
-    <ApplicationDefaults entityID="https://sprint19.sandbox.aws.illinois.edu/shibboleth"
+    <ApplicationDefaults entityID="SHIBD_ENTITYID"
                          REMOTE_USER="eppn persistent-id targeted-id"
                          cipherSuites="ECDHE+AESGCM:ECDHE:!aNULL:!eNULL:!LOW:!EXPORT:!RC4:!SHA:!SSLv2">
 
         <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
                   checkAddress="false" handlerSSL="false" cookieProps="http">
 
-            <SSO entityID="urn:mace:incommon:uiuc.edu"
+            <SSO entityID="SHIBD_IDP"
                  discoveryProtocol="SAMLDS" discoveryURL="">
               SAML2 SAML1
             </SSO>
@@ -35,8 +34,8 @@
             helpLocation="/about.html"
             styleSheet="/shibboleth-sp/main.css"/>
         
-         <MetadataProvider type="XML" uri="https://discovery.itrust.illinois.edu/itrust-metadata/itrust-metadata.xml"
-                                backingFilePath="/etc/shibboleth/itrust-metadata.xml" reloadInterval="7200">
+        <MetadataProvider type="XML" uri="https://discovery.itrust.illinois.edu/itrust-metadata/itrust-metadata.xml"
+                          backingFilePath="/etc/shibboleth/itrust-metadata.xml" reloadInterval="7200">
             <MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/>
             <MetadataFilter type="Signature" certificate="/etc/shibboleth/itrust.pem"/>
         </MetadataProvider>

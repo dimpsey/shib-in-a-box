@@ -12,10 +12,13 @@ services:
     image: illinois-httpd-img
     ports:
       - "80:8080"
-      - "443:8443"
     networks:
       - webnet
   shibd:
+    environment:
+      - SHIBD_ACL=0.0.0.0/0
+      - SHIBD_IDP=urn:mace:incommon:uiuc.edu
+      - SHIBD_ENTITYID=https://sprint19.sandbox.aws.illinois.edu/shibboleth
     build:
       context: .
       dockerfile: Dockerfile.shibd

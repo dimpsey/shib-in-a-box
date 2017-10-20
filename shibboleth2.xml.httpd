@@ -5,10 +5,9 @@
     xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
     clockSkew="180">
 
-    <!-- FIXME: Need to work on the acl list so that it's more flexible to define. -->
     <TCPListener address="SHIBD_IP" port="1600" acl="SHIBD_ACL"/>
 
-    <ApplicationDefaults entityID="https://APP_SERVER_NAME/shibboleth"
+    <ApplicationDefaults entityID="SHIBD_ENTITYID"
                          REMOTE_USER="eppn persistent-id targeted-id"
                          cipherSuites="ECDHE+AESGCM:ECDHE:!aNULL:!eNULL:!LOW:!EXPORT:!RC4:!SHA:!SSLv2">
 
