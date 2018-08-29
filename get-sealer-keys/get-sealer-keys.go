@@ -16,6 +16,8 @@ import (
 // This function is based on code taken from:
 // https://docs.aws.amazon.com/sdk-for-go/api/service/secretsmanager/#example_SecretsManager_GetSecretValue_shared00
 func getSecret(secretID string, versionStage string) (string, error) {
+
+        // TODO: Move sess and svc to main function to reuse the sessions
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
