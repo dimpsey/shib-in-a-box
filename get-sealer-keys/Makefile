@@ -1,10 +1,18 @@
-all: deps get-sealer-keys
+BUILD := get-sealer-keys
+DEPS := $(BUILD).go
+
+all: $(BUILD)
 
 deps:
+	go get github.com/golang/lint/golint
 	go get -u github.com/aws/aws-sdk-go
 
-get-sealer-keys: get-sealer-keys.go
-	go build get-sealer-keys.go
+$(BUILD): $(DEPS)
+	golint $?
+	go vet $?
+	gofmt -d $?
+	@test -z `gofmt -l $?`
+	go build $?
 
 clean:
-	rm -f get-sealer-keys
+	rm -f $(BUILD)

@@ -17,7 +17,7 @@ import (
 // https://docs.aws.amazon.com/sdk-for-go/api/service/secretsmanager/#example_SecretsManager_GetSecretValue_shared00
 func getSecret(secretID string, versionStage string) (string, error) {
 
-        // TODO: Move sess and svc to main function to reuse the sessions
+	// TODO: Move sess and svc to main function to reuse the sessions
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
@@ -73,15 +73,15 @@ func main() {
 		os.Exit(2)
 	}
 
-    // For details on data format see:
-    // https://wiki.shibboleth.net/confluence/display/SP3/VersionedDataSealer
+	// For details on data format see:
+	// https://wiki.shibboleth.net/confluence/display/SP3/VersionedDataSealer
 	previous, err = getSecret(secretID, "AWSPREVIOUS")
 	if err == nil {
 		fmt.Print(c, ":", previous)
-        fmt.Println()
-        c++;
+		fmt.Println()
+		c++
 	}
 
 	fmt.Print(c, ":", current)
-    fmt.Println()
+	fmt.Println()
 }
