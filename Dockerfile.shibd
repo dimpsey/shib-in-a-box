@@ -1,16 +1,18 @@
-FROM debian:jessie-backports
+FROM debian:stretch
 
 MAINTAINER Technology Services, University of Illinois Urbana
 
 ENV DISCOVERY_SVC_URL https://discovery.itrust.illinois.edu
 
-RUN apt-get update && apt-get install -y -t jessie-backports \
-       shibboleth-sp2-utils wget \
-    && rm -rf /var/lib/apt/lists/* \
-    && /usr/sbin/shib-keygen \
-    && wget -O /etc/shibboleth/itrust.pem \
+RUN apt-get update && apt-get install -y curl gnupg \
+     && curl -s http://pkg.switch.ch/switchaai/SWITCHaai-swdistrib.asc | apt-key add - \
+     && echo 'deb http://pkg.switch.ch/switchaai/debian stretch main' > /etc/apt/sources.list.d/SWITCHaai-swdistrib.list \
+     && apt-get update && apt-get install -y shibboleth \
+     && rm -rf /var/lib/apt/lists/* \
+     && /usr/sbin/shib-keygen \
+     && curl -so /etc/shibboleth/itrust.pem \
        "${DISCOVERY_SVC_URL}/itrust-certs/itrust.pem" \
-    && wget -O /etc/shibboleth/itrust-metadata.xml \
+    && curl -so  /etc/shibboleth/itrust-metadata.xml \
        "${DISCOVERY_SVC_URL}/itrust-metadata/itrust-metadata.xml"
 
 COPY shibboleth/* /etc/shibboleth/
@@ -21,7 +23,7 @@ RUN chmod 644 /etc/shibboleth/sp-cert.pem \
        /etc/shibboleth/itrust.pem \
        /etc/shibboleth/sp-key.pem
 
-USER _shibd
+# USER _shibd
 EXPOSE 1600
 
-CMD [ "/usr/sbin/shibd", "-F", "-f" ]
+# CMD [ "/usr/sbin/shibd", "-F", "-f" ]
