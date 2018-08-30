@@ -1,0 +1,12 @@
+FROM debian:stretch
+
+MAINTAINER Technology Services, University of Illinois Urbana
+
+RUN apt-get update && apt-get install -y \
+       cron \ 
+       ca-certificates \
+    && rm -rf /var/lib/apt/lists/* 
+
+COPY get-sealer-keys/get-sealer-keys /usr/local/bin/
+
+# ENTRYPOINT ["/usr/sbin/cron", "-f"]

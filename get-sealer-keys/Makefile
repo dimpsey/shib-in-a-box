@@ -1,6 +1,9 @@
 BUILD := get-sealer-keys
 DEPS := $(BUILD).go
 
+export CGO_ENABLED=0
+export GOOS=linux
+
 all: $(BUILD)
 
 deps:
@@ -12,7 +15,7 @@ $(BUILD): $(DEPS)
 	go vet $?
 	gofmt -d $?
 	@test -z `gofmt -l $?`
-	go build $?
+	go build -ldflags "-s" -a -installsuffix cgo -o $@
 
 clean:
 	rm -f $(BUILD)
