@@ -12,7 +12,7 @@
 #           Configuration file for mod_shib to be edited, setting
 #           the IP address of the container running shibd.
 #
-#   /usr/local/apache2/conf/httpd.conf
+#   /etc/httpd/conf/httpd.conf
 #           Configuration file for httpd to be edited. Edit will
 #           set the value of the ServerName directive.
 #
@@ -41,6 +41,6 @@ sed -i -e "s/SHIBD_IP/$SHIBD_IP/g" \
     -e "s/SHIBD_IDP/$SHIBD_IDP/g" /etc/shibboleth/shibboleth2.xml
 
 sed -i -e "s/APP_SERVER_NAME/$APP_SERVER_NAME/g" \
-    /usr/local/apache2/conf/httpd.conf
+    /etc/httpd/conf/httpd.conf
 
 exec httpd -DFOREGROUND
