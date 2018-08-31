@@ -8,18 +8,19 @@ services:
       - SHIBD_IDP=urn:mace:incommon:uiuc.edu
     depends_on: 
       - shibd
-    build: .
-    image: illinois-httpd-img
+    build:
+      context: .
+      dockerfile: Dockerfile.httpd
+    image: httpd
     ports:
       - "80:8080"
-      - "443:8443"
     networks:
       - webnet
   shibd:
     build:
       context: .
       dockerfile: Dockerfile.shibd
-    image: illinois-shibd-sp-img
+    image: shibd
     ports:
       - "1600:1600"
     networks:
