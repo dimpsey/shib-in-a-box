@@ -1,29 +1,35 @@
-FROM debian:stretch
+FROM centos:7
 
 MAINTAINER Technology Services, University of Illinois Urbana
 
-ENV DISCOVERY_SVC_URL https://discovery.itrust.illinois.edu
+ENV DISCOVERY_SVC_URL https://discovery.itrust.illinois.edu 
 
-RUN apt-get update && apt-get install -y curl gnupg \
-     && curl -s http://pkg.switch.ch/switchaai/SWITCHaai-swdistrib.asc | apt-key add - \
-     && echo 'deb http://pkg.switch.ch/switchaai/debian stretch main' > /etc/apt/sources.list.d/SWITCHaai-swdistrib.list \
-     && apt-get update && apt-get install -y shibboleth \
-     && rm -rf /var/lib/apt/lists/* \
-     && /usr/sbin/shib-keygen \
+COPY yum/*.repo /etc/yum.repos.d/
+
+RUN yum -y install \
+     shibboleth \
+     && yum clean all \
+     && rm -rf /var/cache/yum \
+     && cd /etc/shibboleth \
+     && /etc/shibboleth/keygen.sh \
      && curl -so /etc/shibboleth/itrust.pem \
        "${DISCOVERY_SVC_URL}/itrust-certs/itrust.pem" \
-    && curl -so  /etc/shibboleth/itrust-metadata.xml \
+     && curl -so  /var/cache/shibboleth/itrust-metadata.xml \
        "${DISCOVERY_SVC_URL}/itrust-metadata/itrust-metadata.xml"
 
 COPY shibboleth/* /etc/shibboleth/
 COPY shibboleth2.xml.shibd /etc/shibboleth/shibboleth2.xml
 
-RUN chmod 644 /etc/shibboleth/sp-cert.pem \
-       /etc/shibboleth/itrust-metadata.xml \
+RUN chmod 644 /var/cache/shibboleth/itrust-metadata.xml \
        /etc/shibboleth/itrust.pem \
-       /etc/shibboleth/sp-key.pem
+       /etc/shibboleth/sp-key.pem \
+       /etc/shibboleth/sp-cert.pem \
+    && chown shibd:shibd /var/cache/shibboleth/itrust-metadata.xml
+    # && chown -R shibd:shibd /etc/shibboleth
 
-# USER _shibd
+USER shibd
 EXPOSE 1600
 
-# CMD [ "/usr/sbin/shibd", "-F", "-f" ]
+ENV LD_LIBRARY_PATH /opt/shibboleth/lib64
+
+ENTRYPOINT [ "/usr/sbin/shibd", "-F", "-f" ]

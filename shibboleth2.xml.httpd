@@ -33,7 +33,7 @@
             styleSheet="/shibboleth-sp/main.css"/>
         
         <MetadataProvider type="XML" url="https://discovery.itrust.illinois.edu/itrust-metadata/itrust-metadata.xml"
-			backingFilePath="/etc/shibboleth/itrust-metadata.xml" reloadInterval="7200">
+			backingFilePath="/var/cache/shibboleth/itrust-metadata.xml" reloadInterval="7200">
             <MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/>
             <MetadataFilter type="Signature" certificate="/etc/shibboleth/itrust.pem"/>
         </MetadataProvider>
