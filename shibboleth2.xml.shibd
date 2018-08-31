@@ -5,7 +5,13 @@
     xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
     clockSkew="180">
 
+    <!-- TODO acl probably should be 0.0.0.0 -->
+    <!-- TODO this should probably be limited to non routable IP addresses -->
     <TCPListener address="0.0.0.0" port="1600" acl="0.0.0.0/0"/>
+
+    <!-- TODO change this to work with cron container -->
+    <DataSealer type="Versioned" path="/etc/shibboleth/keys"/>
+    <SessionCache type="StorageService" persistedAttributes="eppn displayName"/>
 
     <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
     <ApplicationDefaults entityID="https://sprint19.sandbox.aws.illinois.edu/shibboleth"

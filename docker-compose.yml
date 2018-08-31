@@ -4,7 +4,7 @@ services:
     environment:
       - SHIBD_HOSTNAME=shibd
       - SHIBD_ACL=0.0.0.0
-      - APP_SERVER_NAME=sprint19.sandbox.aws.illinois.edu
+      - APP_SERVER_NAME=127.0.0.1
       - SHIBD_IDP=urn:mace:incommon:uiuc.edu
     depends_on: 
       - shibd
