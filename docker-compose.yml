@@ -15,7 +15,8 @@ services:
     ports:
       - "80:8080"
     networks:
-      - webnet
+      - frontend
+      - backend
   shibd:
     build:
       context: .
@@ -24,6 +25,24 @@ services:
     ports:
       - "1600:1600"
     networks:
-      - webnet
+      - backend
+    volumes:
+      - keys:/var/shib-keys:ro 
+  cron:
+    environment:
+      - SECRET_ID=shib-test5
+    build:
+      context: .
+      dockerfile: Dockerfile.cron
+    image: cron
+    volumes:
+      - keys:/var/shib-keys
+      - ~/.aws:/root/.aws:ro
+    networks:
+      - frontend
 networks:
-  webnet:
+  frontend:
+  backend:
+
+volumes:
+  keys:

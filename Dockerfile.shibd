@@ -4,10 +4,10 @@ USER shibd
 EXPOSE 1600
 
 COPY shibboleth2.xml.shibd /etc/shibboleth/shibboleth2.xml
+COPY entrypoint-shibd.sh /usr/local/bin
  
-# TODO this needs to change to a mount point to work with cron
-COPY get-sealer-keys/keys /etc/shibboleth/
+VOLUME ["/var/shib-keys"]
 
 ENV LD_LIBRARY_PATH /opt/shibboleth/lib64
 
-ENTRYPOINT [ "/usr/sbin/shibd", "-F", "-f" ]
+ENTRYPOINT [ "/usr/local/bin/entrypoint-shibd.sh" ]

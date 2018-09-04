@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: .drone.yml.sig
+all: .drone.yml.sig base get-sealer-keys/get-sealer-keys
 
 cron: get-sealer-keys/get-sealer-keys
 	docker build -f Dockerfile.cron -t cron .
@@ -23,3 +23,7 @@ get-sealer-keys/get-sealer-keys: get-sealer-keys/get-sealer-keys.go
 .drone.yml.sig: .drone.yml
 	drone sign cites-illinois/illinois-shibboleth-sp-img
 	git add $^ $@
+
+clean:
+	-docker rmi cron shib_base shibd httpd
+	-rm -f get-sealer-keys/get-sealer-keys
