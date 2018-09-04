@@ -5,7 +5,7 @@ set -e
 KEYS=/var/shib-keys/keys
 TIME=0.1
 
-while [ ! -f $KEYS ]; do
+while [ ! -s $KEYS ]; do
     echo "Waiting $TIME for $KEYS"
     sleep $TIME
 done
