@@ -7,6 +7,6 @@ RUN apt-get update && apt-get install -y \
        ca-certificates \
     && rm -rf /var/lib/apt/lists/* 
 
-COPY get-sealer-keys/get-sealer-keys /usr/local/bin/
+COPY get-sealer-keys/get-sealer-keys entrypoint_cron.sh /usr/local/bin/
 
-# ENTRYPOINT ["/usr/sbin/cron", "-f"]
+ENTRYPOINT ["/usr/local/bin/entrypoint_cron.sh"]

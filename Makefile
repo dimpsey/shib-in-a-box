@@ -2,9 +2,9 @@
 
 all: .drone.yml.sig
 
-cron:
+cron: get-sealer-keys/get-sealer-keys
 	docker build -f Dockerfile.cron -t cron .
-	docker run -it --rm -v $(HOME)/.aws:/root/.aws:ro cron
+	docker run -it -e SECRET_ID --rm -v $(HOME)/.aws:/root/.aws:ro cron
 
 base:
 	docker build -f Dockerfile -t shib_base .
@@ -16,6 +16,9 @@ shibd: base
 httpd: base
 	docker build -f Dockerfile.httpd -t httpd .
 	docker run -it --rm httpd
+
+get-sealer-keys/get-sealer-keys: get-sealer-keys/get-sealer-keys.go
+	make -C get-sealer-keys
 
 .drone.yml.sig: .drone.yml
 	drone sign cites-illinois/illinois-shibboleth-sp-img

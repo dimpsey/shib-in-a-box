@@ -27,22 +27,22 @@ func getSecret(svc *secretsmanager.SecretsManager, secretID string, versionStage
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			case secretsmanager.ErrCodeResourceNotFoundException:
-				fmt.Println(secretsmanager.ErrCodeResourceNotFoundException, aerr.Error())
+				fmt.Fprintln(os.Stderr, secretsmanager.ErrCodeResourceNotFoundException, aerr.Error())
 			case secretsmanager.ErrCodeInvalidParameterException:
-				fmt.Println(secretsmanager.ErrCodeInvalidParameterException, aerr.Error())
+				fmt.Fprintln(os.Stderr, secretsmanager.ErrCodeInvalidParameterException, aerr.Error())
 			case secretsmanager.ErrCodeInvalidRequestException:
-				fmt.Println(secretsmanager.ErrCodeInvalidRequestException, aerr.Error())
+				fmt.Fprintln(os.Stderr, secretsmanager.ErrCodeInvalidRequestException, aerr.Error())
 			case secretsmanager.ErrCodeDecryptionFailure:
-				fmt.Println(secretsmanager.ErrCodeDecryptionFailure, aerr.Error())
+				fmt.Fprintln(os.Stderr, secretsmanager.ErrCodeDecryptionFailure, aerr.Error())
 			case secretsmanager.ErrCodeInternalServiceError:
-				fmt.Println(secretsmanager.ErrCodeInternalServiceError, aerr.Error())
+				fmt.Fprintln(os.Stderr, secretsmanager.ErrCodeInternalServiceError, aerr.Error())
 			default:
-				fmt.Println(aerr.Error())
+				fmt.Fprintln(os.Stderr, aerr.Error())
 			}
 		} else {
 			// Print the error, cast err to awserr.Error to get the Code and
 			// Message from an error.
-			fmt.Println(err.Error())
+			fmt.Fprintln(os.Stderr, err.Error())
 		}
 		return "", err
 	}
@@ -57,7 +57,7 @@ func main() {
 	var err error
 
 	if secretID == "" {
-		fmt.Println("Environment variable SECRET_ID is empty or not set!")
+		fmt.Fprintln(os.Stderr, "Environment variable SECRET_ID is empty or not set!")
 		os.Exit(1)
 	}
 
