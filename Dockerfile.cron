@@ -1,13 +1,19 @@
-FROM debian:stretch
+FROM shib_base
 
-MAINTAINER Technology Services, University of Illinois Urbana
+ENV KEYS=/var/shib-keys \
+    USR=shibd
 
-RUN apt-get update && apt-get install -y \
-       cron \ 
-       ca-certificates \
-    && rm -rf /var/lib/apt/lists/* 
+RUN yum -y install \
+     cronie \
+     ca-certificates \
+     && yum clean all \
+     && rm -rf /var/cache/yum
 
 COPY get-sealer-keys/get-sealer-keys entrypoint-cron.sh /usr/local/bin/
-VOLUME ["/var/shib-keys"]
+RUN mkdir 700 ${KEYS} && chown ${USR}:${USR} ${KEYS} && chmod g+s ${KEYS} && \
+    sed -i -e 's~^\(session.*pam_loginuid.so\)$~#\1~' /etc/pam.d/crond && \
+    usermod -a -G tty shibd
+
+VOLUME ["${KEYS}"]
 
 ENTRYPOINT ["/usr/local/bin/entrypoint-cron.sh"]

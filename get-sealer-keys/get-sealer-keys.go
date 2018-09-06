@@ -3,8 +3,13 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 )
+
+// GNU style POSIX standard alternative to flag
+// https://godoc.org/github.com/spf13/pflag
+import flag "github.com/spf13/pflag"
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
@@ -12,6 +17,20 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
 )
+
+// Return codes
+
+// NoEnvVar - Environment variable empty or missing
+const NoEnvVar = 1
+
+// BadArgs - Too many or bad arguments passed
+const BadArgs = 2
+
+// NoSecret - Not able to retrieve secret
+const NoSecret = 3
+
+// FileError - File system error
+const FileError = 4
 
 // This function is based on code taken from:
 // https://docs.aws.amazon.com/sdk-for-go/api/service/secretsmanager/#example_SecretsManager_GetSecretValue_shared00
@@ -24,6 +43,8 @@ func getSecret(svc *secretsmanager.SecretsManager, secretID string, versionStage
 
 	result, err := svc.GetSecretValue(input)
 	if err != nil {
+		fmt.Fprint(os.Stderr, "Failed to find secret: ", secretID, ", version: ", versionStage, "\n\n\a")
+
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			case secretsmanager.ErrCodeResourceNotFoundException:
@@ -50,38 +71,68 @@ func getSecret(svc *secretsmanager.SecretsManager, secretID string, versionStage
 	return *result.SecretString, nil
 }
 
-func main() {
-	var c = 1
-	var secretID = os.Getenv("SECRET_ID")
-	var current, previous string
-	var err error
+// SprintDataSealer returns a data sealer string
+func SprintDataSealer(svc *secretsmanager.SecretsManager, secretID string) string {
+	c := 1
+	r := ""
 
-	if secretID == "" {
-		fmt.Fprintln(os.Stderr, "Environment variable SECRET_ID is empty or not set!")
-		os.Exit(1)
+	SprintGetSecret := func(versionStage string) error {
+		secret, err := getSecret(svc, secretID, versionStage)
+
+		// For details on data format see:
+		// https://wiki.shibboleth.net/confluence/display/SP3/VersionedDataSealer
+		if err == nil {
+			r += fmt.Sprint(c, ":", secret, "\n")
+			c++
+		}
+
+		return err
 	}
 
-	// TODO: Move sess and svc to main function to reuse the sessions
+	err := SprintGetSecret("AWSCURRENT")
+	if err != nil {
+		os.Exit(NoSecret)
+	}
+	SprintGetSecret("AWSPREVIOUS")
+
+	return r
+}
+
+func args() (string, string) {
+	filePtr := flag.StringP("file", "f", "", "a file used to store the data sealer.")
+	flag.Usage = func() {
+		fmt.Printf("Usage: get-sealer-keys [options] secret-id\n\n")
+		flag.PrintDefaults()
+	}
+
+	flag.Parse()
+	if len(flag.Args()) != 1 {
+		flag.Usage()
+		os.Exit(BadArgs)
+	}
+
+	return *filePtr, flag.Args()[0]
+}
+
+func main() {
+	filename, secretID := args()
+
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
-
 	svc := secretsmanager.New(sess)
 
-	current, err = getSecret(svc, secretID, "AWSCURRENT")
-	if err != nil {
-		os.Exit(2)
-	}
+	dataSealer := SprintDataSealer(svc, secretID)
+	if filename == "" {
+		fmt.Print(dataSealer)
+	} else {
+		err := ioutil.WriteFile(filename, []byte(dataSealer), 0600)
 
-	// For details on data format see:
-	// https://wiki.shibboleth.net/confluence/display/SP3/VersionedDataSealer
-	previous, err = getSecret(svc, secretID, "AWSPREVIOUS")
-	if err == nil {
-		fmt.Print(c, ":", previous)
-		fmt.Println()
-		c++
-	}
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(FileError)
+		}
 
-	fmt.Print(c, ":", current)
-	fmt.Println()
+		fmt.Fprint(os.Stderr, "Wrote data sealer to file: '", filename, "'.  Retrieved from AWS secret: '", secretID, ".'\n")
+	}
 }

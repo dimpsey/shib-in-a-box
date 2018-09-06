@@ -8,6 +8,7 @@ all: $(BUILD)
 
 deps:
 	go get github.com/golang/lint/golint
+	go get -u github.com/spf13/pflag
 	go get -u github.com/aws/aws-sdk-go
 
 $(BUILD): $(DEPS)

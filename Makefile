@@ -4,7 +4,7 @@ all: .drone.yml.sig base get-sealer-keys/get-sealer-keys
 
 cron: get-sealer-keys/get-sealer-keys
 	docker build -f Dockerfile.cron -t cron .
-	docker run -it -e SECRET_ID --rm -v $(HOME)/.aws:/root/.aws:ro cron
+	docker run -it -e SECRET_ID --rm -v $(HOME)/.aws:/var/run/shibboleth/.aws:ro cron
 
 base:
 	docker build -f Dockerfile -t shib_base .
