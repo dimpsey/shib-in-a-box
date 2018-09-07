@@ -69,9 +69,9 @@ func getParamKey(svc *ssm.SystemsManager, keyname string) (string, error) {
 }
 
 func args() (string, string) {
-    filePtr := flag.StringP("file", "f", "", "a file used to store the data sealer.")
+    filePtr := flag.StringP("file", "f", "", "a file used to store the shib keys.")
     flag.Usage = func() {
-            fmt.Printf("Usage: get-sealer-keys [options] secret-id\n\n")
+            fmt.Printf("Usage: get-shib-keys [options] keyname\n\n")
             flag.PrintDefaults()
     }
 
@@ -85,7 +85,7 @@ func args() (string, string) {
 }
 
 func main() {
-    filename, secretID := args()
+    filename, keyname := args()
 
     sess := session.Must(session.NewSessionWithOptions(session.Options{
             SharedConfigState: session.SharedConfigEnable,
@@ -94,24 +94,16 @@ func main() {
 
     param, err := getParamKey(svc, keyname, false)
 
-    if err == nil {
-          r += fmt.Sprint(c, ":", secret, "\n")
-          c++
-    }
-
-    return err
-
-    dataSealer := SprintDataSealer(svc, secretID)
     if filename == "" {
-            fmt.Print(dataSealer)
+            fmt.Print(param)
     } else {
-            err := ioutil.WriteFile(filename, []byte(dataSealer), 0600)
+            err := ioutil.WriteFile(filename, []byte(param), 0600)
 
             if err != nil {
                     fmt.Fprintln(os.Stderr, err)
                     os.Exit(FileError)
             }
 
-            fmt.Fprint(os.Stderr, "Wrote data sealer to file: '", filename, "'.  Retrieved from AWS secret: '", secretID, ".'\n")
+            fmt.Fprint(os.Stderr, "Wrote shib key to file: '", filename, "'.  Retrieved from AWS Parameter: '", keyname, ".'\n")
     }
 }
