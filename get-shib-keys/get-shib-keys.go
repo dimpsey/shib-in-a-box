@@ -68,13 +68,10 @@ func GetParamKey(svc *ssm.SSM, keyname string) (string, error) {
 	return *result.Parameter.Value, nil
 }
 
-func GetParamKeys(svc *ssm.SSM, path string) ([]*ssm.Parameter, error) {
-
-	// var nextToken *string
+func GetParamKeys(svc *ssm.SSM, nextToken *string, path string) (*string, []*ssm.Parameter, error) {
 
 	input := &ssm.GetParametersByPathInput{
-		MaxResults:     aws.Int64(10),
-		NextToken:      nil,
+		NextToken:      nextToken,
 		Path:           aws.String(path),
 		Recursive:      aws.Bool(true),
 		WithDecryption: aws.Bool(false),
@@ -107,11 +104,12 @@ func GetParamKeys(svc *ssm.SSM, path string) ([]*ssm.Parameter, error) {
 			// Message from an error.
 			fmt.Fprintln(os.Stderr, err.Error())
 		}
-		return nil, err
+		return nil, nil, err
 	}
 
-	return results.Parameters, nil
+	return results.NextToken, results.Parameters, nil
 }
+
 func args() (string, string) {
 	filePtr := flag.StringP("file", "f", "", "a file used to store the shib keys.")
 	flag.Usage = func() {
@@ -128,6 +126,18 @@ func args() (string, string) {
 	return *filePtr, flag.Args()[0]
 }
 
+func GetParamMap(svc *ssm.SSM, path string) []*ssm.Parameter {
+	var params []*ssm.Parameter
+
+	nextToken, results, _ := GetParamKeys(svc, nil, path)
+	for nextToken != nil {
+		nextToken, params, _ = GetParamKeys(svc, nextToken, path)
+		results = append(results, params...)
+	}
+
+	return results
+}
+
 func main() {
 	filename, keyname := args()
 
@@ -137,10 +147,7 @@ func main() {
 	svc := ssm.New(sess)
 
 	// param, err := GetParamKey(svc, keyname)
-	param, err := GetParamKeys(svc, keyname)
-	if err != nil {
-		os.Exit(1)
-	}
+	param := GetParamMap(svc, keyname)
 
 	if filename == "" {
 		fmt.Print(param)
