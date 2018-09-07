@@ -6,7 +6,7 @@ services:
       - SHIBD_ACL=0.0.0.0
       - APP_SERVER_NAME=127.0.0.1
       - SHIBD_IDP=urn:mace:incommon:uiuc.edu
-    depends_on: 
+    depends_on:
       - shibd
     build:
       context: .
@@ -22,22 +22,25 @@ services:
       context: .
       dockerfile: Dockerfile.shibd
     image: shibd
+    depends_on:
+      - cron
     ports:
       - "1600:1600"
     networks:
       - backend
     volumes:
-      - keys:/var/shib-keys:ro 
+      - keys:/var/shib-keys:ro
   cron:
     environment:
       - SECRET_ID=shib-test5
+      - SCHEDULE=* * * * *
     build:
       context: .
       dockerfile: Dockerfile.cron
     image: cron
     volumes:
       - keys:/var/shib-keys
-      - ~/.aws:/root/.aws:ro
+      - ~/.aws:/var/run/shibboleth/.aws:ro
     networks:
       - frontend
 networks:
