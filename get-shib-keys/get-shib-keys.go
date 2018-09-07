@@ -74,7 +74,7 @@ func GetParamKeys(svc *ssm.SSM, nextToken *string, path string) (*string, []*ssm
 		NextToken:      nextToken,
 		Path:           aws.String(path),
 		Recursive:      aws.Bool(true),
-		WithDecryption: aws.Bool(false),
+		WithDecryption: aws.Bool(true),
 	}
 
 	results, err := svc.GetParametersByPath(input)
@@ -126,16 +126,24 @@ func args() (string, string) {
 	return *filePtr, flag.Args()[0]
 }
 
-func GetParamMap(svc *ssm.SSM, path string) []*ssm.Parameter {
+func GetParamMap(svc *ssm.SSM, path string) map[string]string {
+	var nextToken *string
 	var params []*ssm.Parameter
 
-	nextToken, results, _ := GetParamKeys(svc, nil, path)
-	for nextToken != nil {
+	// make a map to return
+	m := make(map[string]string)
+
+	for {
 		nextToken, params, _ = GetParamKeys(svc, nextToken, path)
-		results = append(results, params...)
+		for _, e := range params {
+			m[*e.Name] = *e.Value
+		}
+		if nextToken == nil {
+			break
+		}
 	}
 
-	return results
+	return m
 }
 
 func main() {
