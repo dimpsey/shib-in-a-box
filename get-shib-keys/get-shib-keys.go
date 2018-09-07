@@ -3,7 +3,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	// "io/ioutil"
 	"os"
 )
 
@@ -32,11 +32,11 @@ const NoSecret = 3
 // FileError - File system error
 const FileError = 4
 
-func getParamKey(svc *ssm.SSM, keyname string, decription bool) (string, error) {
+func GetParamKey(svc *ssm.SSM, keyname string) (string, error) {
 
 	input := &ssm.GetParameterInput{
 		Name:           aws.String(keyname),
-		WithDecryption: aws.Bool(decription),
+		WithDecryption: aws.Bool(false),
 	}
 
 	result, err := svc.GetParameter(input)
@@ -68,6 +68,50 @@ func getParamKey(svc *ssm.SSM, keyname string, decription bool) (string, error) 
 	return *result.Parameter.Value, nil
 }
 
+func GetParamKeys(svc *ssm.SSM, path string) ([]*ssm.Parameter, error) {
+
+	// var nextToken *string
+
+	input := &ssm.GetParametersByPathInput{
+		MaxResults:     aws.Int64(10),
+		NextToken:      nil,
+		Path:           aws.String(path),
+		Recursive:      aws.Bool(true),
+		WithDecryption: aws.Bool(false),
+	}
+
+	results, err := svc.GetParametersByPath(input)
+
+	if err != nil {
+		fmt.Fprint(os.Stderr, "Failed to find params for path page: ", path, "\n\n\a")
+
+		if aerr, ok := err.(awserr.Error); ok {
+			switch aerr.Code() {
+			case ssm.ErrCodeInternalServerError:
+				fmt.Fprintln(os.Stderr, ssm.ErrCodeInternalServerError, aerr.Error())
+			case ssm.ErrCodeInvalidFilterKey:
+				fmt.Fprintln(os.Stderr, ssm.ErrCodeInvalidFilterKey, aerr.Error())
+			case ssm.ErrCodeInvalidFilterOption:
+				fmt.Fprintln(os.Stderr, ssm.ErrCodeInvalidFilterOption, aerr.Error())
+			case ssm.ErrCodeInvalidFilterValue:
+				fmt.Fprintln(os.Stderr, ssm.ErrCodeInvalidFilterValue, aerr.Error())
+			case ssm.ErrCodeInvalidKeyId:
+				fmt.Fprintln(os.Stderr, ssm.ErrCodeInvalidKeyId, aerr.Error())
+			case ssm.ErrCodeInvalidNextToken:
+				fmt.Fprintln(os.Stderr, ssm.ErrCodeInvalidNextToken, aerr.Error())
+			default:
+				fmt.Fprintln(os.Stderr, aerr.Error())
+			}
+		} else {
+			// Print the error, cast err to awserr.Error to get the Code and
+			// Message from an error.
+			fmt.Fprintln(os.Stderr, err.Error())
+		}
+		return nil, err
+	}
+
+	return results.Parameters, nil
+}
 func args() (string, string) {
 	filePtr := flag.StringP("file", "f", "", "a file used to store the shib keys.")
 	flag.Usage = func() {
@@ -92,21 +136,25 @@ func main() {
 	}))
 	svc := ssm.New(sess)
 
-	param, err := getParamKey(svc, keyname, false)
+	// param, err := GetParamKey(svc, keyname)
+	param, err := GetParamKeys(svc, keyname)
 	if err != nil {
 		os.Exit(1)
 	}
 
 	if filename == "" {
 		fmt.Print(param)
-	} else {
-		err := ioutil.WriteFile(filename, []byte(param), 0600)
-
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(FileError)
-		}
-
-		fmt.Fprint(os.Stderr, "Wrote shib key to file: '", filename, "'.  Retrieved from AWS Parameter: '", keyname, ".'\n")
 	}
+	/*
+	           else {
+	   		err := ioutil.WriteFile(filename, []byte(param), 0600)
+
+	   		if err != nil {
+	   			fmt.Fprintln(os.Stderr, err)
+	   			os.Exit(FileError)
+	   		}
+
+	   		fmt.Fprint(os.Stderr, "Wrote shib key to file: '", filename, "'.  Retrieved from AWS Parameter: '", keyname, ".'\n")
+	   	}
+	*/
 }
