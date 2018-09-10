@@ -11,7 +11,5 @@ while [ ! -s $KEYS ]; do
 done
 
 /usr/local/bin/get-shib-keys /service/shibd 
-chgrp -R shibd /etc/shibboleth
 
-# exec su -s /bin/sh -c "/usr/sbin/shibd -F -f" shibd
-exec chroot --userspec=shibd / /usr/sbin/shibd -F -f
+exec /usr/sbin/shibd -F -f

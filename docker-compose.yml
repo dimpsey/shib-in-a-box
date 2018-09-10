@@ -30,7 +30,7 @@ services:
       - backend
     volumes:
       - keys:/var/shib-keys:ro
-      - ~/.aws:/root/.aws:ro
+      - ~/.aws:/var/run/shibboleth/.aws:ro
   cron:
     environment:
       - SECRET_ID=shib-test5

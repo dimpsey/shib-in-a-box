@@ -53,7 +53,7 @@
 
         <AttributeFilter type="XML" validate="true" path="attribute-policy.xml"/>
 
-        <CredentialResolver type="File" key="sp-key.pem" certificate="sp-cert.pem"/>
+        <CredentialResolver type="File" key="/var/run/shibboleth/sp-key.pem" certificate="/var/run/shibboleth/sp-cert.pem"/>
 
     </ApplicationDefaults>
     

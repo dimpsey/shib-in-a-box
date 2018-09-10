@@ -34,11 +34,11 @@ const FileError = 4
 
 // File name and path for shibboleth private key
 const KeyName = "/service/shibd/private.key"
-const KeyPath = "/etc/shibboleth/sp-key.pem"
+const KeyPath = "/var/run/shibboleth/sp-key.pem"
 
 // File name and path for shibboleth public cert
 const CertName = "/service/shibd/public.key"
-const CertPath = "/etc/shibboleth/sp-cert.pem"
+const CertPath = "/var/run/shibboleth/sp-cert.pem"
 
 // Working code but it won't be used in the production
 /*
