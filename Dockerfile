@@ -11,7 +11,6 @@ RUN yum -y install \
      && yum clean all \
      && rm -rf /var/cache/yum \
      && cd /etc/shibboleth \
-     && /etc/shibboleth/keygen.sh \
      && curl -so /etc/shibboleth/itrust.pem \
        "${DISCOVERY_SVC_URL}/itrust-certs/itrust.pem" \
      && curl -so  /var/cache/shibboleth/itrust-metadata.xml \
@@ -21,7 +20,5 @@ COPY shibboleth/* /etc/shibboleth/
 
 RUN chmod 644 /var/cache/shibboleth/itrust-metadata.xml \
        /etc/shibboleth/itrust.pem \
-       /etc/shibboleth/sp-key.pem \
-       /etc/shibboleth/sp-cert.pem \
     && chown shibd:shibd /var/cache/shibboleth/itrust-metadata.xml
 

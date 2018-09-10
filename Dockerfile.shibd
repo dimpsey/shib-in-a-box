@@ -1,13 +1,12 @@
 FROM shib_base
 
-USER shibd
-EXPOSE 1600
-
 COPY shibboleth2.xml.shibd /etc/shibboleth/shibboleth2.xml
-COPY entrypoint-shibd.sh /usr/local/bin
+COPY entrypoint-shibd.sh get-shib-keys/get-shib-keys /usr/local/bin/
  
 VOLUME ["/var/shib-keys"]
 
 ENV LD_LIBRARY_PATH /opt/shibboleth/lib64
+
+EXPOSE 1600
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint-shibd.sh" ]

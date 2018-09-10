@@ -1,8 +1,8 @@
 BUILD := get-shib-keys
 DEPS := $(BUILD).go
 
-# export CGO_ENABLED=0
-# export GOOS=linux
+export CGO_ENABLED=0
+export GOOS=linux
 
 all: $(BUILD)
 

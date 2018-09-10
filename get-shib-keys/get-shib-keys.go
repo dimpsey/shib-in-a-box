@@ -3,7 +3,7 @@ package main
 
 import (
 	"fmt"
-	// "io/ioutil"
+	"io/ioutil"
 	"os"
 )
 
@@ -32,6 +32,16 @@ const NoSecret = 3
 // FileError - File system error
 const FileError = 4
 
+// File name and path for shibboleth private key
+const KeyName = "/service/shibd/private.key"
+const KeyPath = "/etc/shibboleth/sp-key.pem"
+
+// File name and path for shibboleth public cert
+const CertName = "/service/shibd/public.key"
+const CertPath = "/etc/shibboleth/sp-cert.pem"
+
+// Working code but it won't be used in the production
+/*
 func GetParamKey(svc *ssm.SSM, keyname string) (string, error) {
 
 	input := &ssm.GetParameterInput{
@@ -67,13 +77,15 @@ func GetParamKey(svc *ssm.SSM, keyname string) (string, error) {
 
 	return *result.Parameter.Value, nil
 }
+*/
 
-func GetParamKeys(svc *ssm.SSM, nextToken *string, path string) (*string, []*ssm.Parameter, error) {
+// GetParamKeys returns next token as a string and ssm.Parameter
+func GetParamKeys(svc *ssm.SSM, nextToken *string, path string) (*string, []*ssm.Parameter) {
 
 	input := &ssm.GetParametersByPathInput{
 		NextToken:      nextToken,
 		Path:           aws.String(path),
-		Recursive:      aws.Bool(true),
+		Recursive:      aws.Bool(false),
 		WithDecryption: aws.Bool(true),
 	}
 
@@ -104,10 +116,10 @@ func GetParamKeys(svc *ssm.SSM, nextToken *string, path string) (*string, []*ssm
 			// Message from an error.
 			fmt.Fprintln(os.Stderr, err.Error())
 		}
-		return nil, nil, err
+		os.Exit(1)
 	}
 
-	return results.NextToken, results.Parameters, nil
+	return results.NextToken, results.Parameters
 }
 
 func args() (string, string) {
@@ -134,7 +146,7 @@ func GetParamMap(svc *ssm.SSM, path string) map[string]string {
 	m := make(map[string]string)
 
 	for {
-		nextToken, params, _ = GetParamKeys(svc, nextToken, path)
+		nextToken, params = GetParamKeys(svc, nextToken, path)
 		for _, e := range params {
 			m[*e.Name] = *e.Value
 		}
@@ -146,30 +158,29 @@ func GetParamMap(svc *ssm.SSM, path string) map[string]string {
 	return m
 }
 
+func writeParamFile(param map[string]string, key string, path string) {
+
+	err := ioutil.WriteFile(path, []byte(param[key]), 0640)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(FileError)
+	}
+
+	fmt.Fprint(os.Stderr, "Wrote to file: '", path, "'.  Retrieved from AWS Parameter: '", key, ".'\n")
+}
+
 func main() {
-	filename, keyname := args()
+	_, keyname := args()
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 	svc := ssm.New(sess)
 
-	// param, err := GetParamKey(svc, keyname)
 	param := GetParamMap(svc, keyname)
 
-	if filename == "" {
-		fmt.Print(param)
-	}
-	/*
-	           else {
-	   		err := ioutil.WriteFile(filename, []byte(param), 0600)
-
-	   		if err != nil {
-	   			fmt.Fprintln(os.Stderr, err)
-	   			os.Exit(FileError)
-	   		}
-
-	   		fmt.Fprint(os.Stderr, "Wrote shib key to file: '", filename, "'.  Retrieved from AWS Parameter: '", keyname, ".'\n")
-	   	}
-	*/
+	// now write to public and private key file
+	writeParamFile(param, KeyName, KeyPath)
+	writeParamFile(param, CertName, CertPath)
 }
