@@ -1,16 +1,16 @@
-.PHONY: all
+.PHONY: all base cron shibd httpd login push pull clean
 
-all: .drone.yml.sig base get-sealer-keys/get-sealer-keys get-shib-keys/get-shib-keys
+all: base cron shibd httpd .drone.yml.sig
 
 base:
 	docker build -f Dockerfile -t techservicesillinois/shibd-base .
 
-cron: get-sealer-keys/get-sealer-keys base
+cron: base get-sealer-keys/get-sealer-keys
 	docker build -f Dockerfile.cron -t techservicesillinois/shib-data-sealer .
 
 shibd: base get-shib-keys/get-shib-keys
 	docker build -f Dockerfile.shibd -t techservicesillinois/shibd .
- 
+
 httpd: base
 	docker build -f Dockerfile.httpd -t techservicesillinois/httpd .
 	
@@ -29,7 +29,7 @@ push: base cron shibd httpd
 	docker push techservicesillinois/shibd
 	docker push techservicesillinois/httpd
 
-pull: 
+pull:
 	docker pull techservicesillinois/shibd-base
 	docker pull techservicesillinois/shib-data-sealer
 	docker pull techservicesillinois/shibd
@@ -41,6 +41,7 @@ pull:
 
 clean:
 	-docker rmi techservicesillinois/shib-data-sealer \
-        techservicesillinois/shibd-base techservicesillinois/shibd techservicesillinois/httpd
+        techservicesillinois/shibd-base techservicesillinois/shibd \
+        techservicesillinois/httpd
 	make -C get-sealer-keys clean
 	make -C get-shib-keys clean
