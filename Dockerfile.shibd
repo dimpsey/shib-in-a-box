@@ -1,4 +1,4 @@
-FROM shib_base
+FROM techservicesillinois/shibd-base
 
 COPY shibboleth2.xml.shibd /etc/shibboleth/shibboleth2.xml
 COPY entrypoint-shibd.sh get-shib-keys/get-shib-keys /usr/local/bin/

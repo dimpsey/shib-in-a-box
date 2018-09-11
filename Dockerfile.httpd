@@ -1,4 +1,4 @@
-FROM shib_base
+FROM techservicesillinois/shibd-base
 
 RUN yum -y install \
      httpd \

@@ -1,4 +1,4 @@
-FROM shib_base
+FROM techservicesillinois/shibd-base
 
 ENV KEYS=/var/shib-keys \
     USR=shibd

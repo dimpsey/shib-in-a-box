@@ -11,7 +11,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.httpd
-    image: httpd
+    image: techservicesillinois/httpd
     ports:
       - "80:8080"
     networks:
@@ -21,7 +21,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.shibd
-    image: shibd
+    image: techservicesillinois/shibd
     depends_on:
       - cron
     ports:
@@ -38,7 +38,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.cron
-    image: cron
+    image: techservicesillinois/shib-data-sealer
     volumes:
       - keys:/var/shib-keys
       - ~/.aws:/var/run/shibboleth/.aws:ro
