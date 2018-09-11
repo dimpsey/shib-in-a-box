@@ -1,19 +1,32 @@
 .PHONY: all base cron shibd httpd login push pull clean
 
+BASE_SRCS := Dockerfile $(wildcard yum/*) $(wildcard shibboleth/*)
+CRON_SRCS := .base Dockerfile.cron get-sealer-keys/get-sealer-keys entrypoint-cron.sh
+SHIBD_SRCS := .base Dockerfile.shibd get-shib-keys/get-shib-keys entrypoint-shibd.sh shibboleth2.xml.shibd
+HTTPD_SRCS := .base Dockerfile.httpd entrypoint-httpd.sh shibboleth2.xml.httpd $(wildcard httpd/*) $(wildcard environment/*)
+
 all: base cron shibd httpd .drone.yml.sig
 
-base:
+base: .base
+.base: $(BASE_SRCS)
 	docker build -f Dockerfile -t techservicesillinois/shibd-base .
+	@touch $@
 
-cron: base get-sealer-keys/get-sealer-keys
+cron: .cron
+.cron: $(CRON_SRCS)
 	docker build -f Dockerfile.cron -t techservicesillinois/shib-data-sealer .
+	@touch $@
 
-shibd: base get-shib-keys/get-shib-keys
+shibd: .shibd
+.shibd: $(SHIBD_SRCS)
 	docker build -f Dockerfile.shibd -t techservicesillinois/shibd .
+	@touch $@
 
-httpd: base
+httpd: .httpd
+.httpd: $(HTTPD_SRCS)
 	docker build -f Dockerfile.httpd -t techservicesillinois/httpd .
-	
+	@touch $@
+
 get-sealer-keys/get-sealer-keys: get-sealer-keys/get-sealer-keys.go
 	make -C get-sealer-keys
 
@@ -43,5 +56,6 @@ clean:
 	-docker rmi techservicesillinois/shib-data-sealer \
         techservicesillinois/shibd-base techservicesillinois/shibd \
         techservicesillinois/httpd
+	-rm -f .base .cron .shibd .httpd
 	make -C get-sealer-keys clean
 	make -C get-shib-keys clean

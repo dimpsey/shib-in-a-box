@@ -3,7 +3,6 @@ services:
   httpd:
     environment:
       - SHIBD_HOSTNAME=shibd
-      - SHIBD_ACL=0.0.0.0
       - APP_SERVER_NAME=127.0.0.1
       - SHIBD_IDP=urn:mace:incommon:uiuc.edu
     depends_on:
@@ -22,6 +21,8 @@ services:
       context: .
       dockerfile: Dockerfile.shibd
     image: techservicesillinois/shibd
+    environment:
+      - HTTPD_HOSTNAME=httpd
     depends_on:
       - cron
     ports:

@@ -22,9 +22,6 @@
 #           Name of the application server (the host name or 
 #           virtual host name). Set in docker-compose.yml.
 #
-#   SHIBD_ACL
-#           ACL for TCPListener. Set in docker-compose.yml.
-#
 #   SHIBD_HOSTNAME
 #           Name of the container (host) running shibd. Set in 
 #           docker-compose.yml.
@@ -33,10 +30,19 @@
 
 set -e 
 
-SHIBD_IP=$(getent ahosts $SHIBD_HOSTNAME | awk 'NR==1{ print $1 }')
+# Make sure user set necessary environment variables
+[ -z "$SHIBD_HOSTNAME" ] && echo "SHIBD_HOSTNAME is not set!" && exit 2
+[ -z "$APP_SERVER_NAME" ] && echo "APP_SERVER_NAME is not set!" && exit 3
+
+echo -n "Waiting for Shibboleth IP to become avaliable"
+while [ -z "$SHIBD_IP" ]; do
+    SHIBD_IP=$(getent ahosts $SHIBD_HOSTNAME | awk 'NR==1{ print $1 }')
+    echo -n "."
+    sleep 0.1
+done
+echo " Shibboleth IP is $SHIBD_IP."
 
 sed -i -e "s/SHIBD_IP/$SHIBD_IP/g" \
-    -e "s/SHIBD_ACL/$SHIBD_ACL/g" \
     -e "s/APP_SERVER_NAME/$APP_SERVER_NAME/g" \
     -e "s/SHIBD_IDP/$SHIBD_IDP/g" /etc/shibboleth/shibboleth2.xml
 
