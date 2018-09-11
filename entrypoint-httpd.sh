@@ -30,17 +30,24 @@
 
 set -e 
 
+TIME=0.1
+
 # Make sure user set necessary environment variables
-[ -z "$SHIBD_HOSTNAME" ] && echo "SHIBD_HOSTNAME is not set!" && exit 2
 [ -z "$APP_SERVER_NAME" ] && echo "APP_SERVER_NAME is not set!" && exit 3
 
-echo -n "Waiting for Shibboleth IP to become avaliable"
-while [ -z "$SHIBD_IP" ]; do
-    SHIBD_IP=$(getent ahosts $SHIBD_HOSTNAME | awk 'NR==1{ print $1 }')
-    echo -n "."
-    sleep 0.1
-done
-echo " Shibboleth IP is $SHIBD_IP."
+if [ -z "$SHIBD_HOSTNAME"]; then
+    # Assuming we are running Fargate mode
+    export SHIBD_IP="127.0.0.1"
+else
+    # Assuming we are running Bridge mode or docker-compose
+    echo "Waiting for Shibboleth IP to become avaliable..."
+    while [ -z "$SHIBD_IP" ]; do
+        SHIBD_IP=$(getent ahosts $SHIBD_HOSTNAME | awk 'NR==1{ print $1 }')
+        echo "    Sleeping for $TIME seconds."
+        sleep $TIME
+    done
+    echo "Shibboleth IP is $SHIBD_IP."
+fi
 
 sed -i -e "s/SHIBD_IP/$SHIBD_IP/g" \
     -e "s/APP_SERVER_NAME/$APP_SERVER_NAME/g" \

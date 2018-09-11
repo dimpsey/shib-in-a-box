@@ -5,24 +5,30 @@ set -e
 # Make sure user set necessary environment variables
 [ -z "$HTTPD_HOSTNAME" ] && echo "HTTPD_HOSTNAME is not set!" && exit 2
 
+TIME=0.1
+KEYS=/var/shib-keys/keys
 CONFIG=/var/run/shibboleth/shibboleth2.xml
 
-echo -n "Waiting for HTTPD IP to become avaliable"
-while [ -z "$HTTPD_IP" ]; do
-    HTTPD_IP=$(getent ahosts $HTTPD_HOSTNAME | awk 'NR==1{ print $1 }')
-    echo -n "."
-    sleep 0.1
-done
-echo " HTTPD IP is $HTTPD_IP."
+if [ -z "$HTTPD_HOSTNAME"]; then
+    # Assuming we are running in Fargate mode
+    export SHIBD_IP="127.0.0.1"
+else
+    # Assuming we are running in Bridge mode or docker-compose
+    echo "Waiting for HTTPD IP to become avaliable..."
+    while [ -z "$HTTPD_IP" ]; do
+        HTTPD_IP=$(getent ahosts $HTTPD_HOSTNAME | awk 'NR==1{ print $1 }')
+        echo "    Sleeping for $TIME seconds."
+        sleep $TIME
+    done
+    echo "HTTPD IP is $HTTPD_IP."
+fi
 
-KEYS=/var/shib-keys/keys
-
-echo -n "Waiting for $KEYS"
+echo -n "Waiting for $KEYS..."
 while [ ! -s $KEYS ]; do
-    echo "."
-    sleep 0.1
+    echo "    Sleeping for $TIME seconds."
+    sleep $TIME
 done
-echo " done."
+echo "Found $KEYS!"
 
 /usr/local/bin/get-shib-keys /service/shibd 
 
