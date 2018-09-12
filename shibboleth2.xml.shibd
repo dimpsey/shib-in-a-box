@@ -5,8 +5,7 @@
     xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
     clockSkew="180">
 
-    <!-- TODO acl probably should be 0.0.0.0 -->
-    <!-- TODO this should probably be limited to non routable IP addresses -->
+    <!-- TODO address probably should be 127.0.0.1 -->
     <TCPListener address="0.0.0.0" port="1600" acl="SHIBD_ACL"/>
 
     <!-- TODO change this to work with cron container -->
@@ -14,16 +13,17 @@
     <SessionCache type="StorageService" persistedAttributes="eppn displayName"/>
 
     <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
-    <ApplicationDefaults entityID="https://sprint19.sandbox.aws.illinois.edu/shibboleth"
+    <!-- TODO: Should get entityId from environmet -->
+    <ApplicationDefaults entityID="https://multi-service.as-test.techservices.illinois.edu/shibboleth"
                          REMOTE_USER="eppn persistent-id targeted-id"
                          cipherSuites="ECDHE+AESGCM:ECDHE:!aNULL:!eNULL:!LOW:!EXPORT:!RC4:!SHA:!SSLv2">
 
         <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
                   checkAddress="false" handlerSSL="false" cookieProps="http">
 
-            <SSO entityID="https://idp.example.org/idp/shibboleth"
-                 discoveryProtocol="SAMLDS" discoveryURL="https://ds.example.org/DS/WAYF">
-              SAML2 SAML1
+            <SSO entityID="urn:mace:incommon:uiuc.edu"
+                discoveryProtocol="SAMLDS" discoveryURL="">
+                SAML2 SAML1
             </SSO>
 
             <Logout>SAML2 Local</Logout>
