@@ -2,9 +2,6 @@
 
 set -e
 
-# Make sure user set necessary environment variables
-[ -z "$HTTPD_HOSTNAME" ] && echo "HTTPD_HOSTNAME is not set!" && exit 2
-
 TIME=0.1
 KEYS=/var/shib-keys/keys
 CONFIG=/var/run/shibboleth/shibboleth2.xml
