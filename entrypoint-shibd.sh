@@ -6,8 +6,8 @@ TIME=0.1
 KEYS=/var/shib-keys/keys
 CONFIG=/var/run/shibboleth/shibboleth2.xml
 
-if [ -z "$HTTPD_HOSTNAME"]; then
-    # Assuming we are running in Fargate mode
+if [ -z "$HTTPD_HOSTNAME" ]; then
+    # Assuming we are running in awsvpc mode
     export SHIBD_IP="127.0.0.1"
 else
     # Assuming we are running in Bridge mode or docker-compose
@@ -20,8 +20,8 @@ else
     echo "HTTPD IP is $HTTPD_IP."
 fi
 
-echo -n "Waiting for $KEYS..."
-while [ ! -s $KEYS ]; do
+echo "Waiting for $KEYS..."
+while [ ! -s "$KEYS" ]; do
     echo "    Sleeping for $TIME seconds."
     sleep $TIME
 done

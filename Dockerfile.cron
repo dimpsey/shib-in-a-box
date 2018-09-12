@@ -10,8 +10,7 @@ RUN yum -y install \
      && rm -rf /var/cache/yum
 
 COPY get-sealer-keys/get-sealer-keys entrypoint-cron.sh /usr/local/bin/
-RUN sed -i -e 's~^\(session.*pam_loginuid.so\)$~#\1~' /etc/pam.d/crond && \
-    usermod -a -G tty shibd
+RUN sed -i -e 's~^\(session.*pam_loginuid.so\)$~#\1~' /etc/pam.d/crond
 
 VOLUME ["${KEYS}"]
 

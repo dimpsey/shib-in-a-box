@@ -24,7 +24,7 @@
 #
 #   SHIBD_HOSTNAME
 #           Name of the container (host) running shibd. Set in 
-#           docker-compose.yml.
+#           docker-compose.yml. If not set then assume 127.0.0.1.
 #
 # -----------------------------------------------------------------------------
 
@@ -35,8 +35,8 @@ TIME=0.1
 # Make sure user set necessary environment variables
 [ -z "$APP_SERVER_NAME" ] && echo "APP_SERVER_NAME is not set!" && exit 3
 
-if [ -z "$SHIBD_HOSTNAME"]; then
-    # Assuming we are running Fargate mode
+if [ -z "$SHIBD_HOSTNAME" ]; then
+    # Assuming we are running awsvpc mode
     export SHIBD_IP="127.0.0.1"
 else
     # Assuming we are running Bridge mode or docker-compose
