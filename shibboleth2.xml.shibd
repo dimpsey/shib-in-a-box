@@ -47,18 +47,18 @@
             <MetadataFilter type="Signature" certificate="/etc/shibboleth/itrust.pem"/>
         </MetadataProvider>
 
-        <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>
+        <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="/etc/shibboleth/attribute-map.xml"/>
         
         <AttributeResolver type="Query" subjectMatch="true"/>
 
-        <AttributeFilter type="XML" validate="true" path="attribute-policy.xml"/>
+        <AttributeFilter type="XML" validate="true" path="/etc/shibboleth/attribute-policy.xml"/>
 
         <CredentialResolver type="File" key="/var/run/shibboleth/sp-key.pem" certificate="/var/run/shibboleth/sp-cert.pem"/>
 
     </ApplicationDefaults>
     
-    <SecurityPolicyProvider type="XML" validate="true" path="security-policy.xml"/>
+    <SecurityPolicyProvider type="XML" validate="true" path="/etc/shibboleth/security-policy.xml"/>
 
-    <ProtocolProvider type="XML" validate="true" reloadChanges="false" path="protocols.xml"/>
+    <ProtocolProvider type="XML" validate="true" reloadChanges="false" path="/etc/shibboleth/protocols.xml"/>
 
 </SPConfig>

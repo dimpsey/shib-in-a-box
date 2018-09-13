@@ -9,6 +9,7 @@ COPY entrypoint-httpd.sh /usr/local/bin/
 COPY shibboleth2.xml.httpd /etc/shibboleth/shibboleth2.xml
 COPY httpd/ /etc/httpd/conf/
 COPY environment /var/www/cgi-bin/
+COPY index.html /var/www/html/
 
 RUN chmod 755 /var/www/cgi-bin/environment
 

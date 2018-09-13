@@ -20,7 +20,7 @@ chmod g+s $KEYS
 
 # Run get-sealer-keys as shibd user so that shibd can read its output!
 su -s /bin/sh -c "/usr/local/bin/get-sealer-keys -f $KEYS/keys $SECRET_ID" $USR
-su -s /bin/sh -c "echo '$SCHEDULE /usr/local/bin/get-sealer-keys -f $KEYS/keys $SECRET_ID >$STDOUT 2>$STDOUT' | crontab -" $USR
+su -s /bin/sh -c "echo '$SCHEDULE AWS_REGION="$AWS_REGION" /usr/local/bin/get-sealer-keys -f $KEYS/keys $SECRET_ID >$STDOUT 2>$STDOUT' | crontab -" $USR
 
 # Create root crontabs to redirect pipe contents to the Docker logger
 echo "$SCHEDULE cat $STDOUT >/proc/1/fd/1" | crontab -

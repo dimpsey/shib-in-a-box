@@ -8,8 +8,9 @@ COPY yum/*.repo /etc/yum.repos.d/
 
 RUN yum -y install \
        shibboleth \
-    && rm -f /etc/shibboleth/{*.config,*.dist,shibd-*,example-*,*.pem} \
-             /etc/shibboleth/{attribute-map.xml,native.logger,shibd.logger} \
+    && rm --interactive=never /etc/shibboleth/{*.config,*.dist,*.pem} \
+    && rm --interactive=never /etc/shibboleth/{shibd-*,example-*} \
+    && rm --interactive=never /etc/shibboleth/{attribute-map.xml,native.logger,shibd.logger,shibboleth2.xml} \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && cd /etc/shibboleth \
