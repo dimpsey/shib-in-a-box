@@ -19,7 +19,7 @@
                          cipherSuites="ECDHE+AESGCM:ECDHE:!aNULL:!eNULL:!LOW:!EXPORT:!RC4:!SHA:!SSLv2">
 
         <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
-                  checkAddress="false" handlerSSL="false" cookieProps="http">
+                  checkAddress="false" handlerSSL="true" cookieProps="https">
 
             <SSO entityID="urn:mace:incommon:uiuc.edu"
                 discoveryProtocol="SAMLDS" discoveryURL="">

@@ -3,8 +3,6 @@ services:
   httpd:
     environment:
       - SHIBD_HOSTNAME=shibd
-      - APP_SERVER_NAME=127.0.0.1
-      - SHIBD_IDP=urn:mace:incommon:uiuc.edu
     depends_on:
       - shibd
     build:
