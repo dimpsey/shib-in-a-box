@@ -48,6 +48,12 @@ pull:
 	docker pull techservicesillinois/shibd
 	docker pull techservicesillinois/httpd
 
+test:
+	curl -s 127.0.0.1 | grep "Hello world"
+	curl -s http://127.0.0.1/Shibboleth.sso/Metadata | diff -q - Metadata
+	curl -s 127.0.0.1/cgi-bin/ | grep -q 302
+	curl -sLH "X-Forwarded-Proto: https" -H "X-Forwarded-For: 1.2.3.4" -H "X-Forwarded-Port: 443" 127.0.0.1/cgi-bin/ | grep -q "Shibboleth has encountered an error"
+
 .drone.yml.sig: .drone.yml
 	drone sign cites-illinois/illinois-shibboleth-sp-img
 	git add $^ $@
