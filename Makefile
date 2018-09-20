@@ -51,8 +51,13 @@ pull:
 test:
 	curl -s 127.0.0.1 | grep "Hello world"
 	curl -s http://127.0.0.1/Shibboleth.sso/Metadata | diff -q - Metadata
-	curl -s 127.0.0.1/cgi-bin/ | grep -q 302
 	curl -sLH "X-Forwarded-Proto: https" -H "X-Forwarded-For: 1.2.3.4" -H "X-Forwarded-Port: 443" 127.0.0.1/cgi-bin/ | grep -q "Shibboleth has encountered an error"
+	docker-compose logs httpd | grep -q 1.2.3.4
+
+	# following two tests with http won't work until we figure out how to set ServerName in httpd.conf
+	# dynamically 
+	# curl -s 127.0.0.1/cgi-bin/ | grep -q 302
+	# curl -sLH "X-Forwarded-Proto: http" -H "X-Forwarded-For: 1.2.3.4" -H "X-Forwarded-Port: 443" 127.0.0.1/cgi-bin/ | grep -q 302
 
 .drone.yml.sig: .drone.yml
 	drone sign cites-illinois/illinois-shibboleth-sp-img
