@@ -12,8 +12,12 @@ COPY httpd/ /etc/httpd/conf/
 COPY environment /var/www/cgi-bin/
 COPY index.html /var/www/html/
 
-RUN chmod 755 /var/www/cgi-bin/environment
+RUN chmod 755 /var/www/cgi-bin/environment \
+     && chown -R root:apache /etc/shibboleth \
+     && chmod -R g+rw /etc/shibboleth \  
+     && chmod g+rw /var/run/httpd
 
+USER apache
 EXPOSE 8080 
 
 ENTRYPOINT ["entrypoint-httpd.sh"]
