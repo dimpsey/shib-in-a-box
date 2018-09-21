@@ -43,6 +43,11 @@ services:
       - ~/.aws:/var/run/shibboleth/.aws:ro
     networks:
       - frontend
+  elmr:
+    image: techservicesillinois/elmr
+    networks:
+      - backend
+
 networks:
   frontend:
   backend:
