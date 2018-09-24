@@ -3,8 +3,10 @@ services:
   httpd:
     environment:
       - SHIBD_HOSTNAME=shibd
+      - ELMR_HOSTNAME=elmr
     depends_on:
       - shibd
+      - elmr
     build:
       context: .
       dockerfile: Dockerfile.httpd

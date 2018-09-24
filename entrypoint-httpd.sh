@@ -35,11 +35,25 @@ else
     # Assuming we are running Bridge mode or docker-compose
     echo "Waiting for Shibboleth IP to become avaliable..."
     while [ -z "$SHIBD_IP" ]; do
-        SHIBD_IP=$(getent ahosts $SHIBD_HOSTNAME | awk 'NR==1{ print $1 }')
+        export SHIBD_IP=$(getent ahosts $SHIBD_HOSTNAME | awk 'NR==1{ print $1 }')
         echo "    Sleeping for $TIME seconds."
         sleep $TIME
     done
     echo "Shibboleth IP is $SHIBD_IP."
+fi
+
+if [ -z "$ELMR_HOSTNAME" ]; then
+    # Assuming we are running awsvpc mode
+    export ELMR_IP="127.0.0.1"
+else
+    # Assuming we are running Bridge mode or docker-compose
+    echo "Waiting for elmr IP to become avaliable..."
+    while [ -z "$ELMR_IP" ]; do
+        export ELMR_IP=$(getent ahosts $ELMR_HOSTNAME | awk 'NR==1{ print $1 }')
+        echo "    Sleeping for $TIME seconds."
+        sleep $TIME
+    done
+    echo "elmr IP is $ELMR_IP."
 fi
 
 sed -i -e "s/SHIBD_IP/$SHIBD_IP/g" /etc/shibboleth/shibboleth2.xml

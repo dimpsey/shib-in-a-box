@@ -3,7 +3,7 @@
 BASE_SRCS := Dockerfile $(wildcard yum/*) $(wildcard shibboleth/*)
 CRON_SRCS := .base Dockerfile.cron get-sealer-keys/get-sealer-keys entrypoint-cron.sh
 SHIBD_SRCS := .base Dockerfile.shibd get-shib-keys/get-shib-keys entrypoint-shibd.sh shibboleth2.xml.shibd
-HTTPD_SRCS := .base Dockerfile.httpd entrypoint-httpd.sh shibboleth2.xml.httpd $(wildcard httpd/*) $(wildcard environment/*)
+HTTPD_SRCS := .base Dockerfile.httpd entrypoint-httpd.sh mod_jk.so shibboleth2.xml.httpd $(wildcard httpd/*) $(wildcard environment/*)
 
 all: base cron shibd httpd .drone.yml.sig
 
@@ -26,6 +26,12 @@ httpd: .httpd
 .httpd: $(HTTPD_SRCS)
 	docker build -f Dockerfile.httpd -t techservicesillinois/httpd .
 	@touch $@
+
+mod_jk.so: .base Dockerfile.modjk
+	docker build -f Dockerfile.modjk -t modjk .
+	docker create --name modjk modjk
+	docker cp modjk:/usr/lib64/httpd/modules/$@ $@
+	docker rm modjk
 
 get-sealer-keys/get-sealer-keys: get-sealer-keys/get-sealer-keys.go
 	make -C get-sealer-keys
@@ -52,6 +58,7 @@ test:
 	curl -s 127.0.0.1 | grep -s "Hello world"
 	curl -s http://127.0.0.1/Shibboleth.sso/Metadata | diff -q - Metadata
 	curl -sLH "X-Forwarded-Proto: https" -H "X-Forwarded-For: 1.2.3.4" -H "X-Forwarded-Port: 443" 127.0.0.1/cgi-bin/ | grep -q "Shibboleth has encountered an error"
+	curl -s localhost/elmr/config | grep -q 302
 	docker-compose logs httpd | grep -q 1.2.3.4
 
 	# following two tests with http won't work until we figure out how to set ServerName in httpd.conf
@@ -67,6 +74,7 @@ clean:
 	-docker rmi techservicesillinois/shib-data-sealer \
         techservicesillinois/shibd-base techservicesillinois/shibd \
         techservicesillinois/httpd
-	-rm -f .base .cron .shibd .httpd
+	-rm -f .base .cron .shibd .httpd mod_jk.so
+	-docker rm modjk
 	make -C get-sealer-keys clean
 	make -C get-shib-keys clean

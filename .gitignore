@@ -2,3 +2,4 @@
 .cron
 .httpd
 .shibd
+*.so
