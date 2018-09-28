@@ -3,7 +3,7 @@
 BASE_SRCS := Dockerfile $(wildcard yum/*) $(wildcard shibboleth/*)
 CRON_SRCS := .base Dockerfile.cron get-sealer-keys/get-sealer-keys entrypoint-cron.sh
 SHIBD_SRCS := .base Dockerfile.shibd get-shib-keys/get-shib-keys entrypoint-shibd.sh shibboleth2.xml.shibd
-HTTPD_SRCS := .base Dockerfile.httpd entrypoint-httpd.sh mod_jk.so shibboleth2.xml.httpd $(wildcard httpd/*) $(wildcard environment/*)
+HTTPD_SRCS := .base Dockerfile.httpd test-httpd.sh entrypoint-httpd.sh mod_jk.so shibboleth2.xml.httpd $(wildcard httpd/*) $(wildcard environment/*)
 
 all: base cron shibd httpd .drone.yml.sig
 
