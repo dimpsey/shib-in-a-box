@@ -22,6 +22,6 @@ RUN chmod 755 /var/www/cgi-bin/environment \
 USER apache
 EXPOSE 8080 
 
-HEALTHCHECK CMD test.sh
+HEALTHCHECK CMD test-httpd.sh
 
 ENTRYPOINT ["entrypoint-httpd.sh"]
