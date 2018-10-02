@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sync"
 )
 
-// GNU style POSIX standard alternative to flag
-// https://godoc.org/github.com/spf13/pflag
-import flag "github.com/spf13/pflag"
+import "github.com/robfig/cron"
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
@@ -18,19 +17,18 @@ import (
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
 )
 
+var lock sync.Mutex
+
 // Return codes
+
+// UnknownError - Unknown Error
+const UnknownError = 127
 
 // NoEnvVar - Environment variable empty or missing
 const NoEnvVar = 1
 
-// BadArgs - Too many or bad arguments passed
-const BadArgs = 2
-
-// NoSecret - Not able to retrieve secret
-const NoSecret = 3
-
-// FileError - File system error
-const FileError = 4
+// NoDataSealer - Unable to create the data sealer file
+const NoDataSealer = 2
 
 // This function is based on code taken from:
 // https://docs.aws.amazon.com/sdk-for-go/api/service/secretsmanager/#example_SecretsManager_GetSecretValue_shared00
@@ -72,7 +70,7 @@ func getSecret(svc *secretsmanager.SecretsManager, secretID string, versionStage
 }
 
 // SprintDataSealer returns a data sealer string
-func SprintDataSealer(svc *secretsmanager.SecretsManager, secretID string) string {
+func SprintDataSealer(svc *secretsmanager.SecretsManager, secretID string) (string, error) {
 	c := 1
 	r := ""
 
@@ -91,48 +89,60 @@ func SprintDataSealer(svc *secretsmanager.SecretsManager, secretID string) strin
 
 	err := SprintGetSecret("AWSCURRENT")
 	if err != nil {
-		os.Exit(NoSecret)
+		return "", err
 	}
 	SprintGetSecret("AWSPREVIOUS")
 
-	return r
+	return r, nil
 }
 
-func args() (string, string) {
-	filePtr := flag.StringP("file", "f", "", "a file used to store the data sealer.")
-	flag.Usage = func() {
-		fmt.Printf("Usage: get-sealer-keys [options] secret-id\n\n")
-		flag.PrintDefaults()
-	}
-
-	flag.Parse()
-	if len(flag.Args()) != 1 {
-		flag.Usage()
-		os.Exit(BadArgs)
-	}
-
-	return *filePtr, flag.Args()[0]
-}
-
-func main() {
-	filename, secretID := args()
+func getDataSealer(filename string, secretID string) error {
+	// I do not know if this code is thread safe so let's serialize
+	// it to be sure...
+	lock.Lock()
+	defer lock.Unlock()
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 	svc := secretsmanager.New(sess)
 
-	dataSealer := SprintDataSealer(svc, secretID)
-	if filename == "" {
-		fmt.Print(dataSealer)
-	} else {
-		err := ioutil.WriteFile(filename, []byte(dataSealer), 0600)
-
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(FileError)
-		}
-
-		fmt.Fprint(os.Stderr, "Wrote data sealer to file: '", filename, "'.  Retrieved from AWS secret: '", secretID, ".'\n")
+	dataSealer, err := SprintDataSealer(svc, secretID)
+	if err != nil {
+		return err
 	}
+	err = ioutil.WriteFile(filename, []byte(dataSealer), 0600)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return err
+	}
+
+	fmt.Fprint(os.Stderr, "Wrote data sealer to file: '", filename, "'.  Retrieved from AWS secret: '", secretID, ".'\n")
+	return err
+}
+
+func getEnv(key string) string {
+	value := os.Getenv(key)
+
+	if value == "" {
+		fmt.Fprint(os.Stderr, "Environment variable is undef: ", key, "\n\a")
+		os.Exit(NoEnvVar)
+	}
+	return value
+}
+
+func main() {
+	filename, secretID, schedule := getEnv("KEYS"), getEnv("SECRET_ID"), getEnv("SCHEDULE")
+
+	err := getDataSealer(filename, secretID)
+	if err != nil {
+		os.Exit(NoDataSealer)
+	}
+
+	c := cron.New()
+	c.AddFunc(schedule, func() { getDataSealer(filename, secretID) })
+	c.Run()
+
+	os.Exit(UnknownError)
 }

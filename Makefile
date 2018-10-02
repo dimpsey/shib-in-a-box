@@ -1,7 +1,7 @@
 .PHONY: all base cron shibd httpd login push pull clean
 
 BASE_SRCS := Dockerfile $(wildcard yum/*) $(wildcard shibboleth/*)
-CRON_SRCS := .base Dockerfile.cron get-sealer-keys/get-sealer-keys entrypoint-cron.sh
+CRON_SRCS := .base Dockerfile.cron
 SHIBD_SRCS := .base Dockerfile.shibd get-shib-keys/get-shib-keys entrypoint-shibd.sh shibboleth2.xml.shibd
 HTTPD_SRCS := .base Dockerfile.httpd test-httpd.sh entrypoint-httpd.sh mod_jk.so shibboleth2.xml.httpd $(wildcard httpd/*) $(wildcard environment/*)
 
@@ -32,9 +32,6 @@ mod_jk.so: .base Dockerfile.modjk
 	docker create --name modjk modjk
 	docker cp modjk:/usr/lib64/httpd/modules/$@ $@
 	docker rm modjk
-
-get-sealer-keys/get-sealer-keys: get-sealer-keys/get-sealer-keys.go
-	make -C get-sealer-keys
 
 get-shib-keys/get-shib-keys: get-shib-keys/get-shib-keys.go
 	make -C get-shib-keys
@@ -76,5 +73,4 @@ clean:
         techservicesillinois/httpd
 	-rm -f .base .cron .shibd .httpd mod_jk.so
 	-docker rm modjk
-	make -C get-sealer-keys clean
 	make -C get-shib-keys clean
