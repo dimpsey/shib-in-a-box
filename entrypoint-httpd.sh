@@ -27,6 +27,7 @@
 set -e 
 
 TIME=0.1
+HTTPD_CONF=/etc/httpd/conf/httpd.conf
 
 if [ -z "$SHIBD_HOSTNAME" ]; then
     # Assuming we are running awsvpc mode
@@ -54,6 +55,12 @@ else
         sleep $TIME
     done
     echo "elmr IP is $ELMR_IP."
+fi
+
+if [ -z "$LB_HOSTNAME" ]; then
+    sed -i -e "/LB_HOSTNAME/d" $HTTPD_CONF
+else
+    sed -i -e "s/LB_HOSTNAME/$LB_HOSTNAME/g" $HTTPD_CONF
 fi
 
 sed -i -e "s/SHIBD_IP/$SHIBD_IP/g" /etc/shibboleth/shibboleth2.xml

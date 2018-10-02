@@ -16,7 +16,10 @@ COPY mod_jk.so /usr/lib64/httpd/modules/
 
 RUN chmod 755 /var/www/cgi-bin/environment \
      && chown -R root:apache /etc/shibboleth \
-     && chmod -R g+rw /etc/shibboleth \  
+     && chown -R root:apache /etc/httpd \
+     && chmod -R g+rw /etc/shibboleth \
+     && chmod -R g+rw /etc/httpd/conf \
+     && chmod g+rw /etc/httpd/conf/httpd.conf \
      && chmod g+rw /var/run/httpd
 
 USER apache
