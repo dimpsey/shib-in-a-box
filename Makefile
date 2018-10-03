@@ -39,11 +39,23 @@ get-shib-keys/get-shib-keys: get-shib-keys/get-shib-keys.go
 login:
 	docker login
 
-push: base cron shibd httpd
+push: .push.base .push.cron .push.shibd .push.httpd
+
+.push.base: .base
 	docker push techservicesillinois/shibd-base
+	@touch $@
+
+.push.cron: .cron
 	docker push techservicesillinois/shib-data-sealer
+	@touch $@
+
+.push.shibd: .shibd
 	docker push techservicesillinois/shibd
+	@touch $@
+
+.push.httpd: .httpd
 	docker push techservicesillinois/httpd
+	@touch $@
 
 pull:
 	docker pull techservicesillinois/shibd-base
