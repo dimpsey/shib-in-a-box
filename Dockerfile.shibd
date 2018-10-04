@@ -1,7 +1,21 @@
+FROM golang:alpine as builder
+
+ENV SRC=get-shib-keys
+
+RUN apk update && apk add git make
+
+COPY $SRC/*.go $SRC/Makefile $GOPATH/src/
+WORKDIR $GOPATH/src
+RUN make deps
+RUN make
+
+####################################
+
 FROM techservicesillinois/shibd-base
 
 COPY shibboleth2.xml.shibd /var/run/shibboleth/shibboleth2.xml
-COPY entrypoint-shibd.sh get-shib-keys/get-shib-keys /usr/local/bin/
+COPY entrypoint-shibd.sh /usr/local/bin/
+COPY --from=builder /go/src/get-shib-keys /usr/local/bin/
  
 VOLUME ["/var/shib-keys"]
 
