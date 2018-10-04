@@ -65,9 +65,10 @@ pull:
 
 test:
 	curl -s 127.0.0.1 | grep -s "Hello world"
-	curl -s http://127.0.0.1/Shibboleth.sso/Metadata | diff -q - Metadata
+	! curl -s http://127.0.0.1/Shibboleth.sso/Metadata | diff -q - Metadata.default
+	curl -s http://127.0.0.1/auth/Shibboleth.sso/Metadata | diff -q - Metadata.auth
 	curl -sLH "X-Forwarded-Proto: https" -H "X-Forwarded-For: 1.2.3.4" -H "X-Forwarded-Port: 443" 127.0.0.1/cgi-bin/ | grep -q "Shibboleth has encountered an error"
-	curl -s localhost/elmr/config | grep -q 302
+	curl -s localhost/auth/elmr/config | grep -q 302
 	docker-compose logs httpd | grep -q 1.2.3.4
 
 	# following two tests with http won't work until we figure out how to set ServerName in httpd.conf
