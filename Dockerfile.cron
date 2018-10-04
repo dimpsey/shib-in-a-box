@@ -10,7 +10,8 @@ WORKDIR $GOPATH/src
 RUN make deps
 RUN make
 
-FROM scratch
+# FROM scratch
+FROM alpine
 
 ENV KEYS=/var/shib-keys/keys \
     SCHEDULE="@midnight"
