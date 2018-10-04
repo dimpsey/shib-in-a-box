@@ -64,9 +64,12 @@ pull:
 	docker pull techservicesillinois/httpd
 
 test:
+	@-rm -f cookie.txt
 	curl -s 127.0.0.1 | grep -s "Hello world"
 	! curl -s http://127.0.0.1/Shibboleth.sso/Metadata | diff -q - Metadata.default
 	curl -s http://127.0.0.1/auth/Shibboleth.sso/Metadata | diff -q - Metadata.auth
+	curl -sILc cookie.txt http://127.0.0.1/elmrsample/attributes | grep -q 200   
+	curl -sILb cookie.txt http://127.0.0.1/elmrsample/logout | grep -q 200   
 	curl -sLH "X-Forwarded-Proto: https" -H "X-Forwarded-For: 1.2.3.4" -H "X-Forwarded-Port: 443" 127.0.0.1/cgi-bin/ | grep -q "Shibboleth has encountered an error"
 	curl -s localhost/auth/elmr/config | grep -q 302
 	docker-compose logs httpd | grep -q 1.2.3.4
@@ -84,6 +87,6 @@ clean:
 	-docker rmi techservicesillinois/shib-data-sealer \
         techservicesillinois/shibd-base techservicesillinois/shibd \
         techservicesillinois/httpd
-	-rm -f .base .cron .shibd .httpd mod_jk.so
+	-rm -f .base .cron .shibd .httpd mod_jk.so cookie.txt
 	-docker rm modjk
 	make -C get-shib-keys clean
