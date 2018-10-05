@@ -87,11 +87,14 @@ func SprintDataSealer(svc *secretsmanager.SecretsManager, secretID string) (stri
 		return err
 	}
 
+	// Print oldest value first
+	SprintGetSecret("AWSPREVIOUS")
+
+	// The final value is the default (i.e. current) key
 	err := SprintGetSecret("AWSCURRENT")
 	if err != nil {
 		return "", err
 	}
-	SprintGetSecret("AWSPREVIOUS")
 
 	return r, nil
 }
