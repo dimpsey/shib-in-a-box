@@ -3,6 +3,8 @@ FROM golang:alpine as builder
 ENV SRC=get-sealer-keys
 
 RUN apk update && apk add git ca-certificates make
+RUN addgroup -g 998 shibd
+RUN adduser -h /var/run/shibboleth -g "Shibboleth SP daemon" -u 999 -S -G shibd shibd
 
 COPY $SRC/*.go $SRC/Makefile $GOPATH/src/
 WORKDIR $GOPATH/src
@@ -11,20 +13,18 @@ RUN make
 
 ##############################################################
 
-#FROM scratch
-FROM alpine
+FROM scratch
 
 ENV KEYS=/var/shib-keys/keys \
     SCHEDULE="@midnight"
 
 # create /var/shib-keys with correct perms
-ADD cron.tar.gz /var/
+ADD cron.tar.gz /
 VOLUME ["/var/shib-keys/"]
 
+COPY --from=builder /etc/passwd /etc/group /etc/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /go/src/get-sealer-keys /
 
-# shibd:shibd as def. in shibd container
-USER 999:998
-
+USER shibd
 ENTRYPOINT ["/get-sealer-keys"]
