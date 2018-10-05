@@ -34,12 +34,9 @@ COPY test-httpd.sh /usr/local/bin/test.sh
 COPY entrypoint-httpd.sh /usr/local/bin/
 COPY shibboleth2.xml.httpd /etc/shibboleth/shibboleth2.xml
 COPY httpd/ /etc/httpd/
-COPY environment /var/www/cgi-bin/
-COPY index.html /var/www/html/
 COPY --from=builder /usr/lib64/httpd/modules/mod_jk.so /usr/lib64/httpd/modules/
 
-RUN chmod 755 /var/www/cgi-bin/environment \
-     && chown -R root:apache /etc/shibboleth \
+RUN chown -R root:apache /etc/shibboleth \
      && chown -R root:apache /etc/httpd \
      && chmod -R g+rw /etc/shibboleth \
      && chmod -R g+rw /etc/httpd/conf \
