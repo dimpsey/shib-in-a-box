@@ -54,7 +54,7 @@ pull:
 	docker pull techservicesillinois/shibd
 	docker pull techservicesillinois/httpd
 
-CURL=curl -sS -o /dev/null -I
+CURL=curl -sS -o /dev/null
 REDIRECT_CURL=$(CURL) -b cookie.txt -c cookie.txt -w "%{http_code} %{redirect_url}"
 HTTP_CODE_CURL=$(CURL) -w "%{http_code}"
 COOKIE_CURL=$(REDIRECT_CURL) -c cookie.txt
@@ -82,14 +82,15 @@ APP_LOGOUT=http://127.0.0.1/elmrsample/logout
 200=grep -q 200
 
 test:
-	# This test is worthless as is...
 	# Expect no content at /
-	# $(HTTP_CODE_CURL) http://127.0.0.1 | $(403)
+	$(HTTP_CODE_CURL) http://127.0.0.1 | $(403)
+	# Make sure no welcome page is returned!
+	! curl -sS http://127.0.0.1 | grep 'Testing 123'
 	#
 	# Check Shibboleth Metadata is correct
 	$(HTTP_CODE_CURL) http://127.0.0.1/auth/Shibboleth.sso/Metadata | $(200)
-	! curl -s http://127.0.0.1/Shibboleth.sso/Metadata | diff -q - Metadata.default
-	curl -s http://127.0.0.1/auth/Shibboleth.sso/Metadata | diff -q - Metadata.auth
+	! curl -sS http://127.0.0.1/Shibboleth.sso/Metadata | diff -q - Metadata.default
+	curl -sS http://127.0.0.1/auth/Shibboleth.sso/Metadata | diff -q - Metadata.auth
 	#
 	# Check elmrsample works
 	@-rm -f cookie.txt
