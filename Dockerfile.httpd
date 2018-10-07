@@ -12,7 +12,8 @@ RUN yum -y install \
      && tar -xzf mod_jk.tar.gz \
      && yum clean all \
      && rm -rf /var/cache/yum \
-     && rm /etc/httpd/conf/httpd.conf
+     && rm /etc/httpd/conf/httpd.conf \
+     && rm /etc/httpd/conf.d/*
 
 RUN cd /tmp/tomcat-connectors-1.2.44-src/native \
      && ./buildconf.sh \
@@ -20,29 +21,55 @@ RUN cd /tmp/tomcat-connectors-1.2.44-src/native \
      && make \
      && make install
 
-######################################
-
-FROM techservicesillinois/shibd-base
-
-RUN yum -y install \
-     httpd \
-     && yum clean all \
-     && rm -rf /var/cache/yum \
-     && rm /etc/httpd/conf/httpd.conf \
-     && rm /etc/httpd/conf.d/*
-
-COPY test-httpd.sh /usr/local/bin/test.sh
-COPY entrypoint-httpd.sh /usr/local/bin/
-COPY shibboleth2.xml.httpd /etc/shibboleth/shibboleth2.xml
-COPY httpd/ /etc/httpd/
-COPY --from=builder /usr/lib64/httpd/modules/mod_jk.so /usr/lib64/httpd/modules/
-
 RUN chown -R root:apache /etc/shibboleth \
      && chown -R root:apache /etc/httpd \
      && chmod -R g+rw /etc/shibboleth \
      && chmod -R g+rw /etc/httpd/conf \
-     && chmod g+rw /etc/httpd/conf/httpd.conf \
      && chmod g+rw /var/run/httpd
+
+COPY entrypoint-httpd.sh /usr/local/bin/
+COPY manifest.httpd /tmp/manifest
+
+WORKDIR /tmp
+RUN ldd `cat manifest` /etc/httpd/modules/* | grep -o '/.\+\.so[^ :]*' | sort -u >> manifest
+RUN sort -u manifest -o manifest
+
+RUN tar chf bash.tar -T manifest
+RUN mkdir /tmp/fakeroot \
+    && mkdir -p -m 755 /tmp/fakeroot/var/www/html \
+    && mkdir -p -m 755 /tmp/fakeroot/run/httpd \
+    && mkdir -m 1777 /tmp/fakeroot/tmp
+
+RUN tar xf /tmp/bash.tar -C /tmp/fakeroot
+
+######################################
+
+FROM scratch
+#FROM techservicesillinois/shibd-base
+#
+#RUN yum -y install \
+#     httpd \
+#     && yum clean all \
+#     && rm -rf /var/cache/yum \
+#     && rm /etc/httpd/conf/httpd.conf \
+#     && rm /etc/httpd/conf.d/*
+
+COPY --from=builder /tmp/fakeroot /
+COPY --from=builder --chown=apache:apache /tmp/fakeroot/etc /etc
+COPY --from=builder --chown=apache:apache /tmp/fakeroot/var/run /var/run
+COPY --from=builder --chown=apache:apache /tmp/fakeroot/run /run
+
+COPY test-httpd.sh /usr/local/bin/test.sh
+COPY --chown=apache:apache shibboleth2.xml.httpd /etc/shibboleth/shibboleth2.xml
+COPY --chown=apache:apache httpd/ /etc/httpd/
+COPY --from=builder /usr/lib64/httpd/modules/mod_jk.so /usr/lib64/httpd/modules/
+
+#RUN chown -R root:apache /etc/shibboleth \
+#     && chown -R root:apache /etc/httpd \
+#     && chmod -R g+rw /etc/shibboleth \
+#     && chmod -R g+rw /etc/httpd/conf \
+#     && chmod g+rw /etc/httpd/conf/httpd.conf \
+#     && chmod g+rw /var/run/httpd
 
 USER apache
 EXPOSE 8080 
