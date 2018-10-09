@@ -1,4 +1,4 @@
-version: "3"
+version: "2"
 services:
   alb:
     image: nginx:1.14
@@ -37,8 +37,9 @@ services:
       - cron
     networks:
       - backend
+    volumes_from:
+      - cron:ro
     volumes:
-      - keys:/var/shib-keys:ro
       - ~/.aws:/var/run/shibboleth/.aws:ro
   cron:
     environment:
@@ -49,7 +50,6 @@ services:
       dockerfile: Dockerfile.cron
     image: techservicesillinois/shib-data-sealer
     volumes:
-      - keys:/var/shib-keys
       - ~/.aws:/var/run/shibboleth/.aws:ro
     networks:
       - frontend
@@ -77,6 +77,3 @@ services:
 networks:
   frontend:
   backend:
-
-volumes:
-  keys:
