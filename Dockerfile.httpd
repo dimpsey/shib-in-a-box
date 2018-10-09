@@ -62,6 +62,7 @@ COPY --from=builder --chown=apache:apache /tmp/fakeroot/run /run
 COPY test-httpd.sh /usr/local/bin/test.sh
 COPY --chown=apache:apache shibboleth2.xml.httpd /etc/shibboleth/shibboleth2.xml
 COPY --chown=apache:apache httpd/ /etc/httpd/
+COPY --chown=apache:apache environment /var/www/cgi-bin/
 COPY --from=builder /usr/lib64/httpd/modules/mod_jk.so /usr/lib64/httpd/modules/
 
 #RUN chown -R root:apache /etc/shibboleth \
