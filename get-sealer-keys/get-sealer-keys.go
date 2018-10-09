@@ -114,6 +114,19 @@ func getDataSealer(filename string, secretID string) error {
 	if err != nil {
 		return err
 	}
+
+	// Open datasealer file and compare to see if the values are same
+	oldDataSealer, err := ioutil.ReadFile(filename)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	} else if string(oldDataSealer) == dataSealer {
+		fmt.Fprint(os.Stderr, "No changes to data sealer.\n")
+		return nil
+	} else {
+		fmt.Fprint(os.Stderr, "WTF")
+	}
+
 	err = ioutil.WriteFile(filename, []byte(dataSealer), 0600)
 
 	if err != nil {
