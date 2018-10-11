@@ -90,22 +90,22 @@ func getSecret(svc *secretsmanager.SecretsManager, secretID string, versionStage
 
 	result, err := svc.GetSecretValue(input)
 	if err != nil {
-		fmt.Fprint(os.Stderr, "Failed to find secret: ", secretID, ", version: ", versionStage, "\n\n\a")
+		Error.Println("Failed to find secret: ", secretID, ", version: ", versionStage)
 
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			case secretsmanager.ErrCodeResourceNotFoundException:
-				fmt.Fprintln(os.Stderr, secretsmanager.ErrCodeResourceNotFoundException, aerr.Error())
+				Error.Println(secretsmanager.ErrCodeResourceNotFoundException, aerr.Error())
 			case secretsmanager.ErrCodeInvalidParameterException:
-				fmt.Fprintln(os.Stderr, secretsmanager.ErrCodeInvalidParameterException, aerr.Error())
+				Error.Println(secretsmanager.ErrCodeInvalidParameterException, aerr.Error())
 			case secretsmanager.ErrCodeInvalidRequestException:
-				fmt.Fprintln(os.Stderr, secretsmanager.ErrCodeInvalidRequestException, aerr.Error())
+				Error.Println(secretsmanager.ErrCodeInvalidRequestException, aerr.Error())
 			case secretsmanager.ErrCodeDecryptionFailure:
-				fmt.Fprintln(os.Stderr, secretsmanager.ErrCodeDecryptionFailure, aerr.Error())
+				Error.Println(secretsmanager.ErrCodeDecryptionFailure, aerr.Error())
 			case secretsmanager.ErrCodeInternalServiceError:
-				fmt.Fprintln(os.Stderr, secretsmanager.ErrCodeInternalServiceError, aerr.Error())
+				Error.Println(secretsmanager.ErrCodeInternalServiceError, aerr.Error())
 			default:
-				fmt.Fprintln(os.Stderr, aerr.Error())
+				Error.Println(aerr.Error())
 			}
 		} else {
 			// Print the error, cast err to awserr.Error to get the Code and
@@ -177,7 +177,7 @@ func getDataSealer(filename string, secretID string) error {
 	err = ioutil.WriteFile(filename, []byte(dataSealer), 0600)
 
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		Error.Println(err)
 		return err
 	}
 
