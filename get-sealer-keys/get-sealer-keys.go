@@ -95,18 +95,18 @@ func getSecret(svc *secretsmanager.SecretsManager, secretID string, versionStage
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			case secretsmanager.ErrCodeResourceNotFoundException:
-				Error.Println(secretsmanager.ErrCodeResourceNotFoundException, aerr.Error())
+				Error.Println(secretsmanager.ErrCodeResourceNotFoundException)
 			case secretsmanager.ErrCodeInvalidParameterException:
-				Error.Println(secretsmanager.ErrCodeInvalidParameterException, aerr.Error())
+				Error.Println(secretsmanager.ErrCodeInvalidParameterException)
 			case secretsmanager.ErrCodeInvalidRequestException:
-				Error.Println(secretsmanager.ErrCodeInvalidRequestException, aerr.Error())
+				Error.Println(secretsmanager.ErrCodeInvalidRequestException)
 			case secretsmanager.ErrCodeDecryptionFailure:
-				Error.Println(secretsmanager.ErrCodeDecryptionFailure, aerr.Error())
+				Error.Println(secretsmanager.ErrCodeDecryptionFailure)
 			case secretsmanager.ErrCodeInternalServiceError:
-				Error.Println(secretsmanager.ErrCodeInternalServiceError, aerr.Error())
-			default:
-				Error.Println(aerr.Error())
+				Error.Println(secretsmanager.ErrCodeInternalServiceError)
 			}
+
+			Error.Println(aerr.Error())
 		} else {
 			// Print the error, cast err to awserr.Error to get the Code and
 			// Message from an error.
