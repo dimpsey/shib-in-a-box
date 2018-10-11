@@ -2,12 +2,11 @@ BUILD := get-sealer-keys
 DEPS := $(BUILD).go
 
 export CGO_ENABLED=0
-export GOOS=linux
 
 all: $(BUILD)
 
 deps:
-	go get github.com/golang/lint/golint
+	go get golang.org/x/lint/golint
 	go get -d -v
 
 $(BUILD): $(DEPS)

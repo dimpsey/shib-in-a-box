@@ -1,4 +1,4 @@
-FROM golang:alpine as builder
+FROM golang:1.11-alpine as builder
 
 ENV SRC=get-sealer-keys
 

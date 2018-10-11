@@ -3,7 +3,9 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"sync"
 )
@@ -19,6 +21,13 @@ import (
 
 var lock sync.Mutex
 
+var (
+	Trace   *log.Logger
+	Info    *log.Logger
+	Warning *log.Logger
+	Error   *log.Logger
+)
+
 // Return codes
 
 // UnknownError - Unknown Error
@@ -29,6 +38,30 @@ const NoEnvVar = 1
 
 // NoDataSealer - Unable to create the data sealer file
 const NoDataSealer = 2
+
+// Init for logging
+func InitLoggers(
+	traceHandle io.Writer,
+	infoHandle io.Writer,
+	warningHandle io.Writer,
+	errorHandle io.Writer) {
+
+	Trace = log.New(traceHandle,
+		"TRACE: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+
+	Info = log.New(infoHandle,
+		"INFO: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+
+	Warning = log.New(warningHandle,
+		"WARNING: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+
+	Error = log.New(errorHandle,
+		"ERROR: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+}
 
 // This function is based on code taken from:
 // https://docs.aws.amazon.com/sdk-for-go/api/service/secretsmanager/#example_SecretsManager_GetSecretValue_shared00
@@ -61,7 +94,7 @@ func getSecret(svc *secretsmanager.SecretsManager, secretID string, versionStage
 		} else {
 			// Print the error, cast err to awserr.Error to get the Code and
 			// Message from an error.
-			fmt.Fprintln(os.Stderr, err.Error())
+			Error.Println(err.Error())
 		}
 		return "", err
 	}
@@ -119,12 +152,10 @@ func getDataSealer(filename string, secretID string) error {
 	oldDataSealer, err := ioutil.ReadFile(filename)
 
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		Warning.Println(err)
 	} else if string(oldDataSealer) == dataSealer {
-		fmt.Fprint(os.Stderr, "No changes to data sealer.\n")
+		Info.Println("No changes to data sealer.")
 		return nil
-	} else {
-		fmt.Fprint(os.Stderr, "WTF")
 	}
 
 	err = ioutil.WriteFile(filename, []byte(dataSealer), 0600)
@@ -134,7 +165,7 @@ func getDataSealer(filename string, secretID string) error {
 		return err
 	}
 
-	fmt.Fprint(os.Stderr, "Wrote data sealer to file: '", filename, "'.  Retrieved from AWS secret: '", secretID, ".'\n")
+	Info.Println("Wrote data sealer to file: '", filename, "'.  Retrieved from AWS secret: '", secretID, ".'")
 	return err
 }
 
@@ -142,13 +173,15 @@ func getEnv(key string) string {
 	value := os.Getenv(key)
 
 	if value == "" {
-		fmt.Fprint(os.Stderr, "Environment variable is undef: ", key, "\n\a")
+		Error.Println("Environment variable is undef: ", key, "\n\a")
 		os.Exit(NoEnvVar)
 	}
 	return value
 }
 
 func main() {
+	InitLoggers(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
+
 	filename, secretID, schedule := getEnv("KEYS"), getEnv("SECRET_ID"), getEnv("SCHEDULE")
 
 	err := getDataSealer(filename, secretID)
