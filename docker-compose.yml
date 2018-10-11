@@ -45,6 +45,7 @@ services:
     environment:
       - SECRET_ID=shib-test5
       - SCHEDULE=* * * * *
+      - LOG_LEVEL=INFO
     build:
       context: .
       dockerfile: Dockerfile.cron

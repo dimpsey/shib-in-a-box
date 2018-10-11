@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -40,11 +41,26 @@ const NoEnvVar = 1
 const NoDataSealer = 2
 
 // Init for logging
-func InitLoggers(
-	traceHandle io.Writer,
-	infoHandle io.Writer,
-	warningHandle io.Writer,
-	errorHandle io.Writer) {
+func InitLoggers(logLevel string) {
+
+	var traceHandle io.Writer = os.Stderr
+	var infoHandle io.Writer = os.Stderr
+	var warningHandle io.Writer = os.Stderr
+	var errorHandle io.Writer = os.Stderr
+
+	switch strings.ToLower(logLevel) {
+	case "trace":
+		break
+	case "error":
+		warningHandle = ioutil.Discard
+		fallthrough
+	case "warning", "warn":
+		infoHandle = ioutil.Discard
+		fallthrough
+	default:
+		// default log level is info
+		traceHandle = ioutil.Discard
+	}
 
 	Trace = log.New(traceHandle,
 		"TRACE: ",
@@ -180,7 +196,7 @@ func getEnv(key string) string {
 }
 
 func main() {
-	InitLoggers(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
+	InitLoggers(os.Getenv("LOG_LEVEL"))
 
 	filename, secretID, schedule := getEnv("KEYS"), getEnv("SECRET_ID"), getEnv("SCHEDULE")
 
