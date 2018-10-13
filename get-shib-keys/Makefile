@@ -7,9 +7,8 @@ export GOOS=linux
 all: $(BUILD)
 
 deps:
-	go get github.com/golang/lint/golint
-	go get -u github.com/spf13/pflag
-	go get -u github.com/aws/aws-sdk-go
+	go get golang.org/x/lint/golint
+	go get -d -v
 
 $(BUILD): $(DEPS)
 	golint $?
