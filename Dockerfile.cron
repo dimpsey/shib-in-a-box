@@ -10,7 +10,18 @@ COPY $SRC/*.go $SRC/Makefile $GOPATH/src/
 WORKDIR $GOPATH/src
 RUN make deps
 RUN make
+##############################################################
 
+FROM golang:1.11-alpine as healthcheck-builder
+
+ENV SRC=healthcheck-cron
+
+RUN apk update && apk add git make
+
+COPY $SRC/*.go $SRC/Makefile $GOPATH/src/
+WORKDIR $GOPATH/src
+RUN make deps
+RUN make
 ##############################################################
 
 FROM scratch
@@ -25,6 +36,10 @@ VOLUME ["/var/shib-keys/"]
 COPY --from=builder /etc/passwd /etc/group /etc/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /go/src/get-sealer-keys /
+COPY --from=healthcheck-builder /go/src/healthcheck-cron /
 
 USER shibd
+
+HEALTHCHECK CMD ["/healthcheck-cron"]
+
 ENTRYPOINT ["/get-sealer-keys"]

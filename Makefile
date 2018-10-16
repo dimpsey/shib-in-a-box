@@ -1,7 +1,7 @@
 .PHONY: all base cron shibd httpd login push pull clean
 
 BASE_SRCS := Dockerfile $(wildcard yum/*) $(wildcard shibboleth/*)
-CRON_SRCS := .base Dockerfile.cron get-sealer-keys/get-sealer-keys.go get-sealer-keys/Makefile
+CRON_SRCS := .base Dockerfile.cron get-sealer-keys/get-sealer-keys.go get-sealer-keys/Makefile healthcheck-cron/healthcheck-cron.go healthcheck-cron/Makefile
 SHIBD_SRCS := .base Dockerfile.shibd manifest.shibd get-shib-keys/Makefile get-shib-keys/get-shib-keys.go entrypoint-shibd.sh shibboleth2.xml.shibd
 HTTPD_SRCS := .base Dockerfile.httpd manifest.httpd test-httpd.sh entrypoint-httpd.sh shibboleth2.xml.httpd $(wildcard httpd/*) $(wildcard environment/*)
 
