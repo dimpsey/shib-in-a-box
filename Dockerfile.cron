@@ -40,6 +40,6 @@ COPY --from=healthcheck-builder /go/src/healthcheck-cron /
 
 USER shibd
 
-HEALTHCHECK CMD ["/healthcheck-cron"]
+HEALTHCHECK CMD ["/healthcheck-cron", "/var/shib-keys/keys"]
 
 ENTRYPOINT ["/get-sealer-keys"]

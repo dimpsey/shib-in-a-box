@@ -10,6 +10,10 @@ import (
 	"time"
 )
 
+// GNU style POSIX standard alternative to flag
+// https://godoc.org/github.com/spf13/pflag
+import flag "github.com/spf13/pflag"
+
 var (
 	Trace   *log.Logger
 	Info    *log.Logger
@@ -25,6 +29,9 @@ const Unhealthy = 1
 
 // NoDataSealer - Unable to fine the data sealer file
 const NoSealerKeyFile = 2
+
+// BadArgs - Too many or bad arguments passed
+const BadArgs = 3
 
 // Init for logging
 func InitLoggers(logLevel string) {
@@ -64,6 +71,22 @@ func InitLoggers(logLevel string) {
 		log.Ldate|log.Ltime|log.Lshortfile)
 }
 
+func args() (string, string) {
+	filePtr := flag.StringP("file", "f", "", "a file used to store the sealer keys.")
+	flag.Usage = func() {
+		Info.Printf("Usage: healthcheck-cron [options] keyname\n\n")
+		flag.PrintDefaults()
+	}
+
+	flag.Parse()
+	if len(flag.Args()) != 1 {
+		flag.Usage()
+		os.Exit(BadArgs)
+	}
+
+	return *filePtr, flag.Args()[0]
+}
+
 func isOlderThan(t time.Time, hour time.Duration) bool {
 	Trace.Println("age of file is: ", time.Since(t))
 	Trace.Println("expected max age: ", hour)
@@ -75,7 +98,9 @@ func main() {
 
 	InitLoggers(os.Getenv("LOG_LEVEL"))
 
-	file, err := os.Stat("/var/shib-keys/keys")
+	_, filename := args()
+
+	file, err := os.Stat(filename)
 
 	if err != nil {
 		Error.Println("Failed to find key file")
