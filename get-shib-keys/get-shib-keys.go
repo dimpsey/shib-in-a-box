@@ -2,7 +2,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -11,6 +10,9 @@ import (
 // https://godoc.org/github.com/spf13/pflag
 import flag "github.com/spf13/pflag"
 
+// better logger
+import "go.uber.org/zap"
+
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -18,7 +20,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ssm"
 )
 
-// Return codes
+var SLogger *zap.SugaredLogger
 
 // NoEnvVar - Environment variable empty or missing
 const NoEnvVar = 1
@@ -52,25 +54,25 @@ func GetParamKey(svc *ssm.SSM, keyname string) (string, error) {
 	result, err := svc.GetParameter(input)
 
 	if err != nil {
-		fmt.Fprint(os.Stderr, "Failed to find param for keyname: ", keyname, "\n\n\a")
+		SLogger.Errorf("Failed to find param for keyname: %s", keyname)
 
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			case ssm.ErrCodeInternalServerError:
-				fmt.Fprintln(os.Stderr, ssm.ErrCodeInternalServerError, aerr.Error())
+				SLogger.Error(ssm.ErrCodeInternalServerError)
 			case ssm.ErrCodeInvalidKeyId:
-				fmt.Fprintln(os.Stderr, ssm.ErrCodeInvalidKeyId, aerr.Error())
+				SLogger.Error(ssm.ErrCodeInvalidKeyId)
 			case ssm.ErrCodeParameterNotFound:
-				fmt.Fprintln(os.Stderr, ssm.ErrCodeParameterNotFound, aerr.Error())
+				SLogger.Error(ssm.ErrCodeParameterNotFound)
 			case ssm.ErrCodeParameterVersionNotFound:
-				fmt.Fprintln(os.Stderr, ssm.ErrCodeParameterVersionNotFound, aerr.Error())
-			default:
-				fmt.Fprintln(os.Stderr, aerr.Error())
+				SLogger.Error(ssm.ErrCodeParameterVersionNotFound)
 			}
+
+			SLogger.Error(aerr.Error())
 		} else {
 			// Print the error, cast err to awserr.Error to get the Code and
 			// Message from an error.
-			fmt.Fprintln(os.Stderr, err.Error())
+			SLogger.Error(os.Stderr, err.Error())
 		}
 		return "", err
 	}
@@ -92,29 +94,29 @@ func GetParamKeys(svc *ssm.SSM, nextToken *string, path string) (*string, []*ssm
 	results, err := svc.GetParametersByPath(input)
 
 	if err != nil {
-		fmt.Fprint(os.Stderr, "Failed to find params for path page: ", path, "\n\n\a")
+		SLogger.Errorf("Failed to find params for path page: %s", path)
 
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			case ssm.ErrCodeInternalServerError:
-				fmt.Fprintln(os.Stderr, ssm.ErrCodeInternalServerError, aerr.Error())
+				SLogger.Error(ssm.ErrCodeInternalServerError)
 			case ssm.ErrCodeInvalidFilterKey:
-				fmt.Fprintln(os.Stderr, ssm.ErrCodeInvalidFilterKey, aerr.Error())
+				SLogger.Error(ssm.ErrCodeInvalidFilterKey)
 			case ssm.ErrCodeInvalidFilterOption:
-				fmt.Fprintln(os.Stderr, ssm.ErrCodeInvalidFilterOption, aerr.Error())
+				SLogger.Error(ssm.ErrCodeInvalidFilterOption)
 			case ssm.ErrCodeInvalidFilterValue:
-				fmt.Fprintln(os.Stderr, ssm.ErrCodeInvalidFilterValue, aerr.Error())
+				SLogger.Error(ssm.ErrCodeInvalidFilterValue)
 			case ssm.ErrCodeInvalidKeyId:
-				fmt.Fprintln(os.Stderr, ssm.ErrCodeInvalidKeyId, aerr.Error())
+				SLogger.Error(ssm.ErrCodeInvalidKeyId)
 			case ssm.ErrCodeInvalidNextToken:
-				fmt.Fprintln(os.Stderr, ssm.ErrCodeInvalidNextToken, aerr.Error())
-			default:
-				fmt.Fprintln(os.Stderr, aerr.Error())
+				SLogger.Error(ssm.ErrCodeInvalidNextToken)
 			}
+
+			SLogger.Error(aerr.Error())
 		} else {
 			// Print the error, cast err to awserr.Error to get the Code and
 			// Message from an error.
-			fmt.Fprintln(os.Stderr, err.Error())
+			SLogger.Error(err.Error())
 		}
 		os.Exit(1)
 	}
@@ -122,10 +124,17 @@ func GetParamKeys(svc *ssm.SSM, nextToken *string, path string) (*string, []*ssm
 	return results.NextToken, results.Parameters
 }
 
+func InitSugarLogger() {
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync() // flushes buffer, if any
+
+	SLogger = logger.Sugar()
+}
+
 func args() (string, string) {
 	filePtr := flag.StringP("file", "f", "", "a file used to store the shib keys.")
 	flag.Usage = func() {
-		fmt.Printf("Usage: get-shib-keys [options] keyname\n\n")
+		SLogger.Info("Usage: get-shib-keys [options] keyname\n\n")
 		flag.PrintDefaults()
 	}
 
@@ -163,14 +172,16 @@ func writeParamFile(param map[string]string, key string, path string) {
 	err := ioutil.WriteFile(path, []byte(param[key]), 0640)
 
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		SLogger.Error(err)
 		os.Exit(FileError)
 	}
 
-	fmt.Fprint(os.Stderr, "Wrote to file: '", path, "'.  Retrieved from AWS Parameter: '", key, ".'\n")
+	SLogger.Infof("Wrote to file: '%s'. Retrieved from AWS Parameter: '%s'\n", path, key)
 }
 
 func main() {
+	InitSugarLogger()
+
 	_, keyname := args()
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
