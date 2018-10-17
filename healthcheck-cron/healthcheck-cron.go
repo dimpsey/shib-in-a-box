@@ -10,10 +10,6 @@ import (
 	"time"
 )
 
-// GNU style POSIX standard alternative to flag
-// https://godoc.org/github.com/spf13/pflag
-import flag "github.com/spf13/pflag"
-
 var (
 	Trace   *log.Logger
 	Info    *log.Logger
@@ -32,6 +28,9 @@ const NoSealerKeyFile = 2
 
 // BadArgs - Too many or bad arguments passed
 const BadArgs = 3
+
+// NoEnvVar - Environment variable empty or missing
+const NoEnvVar = 1
 
 // Init for logging
 func InitLoggers(logLevel string) {
@@ -71,20 +70,14 @@ func InitLoggers(logLevel string) {
 		log.Ldate|log.Ltime|log.Lshortfile)
 }
 
-func args() (string, string) {
-	filePtr := flag.StringP("file", "f", "", "a file used to store the sealer keys.")
-	flag.Usage = func() {
-		Info.Printf("Usage: healthcheck-cron [options] keyname\n\n")
-		flag.PrintDefaults()
-	}
+func getEnv(key string) string {
+	value := os.Getenv(key)
 
-	flag.Parse()
-	if len(flag.Args()) != 1 {
-		flag.Usage()
-		os.Exit(BadArgs)
+	if value == "" {
+		Error.Println("Environment variable is undef: ", key, "\n\a")
+		os.Exit(NoEnvVar)
 	}
-
-	return *filePtr, flag.Args()[0]
+	return value
 }
 
 func isOlderThan(t time.Time, hour time.Duration) bool {
@@ -98,7 +91,7 @@ func main() {
 
 	InitLoggers(os.Getenv("LOG_LEVEL"))
 
-	_, filename := args()
+	filename := getEnv("KEYS")
 
 	file, err := os.Stat(filename)
 
