@@ -1,0 +1,11 @@
+[shibb]
+ netid = 
+ password = 
+
+   [box team folder]
+    URL = https://box-tools-test.techservices.illinois.edu/
+
+     [browser]
+      # The NAME can be one of the following: firefox, chrome
+       NAME = 
+

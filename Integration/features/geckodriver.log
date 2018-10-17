@@ -1,0 +1,31 @@
+1539625963442	geckodriver	INFO	geckodriver 0.18.0
+1539625963446	geckodriver	INFO	Listening on 127.0.0.1:61093
+1539636698800	geckodriver	INFO	geckodriver 0.18.0
+1539636698805	geckodriver	INFO	Listening on 127.0.0.1:61930
+1539637258322	geckodriver	INFO	geckodriver 0.18.0
+1539637258326	geckodriver	INFO	Listening on 127.0.0.1:61992
+1539637760008	geckodriver	INFO	geckodriver 0.18.0
+1539637760014	geckodriver	INFO	Listening on 127.0.0.1:62182
+1539638607993	geckodriver	INFO	geckodriver 0.18.0
+1539638607998	geckodriver	INFO	Listening on 127.0.0.1:62311
+1539638608207	geckodriver::marionette	INFO	Starting browser /usr/local/bin/firefox/firefox with args ["-marionette"]
+1539638960848	geckodriver	INFO	geckodriver 0.18.0
+1539638960852	geckodriver	INFO	Listening on 127.0.0.1:62399
+1539639240999	geckodriver	INFO	geckodriver 0.18.0
+1539639241005	geckodriver	INFO	Listening on 127.0.0.1:62422
+1539639339248	geckodriver	INFO	geckodriver 0.18.0
+1539639339254	geckodriver	INFO	Listening on 127.0.0.1:62441
+1539639489909	geckodriver	INFO	geckodriver 0.18.0
+1539639489913	geckodriver	INFO	Listening on 127.0.0.1:62448
+1539703290428	geckodriver	INFO	geckodriver 0.18.0
+1539703290440	geckodriver	INFO	Listening on 127.0.0.1:50699
+1539704131638	geckodriver	INFO	geckodriver 0.18.0
+1539704131644	geckodriver	INFO	Listening on 127.0.0.1:50827
+1539704812013	geckodriver	INFO	geckodriver 0.18.0
+1539704812028	geckodriver	INFO	Listening on 127.0.0.1:50902
+1539706177552	geckodriver	INFO	geckodriver 0.18.0
+1539706177556	geckodriver	INFO	Listening on 127.0.0.1:50987
+1539706288618	geckodriver	INFO	geckodriver 0.18.0
+1539706288622	geckodriver	INFO	Listening on 127.0.0.1:51003
+1539706715825	geckodriver	INFO	geckodriver 0.18.0
+1539706715829	geckodriver	INFO	Listening on 127.0.0.1:51047
