@@ -75,6 +75,6 @@ COPY --from=builder /usr/lib64/httpd/modules/mod_jk.so /usr/lib64/httpd/modules/
 USER apache
 EXPOSE 8080 
 
-HEALTHCHECK CMD test-httpd.sh
+HEALTHCHECK CMD test.sh
 
 ENTRYPOINT ["entrypoint-httpd.sh"]
