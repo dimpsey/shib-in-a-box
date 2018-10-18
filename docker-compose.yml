@@ -58,6 +58,7 @@ services:
     image: techservicesillinois/elmr
     environment:
       REDIS_HOSTNAME: redis
+      DISABLE_SECURE_COOKIES: 'true'
     networks:
       - backend
   redis:
