@@ -1,31 +1,26 @@
-.PHONY: all base cron shibd httpd login push pull clean
+.PHONY: all base common cron http-status shibd httpd login push pull clean
 
-BASE_SRCS := Dockerfile $(wildcard yum/*) $(wildcard shibboleth/*)
-CRON_SRCS := .base Dockerfile.cron get-sealer-keys/get-sealer-keys.go get-sealer-keys/Makefile healthcheck-cron/healthcheck-cron.go healthcheck-cron/Makefile
-SHIBD_SRCS := .base Dockerfile.shibd manifest.shibd get-shib-keys/Makefile get-shib-keys/get-shib-keys.go entrypoint-shibd.sh shibboleth2.xml.shibd
-HTTPD_SRCS := .base Dockerfile.httpd manifest.httpd test-httpd.sh entrypoint-httpd.sh shibboleth2.xml.httpd $(wildcard httpd/*) $(wildcard environment/*)
+export ORG := techservicesillinois/
 
-all: base cron shibd httpd .drone.yml.sig
+all: base common cron shibd httpd .drone.yml.sig
 
-base: .base
-.base: $(BASE_SRCS)
-	docker build -f Dockerfile -t techservicesillinois/shibd-base .
-	@touch $@
+base:
+	make -C $@
 
-cron: .cron
-.cron: $(CRON_SRCS)
-	docker build -f Dockerfile.cron -t techservicesillinois/shib-data-sealer .
-	@touch $@
+common: base
+	make -C $@
 
-shibd: .shibd
-.shibd: $(SHIBD_SRCS)
-	docker build -f Dockerfile.shibd -t techservicesillinois/shibd .
-	@touch $@
+cron:
+	make -C $@
 
-httpd: .httpd
-.httpd: $(HTTPD_SRCS)
-	docker build -f Dockerfile.httpd -t techservicesillinois/httpd .
-	@touch $@
+http-status:
+	make -C $@ image
+
+shibd: common http-status
+	make -C $@
+
+httpd: common http-status
+	make -C $@
 
 login:
 	docker login
@@ -125,7 +120,10 @@ test:
 	git add $^ $@
 
 clean:
-	-docker rmi techservicesillinois/shib-data-sealer \
-        techservicesillinois/shibd-base techservicesillinois/shibd \
-        techservicesillinois/httpd
-	-rm -f .base .cron .shibd .httpd cookie.txt
+	make clean -C base
+	make clean -C common
+	make clean -C cron
+	make clean -C http-status
+	make clean -C httpd
+	make clean -C shibd
+	-rm -f cookie.txt

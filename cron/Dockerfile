@@ -2,26 +2,24 @@ FROM golang:1.11-alpine as builder
 
 ENV SRC=get-sealer-keys
 
-RUN apk update && apk add git ca-certificates make
+RUN apk update && apk add git ca-certificates make upx
 RUN addgroup -g 998 shibd
 RUN adduser -h /var/run/shibboleth -g "Shibboleth SP daemon" -u 999 -S -G shibd shibd
 
 COPY $SRC/*.go $SRC/Makefile $GOPATH/src/
 WORKDIR $GOPATH/src
-RUN make deps
-RUN make
+RUN make deps && make && make compress
 ##############################################################
 
 FROM golang:1.11-alpine as healthcheck-builder
 
-ENV SRC=healthcheck-cron
+ENV SRC=healthcheck
 
-RUN apk update && apk add git make
+RUN apk update && apk add git make upx
 
 COPY $SRC/*.go $SRC/Makefile $GOPATH/src/
 WORKDIR $GOPATH/src
-RUN make deps
-RUN make
+RUN make deps && make && make compress
 ##############################################################
 
 FROM scratch
@@ -36,10 +34,10 @@ VOLUME ["/var/shib-keys/"]
 COPY --from=builder /etc/passwd /etc/group /etc/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /go/src/get-sealer-keys /
-COPY --from=healthcheck-builder /go/src/healthcheck-cron /
+COPY --from=healthcheck-builder /go/src/healthcheck /
 
 USER shibd
 
-HEALTHCHECK CMD ["/healthcheck-cron"]
+HEALTHCHECK CMD ["/healthcheck"]
 
 ENTRYPOINT ["/get-sealer-keys"]

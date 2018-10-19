@@ -8,7 +8,7 @@
 #
 # FILES
 #
-#   /etc/shibboleth/shibboleth2.xml
+#   $SHIBSP_CONFIG
 #           Configuration file for mod_shib to be edited, setting
 #           the IP address of the container running shibd.
 #
@@ -63,6 +63,6 @@ else
     sed -i -e "s/LB_HOSTNAME/$LB_HOSTNAME/g" $HTTPD_CONF
 fi
 
-sed -i -e "s/SHIBD_IP/$SHIBD_IP/g" /etc/shibboleth/shibboleth2.xml
+sed -i -e "s/SHIBD_IP/$SHIBD_IP/g" $SHIBSP_CONFIG
 
 exec httpd -DFOREGROUND

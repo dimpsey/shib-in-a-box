@@ -20,16 +20,14 @@ services:
       - shibd
       - elmr
     build:
-      context: .
-      dockerfile: Dockerfile.httpd
+      context: httpd
     image: techservicesillinois/httpd
     networks:
       - frontend
       - backend
   shibd:
     build:
-      context: .
-      dockerfile: Dockerfile.shibd
+      context: shibd
     image: techservicesillinois/shibd
     environment:
       - HTTPD_HOSTNAME=httpd
@@ -47,8 +45,7 @@ services:
       - SCHEDULE=* * * * *
       - LOG_LEVEL=INFO
     build:
-      context: .
-      dockerfile: Dockerfile.cron
+      context: cron
     image: techservicesillinois/shib-data-sealer
     volumes:
       - ~/.aws:/var/run/shibboleth/.aws:ro

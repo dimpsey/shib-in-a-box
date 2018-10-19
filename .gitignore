@@ -1,13 +1,7 @@
-.base
-.cron
-.httpd
-.shibd
+.image
+.push
 
-.push.base
-.push.cron
-.push.httpd
-.push.shibd
+cookie.txt
 
 *.so
-cookie.txt
 *.swp

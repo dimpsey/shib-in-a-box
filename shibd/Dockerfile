@@ -2,23 +2,17 @@ FROM golang:alpine as golang
 
 ENV SRC=get-shib-keys
 
-RUN apk update && apk add git make
+RUN apk update && apk add git make upx
 
 COPY $SRC/*.go $SRC/Makefile $GOPATH/src/
 WORKDIR $GOPATH/src
-RUN make deps
-RUN make
+RUN make deps && make && make compress
 
 ####################################
 
 FROM techservicesillinois/shibd-base as builder
-#FROM techservicesillinois/shibd-base
 
-# RUN yum install -y strace
-
-COPY shibboleth2.xml.shibd /var/run/shibboleth/shibboleth2.xml
-COPY entrypoint-shibd.sh /usr/local/bin/
-COPY manifest.shibd /tmp/manifest
+COPY manifest /tmp/
 
 WORKDIR /tmp
 RUN ldd `cat manifest` | grep -o '/.\+\.so[^ :]*' | sort -u >> manifest
@@ -32,11 +26,14 @@ RUN tar xf /tmp/bash.tar -C /tmp/fakeroot
 
 #####################################
 
-FROM scratch
- 
+FROM techservicesillinois/httpd-shibd-common
+
 COPY --from=builder /tmp/fakeroot /
 COPY --from=builder --chown=shibd:shibd /var/run/shibboleth /var/run/shibboleth
 COPY --from=golang /go/src/get-shib-keys /usr/local/bin/
+
+COPY shibboleth2.xml.shibd /var/run/shibboleth/shibboleth2.xml
+COPY entrypoint-shibd.sh /usr/local/bin/
 
 VOLUME ["/var/shib-keys"]
 
