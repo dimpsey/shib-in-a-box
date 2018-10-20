@@ -7,8 +7,7 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-	"net/http/httputil"
+	"net/url"
 	"os"
 	"strconv"
 )
@@ -24,14 +23,17 @@ const Healthy = 0
 const Unhealthy = 1
 
 type Args struct {
-	body  bool
-	get   bool
-	quiet bool
+	body     bool
+	get      bool
+	redirect bool
+	quiet    bool
 }
 
 func args() ([]string, []string, Args) {
 	get := flag.BoolP("get", "g", false,
 		"Use GET instead of HEAD")
+	loc := flag.BoolP("location", "L", false,
+		"Follow redirects in Location header field.")
 	body := flag.BoolP("body", "b", false,
 		"Print full body of response. By default only headers are shown")
 	quiet := flag.BoolP("quiet", "q", false,
@@ -47,16 +49,16 @@ func args() ([]string, []string, Args) {
 	flag.Parse()
 	if len(flag.Args()) == 0 {
 		flag.Usage()
-		os.Exit(1)
+		os.Exit(Unhealthy)
 	}
 
 	if len(*statusCodes) > 1 {
 		if len(*statusCodes) > len(flag.Args()) {
 			fmt.Println("Too many status codes given!\a")
-			os.Exit(1)
+			os.Exit(Unhealthy)
 		} else if len(*statusCodes) < len(flag.Args()) {
 			fmt.Println("Not enough status codes given!\a")
-			os.Exit(1)
+			os.Exit(Unhealthy)
 		}
 	}
 
@@ -64,7 +66,7 @@ func args() ([]string, []string, Args) {
 		*get = true
 	}
 
-	return *statusCodes, flag.Args(), Args{*body, *get, *quiet}
+	return *statusCodes, flag.Args(), Args{*body, *get, *loc, *quiet}
 }
 
 func atoi(s string) int {
@@ -72,10 +74,24 @@ func atoi(s string) int {
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s is out of range!\n\a", s)
-		os.Exit(1)
+		os.Exit(Unhealthy)
 	}
 
 	return n
+}
+
+func healthCheck(code int, userUrl string, args Args) error {
+	u, err := url.Parse(userUrl)
+	if err != nil {
+		return err
+	}
+
+	switch u.Scheme {
+	case "ajp":
+		return ajpClient(code, u.String(), args)
+	default:
+		return httpClient(code, u.String(), args)
+	}
 }
 
 func main() {
@@ -88,43 +104,12 @@ func main() {
 			fmt.Println("")
 		}
 
-		healthcheck(code, url, arguments)
-	}
-
-	os.Exit(0)
-}
-
-func healthcheck(code int, url string, args Args) {
-	var err error
-	var resp *http.Response
-
-	if args.get {
-		resp, err = http.Get(url)
-	} else {
-		resp, err = http.Head(url)
-	}
-
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(Unhealthy)
-	}
-	defer resp.Body.Close()
-
-	dump, err := httputil.DumpResponse(resp, args.body)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(Unhealthy)
-	}
-
-	if !args.quiet {
-		fmt.Printf("%s", dump)
-	}
-
-	if resp.StatusCode != code {
-		if !args.quiet {
-			fmt.Printf("Bad Response code: %d\n", resp.StatusCode)
-			fmt.Printf("Expected Response code: %d\n", code)
+		err := healthCheck(code, url, arguments)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+			os.Exit(Unhealthy)
 		}
-		os.Exit(Unhealthy)
 	}
+
+	os.Exit(Healthy)
 }
