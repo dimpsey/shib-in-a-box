@@ -14,6 +14,6 @@ COPY shibboleth/* /tmp/fakeroot/etc/shibboleth/
 
 ######################################
 
-FROM scratch
+FROM techservicesillinois/http-status
 
 COPY --from=builder /tmp/fakeroot /

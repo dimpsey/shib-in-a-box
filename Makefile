@@ -7,7 +7,7 @@ all: base common cron shibd httpd .drone.yml.sig
 base:
 	make -C $@
 
-common: base
+common: base http-status
 	make -C $@
 
 cron:
