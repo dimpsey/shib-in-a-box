@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"net/http/httputil"
@@ -35,7 +36,7 @@ REDIRECT:
 	}
 
 	if !args.quiet {
-		fmt.Printf("%s\n", dump)
+		fmt.Printf("%s\n\n", bytes.TrimSpace(dump))
 	}
 
 	if args.redirect {

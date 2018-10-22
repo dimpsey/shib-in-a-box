@@ -370,6 +370,9 @@ func ajpClient(expected_status_code int, flag_url string, args Args) error {
 						break LoopContent
 					}
 				}
+				if !args.quiet && args.body {
+					fmt.Printf("\n")
+				}
 				ajp_reader.message = ajp_reader.message[ajp_reader.position:]
 			case AJP13_SEND_HEADERS:
 				var header_name, header_value string
