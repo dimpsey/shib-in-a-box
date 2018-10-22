@@ -216,6 +216,7 @@ func (ajp_rp *AjpResponsePacket) chunk() {
 }
 
 func ajpClient(expected_status_code int, flag_url string, args Args) error {
+	var host string
 	var status_code int = -1
 
 	ajp_url, err := url.Parse(flag_url)
@@ -223,7 +224,12 @@ func ajpClient(expected_status_code int, flag_url string, args Args) error {
 		return err
 	}
 
-	host := ajp_url.Host
+	if ajp_url.Port() == "" {
+		host = ajp_url.Host + ":8009"
+	} else {
+		host = ajp_url.Host
+	}
+
 	AJPServerAddr, err := net.ResolveTCPAddr("tcp", host)
 	if err != nil {
 		return err
@@ -336,12 +342,15 @@ func ajpClient(expected_status_code int, flag_url string, args Args) error {
 				gzip_buf[0] = 0x1F
 				gzip_buf[1] = 0x8B
 				//fmt.Printf("reader pos : %d\n", ajp_reader.position)
+
 				if bytes.Equal(ajp_reader.message[7:9], gzip_buf) {
-					fmt.Printf("gzip compression method: %s\n", gzip_return_method(ajp_get_string(&ajp_reader.message, 9, 1)))
-					fmt.Printf("gzip flags: %x\n", ajp_reader.message[10])
-					fmt.Printf("gzip modification time: %x\n", ajp_reader.message[11:15])
-					fmt.Printf("gzip extra flags: %x\n", ajp_reader.message[15])
-					fmt.Printf("gzip OS type: %x\n", ajp_reader.message[16])
+					if !args.quiet && args.body {
+						fmt.Printf("gzip compression method: %s\n", gzip_return_method(ajp_get_string(&ajp_reader.message, 9, 1)))
+						fmt.Printf("gzip flags: %x\n", ajp_reader.message[10])
+						fmt.Printf("gzip modification time: %x\n", ajp_reader.message[11:15])
+						fmt.Printf("gzip extra flags: %x\n", ajp_reader.message[15])
+						fmt.Printf("gzip OS type: %x\n", ajp_reader.message[16])
+					}
 					ajp_body_buf := bytes.NewBuffer(ajp_reader.message[17 : 17+ajp_reader.chunk_length])
 					ajp_body_reader := flate.NewReader(ajp_body_buf)
 					io.Copy(os.Stdout, ajp_body_reader)
@@ -350,10 +359,14 @@ func ajpClient(expected_status_code int, flag_url string, args Args) error {
 					//fmt.Printf("slice len : %d\n", len(ajp_reader.message))
 					ajp_message_length := uint16(len(ajp_reader.message))
 					if ajp_reader.chunk_length < ajp_message_length {
-						fmt.Printf("%s\n", ajp_get_string(&ajp_reader.message, 7, ajp_reader.chunk_length))
+						if !args.quiet && args.body {
+							fmt.Printf("%s\n", ajp_get_string(&ajp_reader.message, 7, ajp_reader.chunk_length))
+						}
 						ajp_reader.position = 7 + ajp_reader.chunk_length + 1
 					} else {
-						fmt.Printf("%s\n", ajp_get_string(&ajp_reader.message, 7, ajp_message_length-7))
+						if !args.quiet && args.body {
+							fmt.Printf("%s\n", ajp_get_string(&ajp_reader.message, 7, ajp_message_length-7))
+						}
 						break LoopContent
 					}
 				}
@@ -362,17 +375,24 @@ func ajpClient(expected_status_code int, flag_url string, args Args) error {
 				var header_name, header_value string
 				ajp_reader.headers()
 				status_code = int(ajp_reader.status_code)
-				fmt.Printf("Status Code: %d %s\n", ajp_reader.status_code, ajp_reader.status_message)
+				if !args.quiet {
+					fmt.Printf("AJP/1.3 %d %s\n", ajp_reader.status_code, ajp_reader.status_message)
+				}
 				//fmt.Printf("http_status_msg : %s\n" ,ajp_reader.status_message)
 				//fmt.Printf("num_headers: %d\n", ajp_reader.num_headers)
 				i = ajp_reader.position
 				for n = 0; n < ajp_reader.num_headers; n++ {
 					header_name, header_value, i = ajp_return_header(&ajp_reader.message, i)
-					fmt.Printf("> %s: %s \n", header_name, header_value)
+					if !args.quiet {
+						fmt.Printf("%s: %s\n", header_name, header_value)
+					}
 					if header_name == "Content-Length" {
 						body_len, _ = strconv.Atoi(header_value)
 						body_len += 4
 					}
+				}
+				if !args.quiet {
+					fmt.Printf("\n")
 				}
 				ajp_reader.position = i
 				ajp_reader.message = ajp_reader.message[ajp_reader.position:]

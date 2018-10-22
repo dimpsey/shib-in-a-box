@@ -35,7 +35,7 @@ REDIRECT:
 	}
 
 	if !args.quiet {
-		fmt.Printf("%s", dump)
+		fmt.Printf("%s\n", dump)
 	}
 
 	if args.redirect {

@@ -30,6 +30,7 @@ test: $(BUILD)
 	./$(BUILD) -c 302 http://localhost/auth/elmr/attributes
 	./$(BUILD) -Lc 400 http://localhost/auth/elmr/attributes
 	
+	./$(BUILD) ajp://localhost/auth/elmr/config
 	./$(BUILD) ajp://localhost:8009/auth/elmr/config
 	./$(BUILD) -c 200 ajp://localhost:8009/auth/elmr/config
 	./$(BUILD) -c 302 ajp://localhost:8009/auth/elmr/attributes
