@@ -1,6 +1,3 @@
-/usr/sbin/shibd
-/bin/ls
-/bin/cat
 /etc/httpd
 /etc/mime.types
 /usr/lib64/shibboleth/mod_shib_24.so

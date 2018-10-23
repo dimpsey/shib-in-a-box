@@ -50,14 +50,3 @@ FROM builder
 MAINTAINER Technology Services, University of Illinois Urbana
 
 COPY --from=modjk /usr/lib64/httpd/modules/mod_jk.so /usr/lib64/httpd/modules/
-
-# TODO Remove this hacky shit
-RUN chown -R root:apache /etc/shibboleth \
-     && chown -R root:apache /etc/httpd \
-     && chmod -R g+rw /etc/shibboleth \
-     && chmod -R g+rw /etc/httpd/conf \
-     && chmod g+rw /var/run/httpd
-
-RUN chmod 644 /var/cache/shibboleth/itrust-metadata.xml \
-       /etc/shibboleth/itrust.pem \
-    && chown shibd:shibd /var/cache/shibboleth/itrust-metadata.xml

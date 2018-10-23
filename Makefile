@@ -120,10 +120,10 @@ test:
 	git add $^ $@
 
 clean:
-	make clean -C base
-	make clean -C common
 	make clean -C cron
-	make clean -C http-status
 	make clean -C httpd
 	make clean -C shibd
+	make clean -C common
+	make clean -C base
+	make clean -C http-status
 	-rm -f cookie.txt
