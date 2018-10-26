@@ -1,6 +1,6 @@
 .PHONY: all image push pull clean
 
-SRCS := Dockerfile manifest
+SRCS := Dockerfile
 IMAGE:= $(ORG)httpd-shibd-common
 
 all: image
