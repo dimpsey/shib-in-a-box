@@ -1,7 +1,7 @@
 .PHONY: all image push pull clean
 
-SRCS := Dockerfile ../builder/.image
-IMAGE:= $(ORG)shibd-base
+SRCS := Dockerfile
+IMAGE:= $(ORG)shibd-config
 
 all: image
 

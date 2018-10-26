@@ -1,6 +1,6 @@
 .PHONY: all image push pull clean
 
-SRCS := Dockerfile manifest ../common/.image
+SRCS := Dockerfile entrypoint-httpd.sh ../http-status/.image ../common/.image
 IMAGE:= $(ORG)httpd
 
 all: image
