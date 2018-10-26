@@ -2,7 +2,7 @@
 
 export ORG := techservicesillinois/
 
-all: builder base common cron shibd httpd .drone.yml.sig
+all: config cron shibd httpd .drone.yml.sig
 
 builder:
 	make -C $@
@@ -13,17 +13,20 @@ base: builder
 common: base
 	make -C $@
 
-cron:
+config: base
 	make -C $@
 
-http-status:
-	make -C $@ image
+cron:
+	make -C $@
 
 shibd: common
 	make -C $@
 
 httpd: common http-status
 	make -C $@
+
+http-status:
+	make -C $@ image
 
 login:
 	docker login
@@ -123,6 +126,7 @@ test:
 	git add $^ $@
 
 clean:
+	make clean -C config
 	make clean -C cron
 	make clean -C httpd
 	make clean -C shibd
