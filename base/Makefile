@@ -1,6 +1,6 @@
 .PHONY: all image push pull clean
 
-SRCS := Dockerfile shib.repo
+SRCS := Dockerfile
 IMAGE:= $(ORG)shibd-base
 
 all: image

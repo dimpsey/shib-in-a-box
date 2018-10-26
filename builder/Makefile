@@ -1,6 +1,6 @@
 .PHONY: all image push pull clean
 
-SRCS := Dockerfile $(wildcard manifest.*) dereflinks make_layers.sh
+SRCS := Dockerfile $(wildcard manifest.*) dereflinks make_layers.sh shib.repo
 IMAGE:= $(ORG)httpd-shibd-builder
 
 all: image
