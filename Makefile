@@ -1,13 +1,16 @@
-.PHONY: all base common cron http-status shibd httpd login push pull clean
+.PHONY: all builder base common cron http-status shibd httpd login push pull clean
 
 export ORG := techservicesillinois/
 
-all: base common cron shibd httpd .drone.yml.sig
+all: builder base common cron shibd httpd .drone.yml.sig
 
-base:
+builder:
 	make -C $@
 
-common: base http-status
+base: builder
+	make -C $@
+
+common: base
 	make -C $@
 
 cron:
@@ -16,7 +19,7 @@ cron:
 http-status:
 	make -C $@ image
 
-shibd: common http-status
+shibd: common
 	make -C $@
 
 httpd: common http-status
@@ -125,5 +128,6 @@ clean:
 	make clean -C shibd
 	make clean -C common
 	make clean -C base
+	make clean -C builder
 	make clean -C http-status
 	-rm -f cookie.txt

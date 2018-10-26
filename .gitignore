@@ -5,3 +5,5 @@ cookie.txt
 
 *.so
 *.swp
+
+.python-version
