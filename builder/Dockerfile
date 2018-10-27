@@ -1,10 +1,9 @@
 FROM centos:7 as builder
 
-ENV DISCOVERY_SVC_URL https://discovery.itrust.illinois.edu 
-
 COPY shib.repo /etc/yum.repos.d/
 
-# TODO Should itrust really be here? No...
+# TODO Should we keep the default httpd/shibd config files at all?
+#       Probably not...
 RUN yum -y install \
        httpd \
        shibboleth \
@@ -13,11 +12,6 @@ RUN yum -y install \
     && rm --interactive=never /etc/shibboleth/{attribute-map.xml,native.logger,shibd.logger,shibboleth2.xml} \
     && yum clean all \
     && rm -rf /var/cache/yum \
-    && cd /etc/shibboleth \
-    && curl -so /etc/shibboleth/itrust.pem \
-       "${DISCOVERY_SVC_URL}/itrust-certs/itrust.pem" \
-    && curl -so  /var/cache/shibboleth/itrust-metadata.xml \
-       "${DISCOVERY_SVC_URL}/itrust-metadata/itrust-metadata.xml" \
     && rm /etc/httpd/conf/httpd.conf \
     && rm /etc/httpd/conf.d/*
 

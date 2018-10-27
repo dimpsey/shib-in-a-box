@@ -14,7 +14,7 @@ services:
       displayName: John Doe
       eppn: jkdoe@illinois.edu
     depends_on:
-      - shibd
+      - config
       - elmr
     volumes_from:
       - config:ro
@@ -29,14 +29,13 @@ services:
       context: shibd
     image: techservicesillinois/shibd
     depends_on:
+      - config
       - cron
     networks:
       - backend
     volumes_from:
       - config:ro
       - cron:ro
-    volumes:
-      - ~/.aws:/var/run/shibboleth/.aws:ro
   config:
     build:
       context: shibd
@@ -44,8 +43,13 @@ services:
     environment:
       HTTPD_HOSTNAME: httpd
       SHIBD_HOSTNAME: shibd
-      ELMR_HOSTNAME:  elmr
+      ELMR_HOSTNAME: elmr
       LB_HOSTNAME: alb
+      REGION: us-east-2
+    networks:
+      - backend
+    volumes:
+      - ~/.aws:/root/.aws:ro
   cron:
     environment:
       - SECRET_ID=shib-test5

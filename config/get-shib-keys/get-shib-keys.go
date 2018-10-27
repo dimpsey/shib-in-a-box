@@ -22,25 +22,22 @@ import (
 
 var SLogger *zap.SugaredLogger
 
-// NoEnvVar - Environment variable empty or missing
-const NoEnvVar = 1
-
 // BadArgs - Too many or bad arguments passed
 const BadArgs = 2
 
 // NoSecret - Not able to retrieve secret
-const NoSecret = 3
+const NoSecret = 1
 
 // FileError - File system error
-const FileError = 4
+const FileError = 3
 
 // File name and path for shibboleth private key
 const KeyName = "/service/shibd/private.key"
-const KeyPath = "/var/run/shibboleth/sp-key.pem"
+const KeyPath = "/etc/shibboleth/sp-key.pem"
 
 // File name and path for shibboleth public cert
 const CertName = "/service/shibd/public.key"
-const CertPath = "/var/run/shibboleth/sp-cert.pem"
+const CertPath = "/etc/shibboleth/sp-cert.pem"
 
 // Working code but it won't be used in the production
 /*
@@ -118,7 +115,7 @@ func GetParamKeys(svc *ssm.SSM, nextToken *string, path string) (*string, []*ssm
 			// Message from an error.
 			SLogger.Error(err.Error())
 		}
-		os.Exit(1)
+		os.Exit(NoSecret)
 	}
 
 	return results.NextToken, results.Parameters

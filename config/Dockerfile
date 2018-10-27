@@ -10,10 +10,28 @@ RUN make deps && make && make compress
 
 ####################################
 
+FROM alpine as itrust
+
+ENV DISCOVERY_SVC_URL https://discovery.itrust.illinois.edu 
+
+RUN mkdir -p /tmp/shibboleth \
+    && wget -qO /tmp/shibboleth/itrust.pem \
+       "${DISCOVERY_SVC_URL}/itrust-certs/itrust.pem" \
+    && wget -qO /tmp/shibboleth/itrust-metadata.xml \
+       "${DISCOVERY_SVC_URL}/itrust-metadata/itrust-metadata.xml"
+
+####################################
+
 FROM techservicesillinois/shibd-base
+
+ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml
 
 COPY --from=techservicesillinois/httpd-shibd-builder /config/ /
 COPY --from=golang /go/src/get-shib-keys /usr/local/bin/
+COPY --from=itrust /tmp/shibboleth/ /etc/shibboleth/
+COPY entrypoint.sh /usr/local/bin/
+
+COPY shibboleth2.xml.shibd ${SHIBSP_CONFIG}
 
 #COPY --from=builder /tmp/fakeroot /
 #COPY --from=builder --chown=apache:apache /tmp/fakeroot/etc /etc
@@ -27,3 +45,4 @@ COPY --from=golang /go/src/get-shib-keys /usr/local/bin/
 
 # TODO
 # COPY --from=builder --chown=shibd:shibd /var/run/shibboleth /var/run/shibboleth
+ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
