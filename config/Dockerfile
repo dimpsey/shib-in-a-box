@@ -31,7 +31,9 @@ COPY --from=golang /go/src/get-shib-keys /usr/local/bin/
 COPY --from=itrust /tmp/shibboleth/ /etc/shibboleth/
 COPY entrypoint.sh /usr/local/bin/
 
-COPY shibboleth2.xml.shibd ${SHIBSP_CONFIG}
+COPY /etc/ /etc/
+
+VOLUME ["/etc/shibboleth"]
 
 #COPY --from=builder /tmp/fakeroot /
 #COPY --from=builder --chown=apache:apache /tmp/fakeroot/etc /etc

@@ -7,11 +7,9 @@ COPY shib.repo /etc/yum.repos.d/
 RUN yum -y install \
        httpd \
        shibboleth \
-    && rm --interactive=never /etc/shibboleth/{*.config,*.dist,*.pem} \
-    && rm --interactive=never /etc/shibboleth/{shibd-*,example-*} \
-    && rm --interactive=never /etc/shibboleth/{attribute-map.xml,native.logger,shibd.logger,shibboleth2.xml} \
     && yum clean all \
     && rm -rf /var/cache/yum \
+    && rm -rf /etc/shibboleth/ \
     && rm /etc/httpd/conf/httpd.conf \
     && rm /etc/httpd/conf.d/*
 
