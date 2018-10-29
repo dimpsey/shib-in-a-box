@@ -1,8 +1,8 @@
 FROM techservicesillinois/httpd-shibd-common
 
-ENV SHIBSP_CONFIG=/var/run/httpd/shibboleth2.xml
+ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.httpd.xml
 
-COPY entrypoint-httpd.sh /usr/local/bin/
+COPY root/ /
 COPY --from=techservicesillinois/http-status /healthcheck /
 
 USER apache
@@ -16,4 +16,4 @@ HEALTHCHECK CMD /healthcheck \
     -c 200 http://localhost:8080/auth/Shibboleth.sso/Status \
     -c 204 http://localhost:8080/auth/elmr/status
 
-ENTRYPOINT ["entrypoint-httpd.sh"]
+ENTRYPOINT ["/entrypoint.sh"]

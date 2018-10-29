@@ -1,7 +1,8 @@
 .PHONY: all image push pull clean
 
+ROOT := root/entrypoint.sh $(wildcard etc/shibboleth/*)
 GSRC := get-shib-keys/Makefile get-shib-keys/get-shib-keys.go
-SRCS := Dockerfile entrypoint.sh $(GSRC) ../base/.image
+SRCS := Dockerfile $(ROOT) $(GSRC) ../base/.image
 IMAGE:= $(ORG)shibd-config
 
 all: image

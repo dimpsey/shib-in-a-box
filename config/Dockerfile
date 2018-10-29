@@ -28,10 +28,10 @@ ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml
 
 COPY --from=techservicesillinois/httpd-shibd-builder /config/ /
 COPY --from=golang /go/src/get-shib-keys /usr/local/bin/
-COPY --from=itrust /tmp/shibboleth/ /etc/shibboleth/
-COPY entrypoint.sh /usr/local/bin/
+COPY --chown=shibd:shibd --from=itrust /tmp/shibboleth/ /etc/shibboleth/
 
-COPY /etc/ /etc/
+COPY /root/entrypoint.sh /
+COPY --chown=shibd:shibd /root/etc/shibboleth/ /etc/shibboleth/
 
 VOLUME ["/etc/shibboleth"]
 
@@ -47,4 +47,4 @@ VOLUME ["/etc/shibboleth"]
 
 # TODO
 # COPY --from=builder --chown=shibd:shibd /var/run/shibboleth /var/run/shibboleth
-ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
+ENTRYPOINT [ "/entrypoint.sh" ]
