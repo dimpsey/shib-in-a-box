@@ -30,7 +30,9 @@ get_ip_addr HTTPD_IP "$HTTPD_HOSTNAME"
 # TODO '/service/shibd' needs to be configurable by ENV VAR!
 /usr/local/bin/get-shib-keys /service/shibd 
 
-sed -i -e "s/SHIBD_ACL/$HTTPD_IP/g" $SHIBSP_CONFIG
+sed -i -e "s/SHIBD_ACL/$HTTPD_IP/g" $SHIBSP_CONFIG_TEMPLATE 
+mv $SHIBSP_CONFIG_TEMPLATE $SHIBSP_CONFIG
+
 # sed -i -e "s/SHIBD_IP/$SHIBD_IP/g"  $SHIBSP_CONFIG
 
 ################################################################
