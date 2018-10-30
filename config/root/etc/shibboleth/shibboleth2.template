@@ -41,7 +41,7 @@
             styleSheet="/shibboleth-sp/main.css"/>
         
          <MetadataProvider type="XML" url="https://discovery.itrust.illinois.edu/itrust-metadata/itrust-metadata.xml"
-                                backingFilePath="/var/cache/shibboleth/itrust-metadata.xml" reloadInterval="7200">
+                                backingFilePath="/tmp/itrust-metadata.xml" reloadInterval="7200">
             <MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/>
             <MetadataFilter type="Signature" certificate="/etc/shibboleth/itrust.pem"/>
         </MetadataProvider>
@@ -52,7 +52,7 @@
 
         <AttributeFilter type="XML" validate="true" path="/etc/shibboleth/attribute-policy.xml"/>
 
-        <CredentialResolver type="File" key="/var/run/shibboleth/sp-key.pem" certificate="/var/run/shibboleth/sp-cert.pem"/>
+        <CredentialResolver type="File" key="/etc/shibboleth/sp-key.pem" certificate="/etc/shibboleth/sp-cert.pem"/>
 
     </ApplicationDefaults>
     

@@ -25,7 +25,6 @@ RUN mkdir -p /tmp/shibboleth \
 FROM techservicesillinois/shibd-base
 
 ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
-    HTTPD_SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.httpd.xml \
     SHIBSP_CONFIG_TEMPLATE=/etc/shibboleth/shibboleth2.template
 
 COPY --from=techservicesillinois/httpd-shibd-builder /config/ /

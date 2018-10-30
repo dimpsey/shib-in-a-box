@@ -1,6 +1,6 @@
 FROM techservicesillinois/httpd-shibd-common
 
-ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.httpd.xml
+ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml
 
 COPY --from=techservicesillinois/httpd-shibd-builder /httpd/ /
 COPY --from=techservicesillinois/http-status /healthcheck /

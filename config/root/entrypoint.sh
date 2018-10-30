@@ -5,7 +5,8 @@ set -e
 function get_ip_addr() {
     # $1 is var to set with IP
     # $2 is hostname to lookup
-    TIME=0.1
+    local TIME=0.1
+    local IP
 
     if [ -z "$2" ]; then
         # Assuming we are running in awsvpc mode
@@ -30,14 +31,11 @@ get_ip_addr SHIBD_IP "$SHIBD_HOSTNAME"
 # TODO '/service/shibd' needs to be configurable by ENV VAR!
 /usr/local/bin/get-shib-keys /service/shibd 
 
-sed    -e "s/SHIBD_ACL/$HTTPD_IP/g" $SHIBSP_CONFIG_TEMPLATE > /tmp/shibd
-sed -i -e "s/SHIBD_IP/$SHIBD_IP/g" /tmp/shibd
+sed -i -e "s/SHIBD_ACL/$HTTPD_IP/g" \
+       -e "s/SHIBD_IP/$SHIBD_IP/g" \
+    $SHIBSP_CONFIG_TEMPLATE
 
-sed    -e "s/SHIBD_ACL/$HTTPD_IP/g" $SHIBSP_CONFIG_TEMPLATE > /tmp/httpd
-sed -i -e "s/SHIBD_IP/$SHIBD_IP/g" /tmp/httpd
-
-mv /tmp/shibd $SHIBSP_CONFIG
-mv /tmp/httpd $HTTPD_SHIBSP_CONFIG
+mv $SHIBSP_CONFIG_TEMPLATE $SHIBSP_CONFIG
 
 ################################################################
 #set -e 
