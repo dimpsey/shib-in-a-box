@@ -36,12 +36,3 @@ sed -i -e "s/SHIBD_ACL/$HTTPD_IP/g" \
     $SHIBSP_CONFIG_TEMPLATE
 
 mv $SHIBSP_CONFIG_TEMPLATE $SHIBSP_CONFIG
-
-################################################################
-# TODO do something with this:
-#
-#if [ -z "$LB_HOSTNAME" ]; then
-#    sed -i -e "/LB_HOSTNAME/d" $HTTPD_CONF
-#else
-#    sed -i -e "s/LB_HOSTNAME/$LB_HOSTNAME/g" $HTTPD_CONF
-#fi

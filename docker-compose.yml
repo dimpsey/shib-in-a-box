@@ -17,7 +17,6 @@ services:
       eppn: jkdoe@illinois.edu
     depends_on:
       - config
-      - elmr
     volumes_from:
       - config:ro
     build:
