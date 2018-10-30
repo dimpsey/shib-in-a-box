@@ -74,6 +74,11 @@ for i in "${MANIFESTS[@]}"; do
     make_layer $i
 done
 
+# This is used to make sure there are not race conditions in the
+# downstream Docker images
+find $ROOT/base/ -type f -exec sha256sum {} \; > /tmp/sha256sum.txt
+mv /tmp/sha256sum.txt $ROOT/base/
+
 # TODO do we really need these?
 # Add some empty directories
 mkdir -m 1777   $ROOT/httpd/tmp
