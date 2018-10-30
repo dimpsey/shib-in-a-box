@@ -1,5 +1,7 @@
 .PHONY: all builder base common cron http-status shibd httpd login push pull clean
 
+MAKEFLAGS='-j 4'
+
 export ORG := techservicesillinois/
 
 all: config cron shibd httpd .drone.yml.sig
