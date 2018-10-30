@@ -79,3 +79,4 @@ done
 mkdir -p -m 755 $ROOT/httpd/var/www/html $ROOT/httpd/run/httpd
 mkdir -m 1777   $ROOT/httpd/tmp
 mkdir -m 1777   $ROOT/shibd/tmp
+mkdir -m 1777   $ROOT/config/tmp
