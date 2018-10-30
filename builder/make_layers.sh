@@ -76,7 +76,13 @@ done
 
 # TODO do we really need these?
 # Add some empty directories
-mkdir -p -m 755 $ROOT/httpd/var/www/html $ROOT/httpd/run/httpd
 mkdir -m 1777   $ROOT/httpd/tmp
 mkdir -m 1777   $ROOT/shibd/tmp
 mkdir -m 1777   $ROOT/config/tmp
+mkdir -p -m 755 $ROOT/httpd/var/www/html 
+mkdir -p $ROOT/httpd/var/run
+mkdir -p $ROOT/httpd/run
+ln -s /tmp $ROOT/httpd/etc/httpd/run
+ln -s /tmp $ROOT/httpd/etc/httpd/logs
+ln -s /tmp $ROOT/httpd/var/run/httpd
+ln -s /tmp $ROOT/httpd/run/httpd

@@ -1,4 +1,5 @@
-/etc/httpd
+/etc/httpd/conf.modules.d
+/etc/httpd/conf/magic
 /etc/httpd/modules/mod_access_compat.so
 /etc/httpd/modules/mod_actions.so
 /etc/httpd/modules/mod_alias.so
@@ -101,7 +102,5 @@
 /etc/httpd/modules/mod_vhost_alias.so
 /etc/httpd/modules/mod_watchdog.so
 /etc/mime.types
-/run/httpd
 /usr/lib64/shibboleth/mod_shib_24.so
 /usr/sbin/httpd
-/var/run/httpd
