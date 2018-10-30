@@ -1,10 +1,9 @@
 .PHONY: all image push pull clean
 
-CGI   := root/var/www/html/cgi-bin
-CONF  := root/etc/httpd/conf
-CONFD := root/etc/httpd/confd
+# http://blog.jgc.org/2011/07/gnu-make-recursive-wildcard-function.html
+rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
-ROOT := root/entrypoint.sh $(CGI)/environment $(CONF)/httpd.conf $(wildcard $(CONFD)/*)
+ROOT := $(call rwildcard,root,*)
 SRCS := Dockerfile $(ROOT) ../http-status/.image ../common/.image
 IMAGE:= $(ORG)httpd
 

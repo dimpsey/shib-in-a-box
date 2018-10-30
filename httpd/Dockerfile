@@ -2,8 +2,9 @@ FROM techservicesillinois/httpd-shibd-common
 
 ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.httpd.xml
 
-COPY root/ /
+COPY --from=techservicesillinois/httpd-shibd-builder /httpd/ /
 COPY --from=techservicesillinois/http-status /healthcheck /
+COPY root/ /
 
 USER apache
 EXPOSE 8080 
