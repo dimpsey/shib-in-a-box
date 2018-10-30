@@ -10,6 +10,8 @@ services:
       - frontend
   httpd:
     environment:
+      ELMR_HOSTNAME: elmr
+      LB_HOSTNAME: alb
       NO_SHIBD: "True"
       displayName: John Doe
       eppn: jkdoe@illinois.edu
@@ -43,8 +45,6 @@ services:
     environment:
       HTTPD_HOSTNAME: httpd
       SHIBD_HOSTNAME: shibd
-      ELMR_HOSTNAME: elmr
-      LB_HOSTNAME: alb
       REGION: us-east-2
     networks:
       - backend
