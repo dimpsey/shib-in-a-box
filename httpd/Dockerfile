@@ -3,6 +3,7 @@ FROM techservicesillinois/httpd-shibd-common
 ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.httpd.xml
 
 COPY --from=techservicesillinois/httpd-shibd-builder /httpd/ /
+COPY --chown=root:apache --from=techservicesillinois/httpd-shibd-builder /httpd/run /
 COPY --from=techservicesillinois/http-status /healthcheck /
 COPY root/ /
 
