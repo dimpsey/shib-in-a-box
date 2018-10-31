@@ -94,6 +94,7 @@ test:
 	$(HTTP_CODE_CURL) http://127.0.0.1/auth/Shibboleth.sso/Metadata | $(200)
 	! curl -sS http://127.0.0.1/Shibboleth.sso/Metadata | diff -q - Metadata.default
 	curl -sS http://127.0.0.1/auth/Shibboleth.sso/Metadata | diff -q - Metadata.auth
+	$(HTTP_CODE_CURL) http://localhost/auth/shibboleth-sp/main.css | $(200)
 	#
 	# Check elmrsample works
 	@-rm -f cookie.txt
