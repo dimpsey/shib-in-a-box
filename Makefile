@@ -113,7 +113,7 @@ test:
 	# Tests with no cookies
 	@-rm -f cookie.txt
 	$(HTTP_CODE_CURL) $(ELMR_SESSION) | $(400)
-	$(HTTP_CODE_CURL) $(ELMR_LOGOUT)  | $(500) # Should this be a 401?
+	$(HTTP_CODE_CURL) $(ELMR_LOGOUT)  | $(302) # Should this be a 401?
 	$(HTTP_CODE_CURL) $(APP_LOGOUT)   | $(302) # Should this be a 401?
 	# Test that the client's IP is logged not the LB's!
 	curl -o /dev/null -sLH "X-Forwarded-Proto: https" -H "X-Forwarded-For: 1.2.3.4" -H "X-Forwarded-Port: 443" 127.0.0.1
