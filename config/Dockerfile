@@ -35,7 +35,11 @@ RUN mkdir -p /tmp/shibboleth \
 FROM techservicesillinois/shibd-base
 
 ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
-    SHIBSP_CONFIG_TEMPLATE=/etc/shibboleth/shibboleth2.template
+    SHIBSP_CONFIG_TEMPLATE=/etc/shibboleth/shibboleth2.template \
+    SHIBD_LOG=/etc/shibboleth/shibd.logger \
+    MOD_SHIB_LOG=/etc/shibboleth/native.logger \
+    SHIBD_LOG_LEVEL=INFO \
+    MOD_SHIB_LOG_LEVEL=INFO
 
 COPY --from=techservicesillinois/httpd-shibd-builder /config/ /
 COPY --from=golang /go/src/get-shib-keys /usr/local/bin/

@@ -1,12 +1,12 @@
-log4j.rootCategory=INFO, shibd_log
-log4j.category.XMLTooling.XMLObject=INFO
-log4j.category.XMLTooling.KeyInfoResolver=INFO
-log4j.category.Shibboleth.IPRange=INFO
-log4j.category.Shibboleth.PropertySet=INFO
-log4j.category.XMLTooling.libcurl=INFO
-log4j.category.XMLTooling.Signature.Debugger=INFO, sig_log
+log4j.rootCategory=LOG_LEVEL, shibd_log
+log4j.category.XMLTooling.XMLObject=LOG_LEVEL
+log4j.category.XMLTooling.KeyInfoResolver=LOG_LEVEL
+log4j.category.Shibboleth.IPRange=LOG_LEVEL
+log4j.category.Shibboleth.PropertySet=LOG_LEVEL
+log4j.category.XMLTooling.libcurl=LOG_LEVEL
+log4j.category.XMLTooling.Signature.Debugger=LOG_LEVEL, sig_log
 log4j.additivity.XMLTooling.Signature.Debugger=false
-log4j.category.Shibboleth-TRANSACTION=INFO, tran_log
+log4j.category.Shibboleth-TRANSACTION=LOG_LEVEL, tran_log
 log4j.additivity.Shibboleth-TRANSACTION=false
 log4j.appender.shibd_log=org.apache.log4j.RollingFileAppender
 log4j.appender.shibd_log.fileName=/dev/stdout
@@ -24,4 +24,3 @@ log4j.appender.sig_log=org.apache.log4j.FileAppender
 log4j.appender.sig_log.fileName=/dev/stdout
 log4j.appender.sig_log.layout=org.apache.log4j.PatternLayout
 log4j.appender.sig_log.layout.ConversionPattern=sp-signature %m
-

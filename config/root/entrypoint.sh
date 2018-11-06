@@ -2,6 +2,8 @@
 
 set -e
 
+RETURN_CODE=0
+
 function get_ip_addr() {
     # $1 is var to set with IP
     # $2 is hostname to lookup
@@ -25,6 +27,20 @@ function get_ip_addr() {
     eval export $1=$IP
 }
 
+function log_level_test() {
+    # $1 is var to test
+
+    local valid_log_levels="OFF FATAL ERROR WARN INFO DEBUG TRACE ALL"
+
+    if ! [[ " $valid_log_levels " =~ .*\ $1\ .* ]]
+    then
+        echo "$1 should be one of $valid_log_levels"
+        echo "Setting the default log level to INFO"
+        eval export $1=INFO
+        eval export RETURN_CODE=1
+    fi
+}
+
 get_ip_addr HTTPD_IP "$HTTPD_HOSTNAME"
 get_ip_addr SHIBD_IP "$SHIBD_HOSTNAME"
 
@@ -35,4 +51,15 @@ sed -i -e "s/SHIBD_ACL/$HTTPD_IP/g" \
        -e "s/SHIBD_IP/$SHIBD_IP/g" \
     $SHIBSP_CONFIG_TEMPLATE
 
+log_level_test $SHIBD_LOG_LEVEL
+log_level_test $MOD_SHIB_LOG_LEVEL
+
+sed -i -e "s/LOG_LEVEL/$SHIBD_LOG_LEVEL/g" \
+    $SHIBD_LOG
+
+sed -i -e "s/LOG_LEVEL/$MOD_SHIB_LOG_LEVEL/g" \
+    $MOD_SHIB_LOG
+
 mv $SHIBSP_CONFIG_TEMPLATE $SHIBSP_CONFIG
+
+exit $RETURN_CODE
