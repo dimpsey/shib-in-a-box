@@ -32,12 +32,14 @@ function log_level_test() {
 
     local valid_log_levels="OFF FATAL ERROR WARN INFO DEBUG TRACE ALL"
 
-    if ! [[ " $valid_log_levels " =~ .*\ $1\ .* ]]
+    if [ -z "$2" ] || ! [[ " $valid_log_levels " =~ .*\ $2\ .* ]]
     then
-        echo "$1 should be one of $valid_log_levels"
+        echo "$2 should be one of $valid_log_levels"
         echo "Setting the default log level to INFO"
         eval export $1=INFO
         eval export RETURN_CODE=1
+    else
+        eval export $2=$1
     fi
 }
 
@@ -51,8 +53,8 @@ sed -i -e "s/SHIBD_ACL/$HTTPD_IP/g" \
        -e "s/SHIBD_IP/$SHIBD_IP/g" \
     $SHIBSP_CONFIG_TEMPLATE
 
-log_level_test $SHIBD_LOG_LEVEL
-log_level_test $MOD_SHIB_LOG_LEVEL
+log_level_test SHIBD_LOG_LEVEL "$SHIBD_LOG_LEVEL"
+log_level_test MOD_SHIB_LOG_LEVEL "$MOD_SHIB_LOG_LEVEL"
 
 sed -i -e "s/LOG_LEVEL/$SHIBD_LOG_LEVEL/g" \
     $SHIBD_LOG
