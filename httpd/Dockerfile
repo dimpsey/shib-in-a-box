@@ -11,7 +11,8 @@ RUN diff /tmp/sha256sum.common.txt /tmp/sha256sum.builder.txt
 FROM techservicesillinois/httpd-shibd-common
 
 ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
-    LOG_LEVEL=info
+    LOG_LEVEL=info \
+    JK_LOG_LEVEL=info
 
 COPY --from=techservicesillinois/httpd-shibd-builder /httpd/ /
 COPY --from=techservicesillinois/http-status /healthcheck /
