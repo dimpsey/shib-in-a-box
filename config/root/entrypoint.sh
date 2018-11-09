@@ -38,8 +38,6 @@ function log_level_test() {
         echo "Setting the default log level to INFO"
         eval export $1=INFO
         eval export RETURN_CODE=1
-    else
-        eval export $2=$1
     fi
 }
 
