@@ -33,21 +33,25 @@ http-status:
 login:
 	docker login
 
-push: .push.base .push.cron .push.shibd .push.httpd
+push: .push.base .push.cron .push.shibd .push.config .push.httpd
 
-.push.base: .base
+.push.base: base
 	docker push techservicesillinois/shibd-base
 	@touch $@
 
-.push.cron: .cron
+.push.cron: cron
 	docker push techservicesillinois/shib-data-sealer
 	@touch $@
 
-.push.shibd: .shibd
+.push.shibd: shibd
 	docker push techservicesillinois/shibd
 	@touch $@
 
-.push.httpd: .httpd
+.push.config: config
+	docker push techservicesillinois/shibd-config
+	@touch $@
+
+.push.httpd: httpd
 	docker push techservicesillinois/httpd
 	@touch $@
 
