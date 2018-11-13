@@ -41,6 +41,8 @@ function log_level_test() {
     fi
 }
 
+[[ -z "$ENTITY_ID" ]] && echo "ENTITY_ID not set!" && exit 1
+
 get_ip_addr HTTPD_IP "$HTTPD_HOSTNAME"
 get_ip_addr SHIBD_IP "$SHIBD_HOSTNAME"
 
@@ -49,6 +51,7 @@ get_ip_addr SHIBD_IP "$SHIBD_HOSTNAME"
 
 sed -i -e "s/SHIBD_ACL/$HTTPD_IP/g" \
        -e "s/SHIBD_IP/$SHIBD_IP/g" \
+       -e "s;ENTITY_ID;$ENTITY_ID;g" \
     $SHIBSP_CONFIG_TEMPLATE
 
 log_level_test SHIBD_LOG_LEVEL "$SHIBD_LOG_LEVEL"

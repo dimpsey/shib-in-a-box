@@ -7,13 +7,11 @@
 
     <TCPListener address="SHIBD_IP" port="1600" acl="SHIBD_ACL"/>
 
-    <!-- TODO change this to work with cron container -->
     <DataSealer type="Versioned" path="/var/shib-keys/keys"/>
     <SessionCache type="StorageService" persistedAttributes="eppn displayName"/>
 
     <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
-    <!-- TODO: Should get entityId from environmet -->
-    <ApplicationDefaults entityID="https://multi-service.as-test.techservices.illinois.edu/shibboleth"
+    <ApplicationDefaults entityID="ENTITY_ID"
                          REMOTE_USER="eppn persistent-id targeted-id"
                          cipherSuites="ECDHE+AESGCM:ECDHE:!aNULL:!eNULL:!LOW:!EXPORT:!RC4:!SHA:!SSLv2">
 
