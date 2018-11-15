@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><!-- InstanceBegin template="/Templates/CampusSB.dwt" codeOutsideHTMLIsLocked="false" -->
 	<head>
     	<!-- InstanceBeginEditable name="PageTitle" -->
-		<title>Partial Logout</title>
+		<title>Authorization Failed</title>
 		<!-- InstanceEndEditable -->
 <style>
 /* http://meyerweb.com/eric/tools/css/reset/ */
@@ -218,7 +218,9 @@ container {
 		
         <!-- #include virtual="../includes/head.html" -->
 
-        <!-- InstanceBeginEditable name="head" --><!-- InstanceEndEditable -->
+        <!-- InstanceBeginEditable name="head" -->
+		
+		<!-- InstanceEndEditable -->
 </head>
 	<body>
 	
@@ -228,8 +230,8 @@ container {
 			<div id="top_bar">
 				<div id="imark">&nbsp;</div>
                 
-				<!-- InstanceBeginEditable name="PageTitleRepeat" -->
-				<div id="page_title">Partial Logout</div>
+<!-- InstanceBeginEditable name="PageTitleRepeat" -->
+				<div id="page_title">Authorization Failed</div>
                 <!-- InstanceEndEditable -->
 
 			</div>
@@ -240,10 +242,15 @@ container {
 		<div id="content">
 		<!-- InstanceBeginEditable name="Content" -->
 
-<img src="<shibmlp logoLocation/>" alt="Logo" />
+<p>
+Based on the information provided to this application about you, you are
+not authorized to access the resource at "<shibmlp requestURL/>"
+</p>
 
-<p>You remain logged into one or more applications accessed during your session.
-To complete the logout process, please close/exit your browser completely.</p>
+<p>
+Please contact the administrator of this service or application if you
+believe this to be an error at <a href="mailto:<shibmlp supportContact/>"><shibmlp supportContact/></a>
+</p>
 
 <!-- InstanceEndEditable -->
 		</div>
