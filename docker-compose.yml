@@ -92,6 +92,7 @@ services:
       - frontend
       - backend
   service:
+    read_only: true
     image: techservicesillinois/elmrsample
     environment:
       REDIS_HOSTNAME: redis
@@ -99,6 +100,8 @@ services:
       - "8081:8081"
     networks:
       - frontend
+    tmpfs:
+      - /tmp
 networks:
   frontend:
   backend:
