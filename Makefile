@@ -125,8 +125,9 @@ test:
 	#
 	# Test redirects - Do we want to test this? Should config be disabled by
 	# default?
-	# $(REDIRECT_CURL) http://127.0.0.1/elmrsample/config | $(REDIRECT_TEST)
-	# $(REDIRECT_CURL) http://127.0.0.1/auth/elmr/config | $(REDIRECT_TEST)
+	# $(REDIRECT_CURL) http://127.0.0.1/elmrsample/config | $(302)
+	# $(REDIRECT_CURL) http://127.0.0.1/auth/elmr/config | $(302)
+	$(HTTP_CODE_CURL) http://127.0.0.1/auth/elmr/config | $(200)
 
 .drone.yml.sig: .drone.yml
 	drone sign cites-illinois/illinois-shibboleth-sp-img
