@@ -6,6 +6,15 @@ export ORG := techservicesillinois/
 
 all: config cron shibd httpd .drone.yml.sig
 
+up: all
+	docker-compose up -d
+
+reload: down all
+	docker-compose up -d
+
+down:
+	docker-compose down
+
 builder:
 	make -C $@
 

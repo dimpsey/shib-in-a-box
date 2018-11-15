@@ -9,6 +9,7 @@ services:
     networks:
       - frontend
   httpd:
+    read_only: true
     environment:
       ELMR_HOSTNAME: elmr
       LB_HOSTNAME: alb
@@ -18,6 +19,8 @@ services:
       eppn: jkdoe@illinois.edu
     depends_on:
       - config
+    tmpfs:
+      - /tmp
     volumes_from:
       - config:ro
     build:
@@ -27,6 +30,7 @@ services:
       - frontend
       - backend
   shibd:
+    read_only: true
     build:
       context: shibd
     image: techservicesillinois/shibd
@@ -35,6 +39,8 @@ services:
       - cron
     networks:
       - backend
+    tmpfs:
+      - /tmp
     volumes_from:
       - config:ro
       - cron:ro
@@ -54,6 +60,7 @@ services:
     volumes:
       - ~/.aws:/var/run/shibboleth/.aws:ro
   cron:
+    read_only: true
     environment:
       - SECRET_ID=shib-test5
       - SCHEDULE=* * * * *
@@ -66,12 +73,15 @@ services:
     networks:
       - frontend
   elmr:
-    image: techservicesillinois/elmr
-    ports:
-      - "8009:8009"
+    read_only: true
     environment:
       REDIS_HOSTNAME: redis
       DISABLE_SECURE_COOKIES: 'true'
+    image: techservicesillinois/elmr
+    ports:
+      - "8009:8009"
+    tmpfs:
+      - /tmp
     networks:
       - backend
   redis:
