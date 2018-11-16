@@ -9,7 +9,6 @@ services:
     networks:
       - frontend
   httpd:
-    read_only: true
     environment:
       ELMR_HOSTNAME: elmr
       LB_HOSTNAME: alb

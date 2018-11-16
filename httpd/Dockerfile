@@ -16,7 +16,11 @@ ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
 
 COPY --from=techservicesillinois/httpd-shibd-builder /httpd/ /
 COPY --from=techservicesillinois/http-status /healthcheck /
-COPY root/ /
+
+# TODO: this is a workaround. so we can remove files
+# refactor all configuration into a seperate container. so this 
+# container can read-only
+COPY --chown=apache:apache root/ /
 
 USER apache
 EXPOSE 8080
