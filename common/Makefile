@@ -1,7 +1,7 @@
 .PHONY: all image push pull clean
 
 SRCS := Dockerfile ../base/.image
-IMAGE:= $(ORG)httpd-shibd-common
+IMAGE:= $(ORG)shibd-common
 
 all: image
 

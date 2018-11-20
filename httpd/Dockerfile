@@ -1,6 +1,6 @@
 FROM alpine
 
-COPY --from=techservicesillinois/httpd-shibd-common /sha256sum.txt /tmp/sha256sum.common.txt
+COPY --from=techservicesillinois/shibd-common /sha256sum.txt /tmp/sha256sum.common.txt
 COPY --from=techservicesillinois/shibd-builder /base/sha256sum.txt /tmp/sha256sum.builder.txt
 
 # Check for possiable race conditions during build
@@ -8,7 +8,7 @@ RUN diff /tmp/sha256sum.common.txt /tmp/sha256sum.builder.txt
 
 ##########################################
 
-FROM techservicesillinois/httpd-shibd-common
+FROM techservicesillinois/shibd-common
 
 ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
     LOG_LEVEL=info \
