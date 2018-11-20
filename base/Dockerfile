@@ -1,3 +1,3 @@
 FROM scratch
 
-COPY --from=techservicesillinois/httpd-shibd-builder /base/ /
+COPY --from=techservicesillinois/shibd-builder /base/ /

@@ -1,7 +1,7 @@
 FROM alpine
 
 COPY --from=techservicesillinois/shibd-base /sha256sum.txt /tmp/sha256sum.base.txt
-COPY --from=techservicesillinois/httpd-shibd-builder /base/sha256sum.txt /tmp/sha256sum.builder.txt
+COPY --from=techservicesillinois/shibd-builder /base/sha256sum.txt /tmp/sha256sum.builder.txt
 
 # Check for possiable race conditions during build
 RUN diff /tmp/sha256sum.base.txt /tmp/sha256sum.builder.txt
@@ -41,7 +41,7 @@ ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
     SHIBD_LOG_LEVEL=INFO \
     MOD_SHIB_LOG_LEVEL=INFO
 
-COPY --from=techservicesillinois/httpd-shibd-builder /config/ /
+COPY --from=techservicesillinois/shibd-builder /config/ /
 COPY --from=golang /go/src/get-shib-keys /usr/local/bin/
 COPY --chown=shibd:shibd --from=itrust /tmp/shibboleth/ /etc/shibboleth/
 

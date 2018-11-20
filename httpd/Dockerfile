@@ -1,7 +1,7 @@
 FROM alpine
 
 COPY --from=techservicesillinois/httpd-shibd-common /sha256sum.txt /tmp/sha256sum.common.txt
-COPY --from=techservicesillinois/httpd-shibd-builder /base/sha256sum.txt /tmp/sha256sum.builder.txt
+COPY --from=techservicesillinois/shibd-builder /base/sha256sum.txt /tmp/sha256sum.builder.txt
 
 # Check for possiable race conditions during build
 RUN diff /tmp/sha256sum.common.txt /tmp/sha256sum.builder.txt
@@ -14,7 +14,7 @@ ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
     LOG_LEVEL=info \
     JK_LOG_LEVEL=info
 
-COPY --from=techservicesillinois/httpd-shibd-builder /httpd/ /
+COPY --from=techservicesillinois/shibd-builder /httpd/ /
 COPY --from=techservicesillinois/http-status /healthcheck /
 
 # TODO: this is a workaround. so we can remove files
