@@ -1,7 +1,7 @@
 .PHONY: all image push pull clean
 
 SRCS := Dockerfile get-sealer-keys/get-sealer-keys.go get-sealer-keys/Makefile healthcheck/healthcheck.go healthcheck/Makefile
-IMAGE:= $(ORG)shib-data-sealer
+IMAGE:= $(ORG)shibd-cron
 
 all: image
 

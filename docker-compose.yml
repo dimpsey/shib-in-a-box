@@ -67,7 +67,7 @@ services:
       - LOG_LEVEL=INFO
     build:
       context: cron
-    image: techservicesillinois/shib-data-sealer
+    image: techservicesillinois/shibd-cron
     volumes:
       - ~/.aws:/var/run/shibboleth/.aws:ro
     networks:

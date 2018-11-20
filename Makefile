@@ -49,7 +49,7 @@ push: .push.base .push.cron .push.shibd .push.config .push.httpd
 	@touch $@
 
 .push.cron: cron
-	docker push techservicesillinois/shib-data-sealer
+	docker push techservicesillinois/shibd-cron
 	@touch $@
 
 .push.shibd: shibd
@@ -66,7 +66,7 @@ push: .push.base .push.cron .push.shibd .push.config .push.httpd
 
 pull:
 	docker pull techservicesillinois/shibd-base
-	docker pull techservicesillinois/shib-data-sealer
+	docker pull techservicesillinois/shibd-cron
 	docker pull techservicesillinois/shibd
 	docker pull techservicesillinois/httpd
 
