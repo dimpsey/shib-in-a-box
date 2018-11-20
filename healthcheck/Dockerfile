@@ -9,4 +9,4 @@ RUN make deps && make && make compress
 ############################
 FROM scratch
 
-COPY --from=builder /go/src/http-status /healthcheck
+COPY --from=builder /go/src/healthcheck /healthcheck

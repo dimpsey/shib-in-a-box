@@ -1,4 +1,4 @@
-.PHONY: all builder base common cron http-status shibd httpd login push pull clean
+.PHONY: all builder base common cron healthcheck shibd httpd login push pull clean
 
 MAKEFLAGS='-j 4'
 
@@ -33,10 +33,10 @@ cron:
 shibd: common
 	make -C $@
 
-httpd: common http-status
+httpd: common healthcheck
 	make -C $@
 
-http-status:
+healthcheck:
 	make -C $@ image
 
 login:
@@ -150,5 +150,5 @@ clean:
 	make clean -C common
 	make clean -C base
 	make clean -C builder
-	make clean -C http-status
+	make clean -C healthcheck
 	-rm -f cookie.txt

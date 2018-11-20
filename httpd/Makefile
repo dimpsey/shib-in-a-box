@@ -4,7 +4,7 @@
 rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
 ROOT := $(call rwildcard,root,*)
-SRCS := Dockerfile $(ROOT) ../http-status/.image ../common/.image
+SRCS := Dockerfile $(ROOT) ../healthcheck/.image ../common/.image
 IMAGE:= $(ORG)httpd
 
 all: image

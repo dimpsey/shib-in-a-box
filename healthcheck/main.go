@@ -1,4 +1,4 @@
-// http-status is used to check the http status code returned by a website.
+// healthcheck is used to check the http status code returned by a website.
 // This is command is intended to be used as Docker health check for web
 // services.
 //
@@ -42,7 +42,7 @@ func args() ([]string, []string, Args) {
 		"Check expected status code is returned.")
 
 	flag.Usage = func() {
-		fmt.Fprintln(os.Stderr, "Usage: http-status URL1 URL2 ... URLN")
+		fmt.Fprintln(os.Stderr, "Usage: healthcheck URL1 URL2 ... URLN")
 		flag.PrintDefaults()
 	}
 

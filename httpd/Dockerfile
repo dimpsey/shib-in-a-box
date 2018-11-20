@@ -15,7 +15,7 @@ ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
     JK_LOG_LEVEL=info
 
 COPY --from=techservicesillinois/shibd-builder /httpd/ /
-COPY --from=techservicesillinois/http-status /healthcheck /
+COPY --from=techservicesillinois/healthcheck /healthcheck /
 
 # TODO: this is a workaround. so we can remove files
 # refactor all configuration into a seperate container. so this 

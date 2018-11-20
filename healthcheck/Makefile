@@ -1,6 +1,6 @@
 .PHONY: all image push pull clean compress
 
-BUILD := http-status
+BUILD := healthcheck
 DEPS := $(wildcard *.go)
 
 SRCS := Dockerfile $(DEP)
