@@ -1,21 +1,30 @@
+ARG  TAG=latest
+
+FROM techservicesillinois/shibd-common:$TAG as common
+FROM techservicesillinois/shibd-builder:$TAG as builder
+FROM techservicesillinois/healthcheck:$TAG as healthcheck
+
+##########################################
+
 FROM alpine
 
-COPY --from=techservicesillinois/shibd-common /sha256sum.txt /tmp/sha256sum.common.txt
-COPY --from=techservicesillinois/shibd-builder /base/sha256sum.txt /tmp/sha256sum.builder.txt
+COPY --from=common /sha256sum.txt /tmp/sha256sum.common.txt
+COPY --from=builder /base/sha256sum.txt /tmp/sha256sum.builder.txt
 
 # Check for possiable race conditions during build
 RUN diff /tmp/sha256sum.common.txt /tmp/sha256sum.builder.txt
 
 ##########################################
 
-FROM techservicesillinois/shibd-common
+FROM common
 
+ARG TAG
 ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
     LOG_LEVEL=info \
     JK_LOG_LEVEL=info
 
-COPY --from=techservicesillinois/shibd-builder /httpd/ /
-COPY --from=techservicesillinois/healthcheck /healthcheck /
+COPY --from=builder /httpd/ /
+COPY --from=healthcheck /healthcheck /
 
 # TODO: this is a workaround. so we can remove files
 # refactor all configuration into a seperate container. so this 

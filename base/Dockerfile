@@ -1,3 +1,9 @@
+ARG  TAG=latest
+
+FROM techservicesillinois/shibd-builder:${TAG} as builder
+
+###########
+
 FROM scratch
 
-COPY --from=techservicesillinois/shibd-builder /base/ /
+COPY --from=builder /base/ /

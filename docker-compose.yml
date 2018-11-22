@@ -1,13 +1,17 @@
 version: "2"
 services:
   alb:
-    image: nginx:1.14
+    read_only: true
+    image: nginx:1.14-alpine
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:8080"
     networks:
       - frontend
+    tmpfs:
+      - /var/run/nginx
+      - /var/cache/nginx
   httpd:
     environment:
       ELMR_HOSTNAME: elmr
@@ -23,17 +27,13 @@ services:
       - /tmp
     volumes_from:
       - config:ro
-    build:
-      context: httpd
-    image: techservicesillinois/httpd
+    image: $ORG/httpd:$SHIB_IN_A_BOX_TAG
     networks:
       - frontend
       - backend
   shibd:
     read_only: true
-    build:
-      context: shibd
-    image: techservicesillinois/shibd
+    image: $ORG/shibd:$SHIB_IN_A_BOX_TAG
     depends_on:
       - config
       - cron
@@ -45,9 +45,7 @@ services:
       - config:ro
       - cron:ro
   config:
-    build:
-      context: shibd
-    image: techservicesillinois/shibd-config
+    image: $ORG/shibd-config:$SHIB_IN_A_BOX_TAG
     environment:
       HTTPD_HOSTNAME: httpd
       SHIBD_HOSTNAME: shibd
@@ -65,9 +63,7 @@ services:
       - SECRET_ID=shib-test5
       - SCHEDULE=* * * * *
       - LOG_LEVEL=INFO
-    build:
-      context: cron
-    image: techservicesillinois/shibd-cron
+    image: $ORG/shibd-cron:$SHIB_IN_A_BOX_TAG
     volumes:
       - ~/.aws:/var/run/shibboleth/.aws:ro
     networks:
@@ -77,7 +73,7 @@ services:
     environment:
       REDIS_HOSTNAME: redis
       DISABLE_SECURE_COOKIES: 'true'
-    image: techservicesillinois/elmr
+    image: $ORG/elmr:${ELMR_TAG}
     ports:
       - "8009:8009"
     tmpfs:
@@ -93,7 +89,7 @@ services:
       - backend
   service:
     read_only: true
-    image: techservicesillinois/elmrsample
+    image: $ORG/elmrsample:${ELMRSAMPLE_TAG}
     environment:
       REDIS_HOSTNAME: redis
     ports: 

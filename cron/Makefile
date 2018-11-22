@@ -1,23 +1,4 @@
-.PHONY: all image push pull clean
-
 SRCS := Dockerfile get-sealer-keys/get-sealer-keys.go get-sealer-keys/Makefile healthcheck/healthcheck.go healthcheck/Makefile
-IMAGE:= $(ORG)shibd-cron
+NAME := shibd-cron
 
-all: image
-
-image: .image
-.image: $(SRCS)
-	docker build -f Dockerfile -t $(IMAGE) .
-	@touch $@
-
-push: .push
-.push: image
-	docker push $(IMAGE)
-	@touch $@
-
-pull:
-	docker pull $(IMAGE)
-
-clean:
-	-docker rmi $(IMAGE)
-	-rm -f .image .push
+include ../Common.mk

@@ -2,24 +2,22 @@
 
 A Docker image of the Illinois Shibboleth Service Provider (SP).
 
-## Installation and Execution
+## Developer build and test
 
-**NOTE**: The image name is arbitrary. For this document, we'll name the image `illinois-shib-sp-img`.
+To build all the images locally for development run the following command:
+```
+$ make up
+$ make test
+$ make down
+```
 
-1. From the project directory, run:
+The images will be tagged with the 'local' tag.
 
-        docker build -t illinois-shib-sp-img .
+## Docker Hub build and test
 
-1. Run the container
-
-        docker run illinois-shib-sp-img
-
-## TODO
-
-### 4 Shibboleth Configuraiton Files that Need to be Changed:
-
-1. `sp-cert.pem`
-1. `sp-key.pem`
-1. `shibboleth2.xml` needs to be customized (normally user-provided).
-1. `attribute-map.xml` needs to be customized (normally user-provided).
-
+To download and test the latest containers as they exist on Docker Hub type:
+```
+$ docker-compose up -d
+$ make test
+$ docker-compose down
+```

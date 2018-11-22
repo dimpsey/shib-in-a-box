@@ -1,7 +1,14 @@
+ARG  TAG=latest
+
+FROM techservicesillinois/shibd-base:$TAG as base
+FROM techservicesillinois/shibd-builder:$TAG as builder
+
+##########################################
+
 FROM alpine
 
-COPY --from=techservicesillinois/shibd-base /sha256sum.txt /tmp/sha256sum.base.txt
-COPY --from=techservicesillinois/shibd-builder /base/sha256sum.txt /tmp/sha256sum.builder.txt
+COPY --from=base /sha256sum.txt /tmp/sha256sum.base.txt
+COPY --from=builder /base/sha256sum.txt /tmp/sha256sum.builder.txt
 
 # Check for possiable race conditions during build
 RUN diff /tmp/sha256sum.base.txt /tmp/sha256sum.builder.txt
@@ -32,7 +39,9 @@ RUN mkdir -p /tmp/shibboleth \
 
 ####################################
 
-FROM techservicesillinois/shibd-base
+FROM base
+
+ARG TAG
 
 ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
     SHIBSP_CONFIG_TEMPLATE=/etc/shibboleth/shibboleth2.template \
@@ -41,7 +50,7 @@ ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
     SHIBD_LOG_LEVEL=INFO \
     MOD_SHIB_LOG_LEVEL=INFO
 
-COPY --from=techservicesillinois/shibd-builder /config/ /
+COPY --from=builder /config/ /
 COPY --from=golang /go/src/get-shib-keys /usr/local/bin/
 COPY --chown=shibd:shibd --from=itrust /tmp/shibboleth/ /etc/shibboleth/
 

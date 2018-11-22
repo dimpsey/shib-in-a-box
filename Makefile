@@ -1,10 +1,13 @@
-.PHONY: all builder base common cron healthcheck shibd httpd login push pull clean
+IMAGES := builder base common config cron shibd httpd healthcheck
+CLEAN := $(addsuffix .clean,$(IMAGES))
+.PHONY: all login push pull clean $(IMAGES)
 
 MAKEFLAGS='-j 4'
 
-export ORG := techservicesillinois/
+export TAG := local
+export SHIB_IN_A_BOX_TAG := $(TAG)
 
-all: config cron shibd httpd .drone.yml.sig
+all: $(IMAGES) .drone.yml.sig
 
 up: all
 	docker-compose up -d
@@ -15,29 +18,28 @@ reload: down all
 down:
 	docker-compose down
 
-builder:
-	make -C $@
-
 base: builder
-	make -C $@
-
-common: base
-	make -C $@
-
 config: base
-	make -C $@
-
-cron:
-	make -C $@
-
+common: base
 shibd: common
-	make -C $@
-
 httpd: common healthcheck
+
+$(IMAGES):
 	make -C $@
 
-healthcheck:
-	make -C $@ image
+.drone.yml.sig: .drone.yml
+	drone sign cites-illinois/illinois-shibboleth-sp-img
+	git add $^ $@
+
+builder.clean: base.clean
+base.clean: common.clean config.clean
+common.clean: shibd.clean httpd.clean
+
+clean: $(CLEAN)
+	-rm -f cookie.txt
+
+%.clean:
+	make clean -C $*
 
 login:
 	docker login
@@ -137,18 +139,3 @@ test:
 	# $(REDIRECT_CURL) http://127.0.0.1/elmrsample/config | $(302)
 	# $(REDIRECT_CURL) http://127.0.0.1/auth/elmr/config | $(302)
 	$(HTTP_CODE_CURL) http://127.0.0.1/auth/elmr/config | $(200)
-
-.drone.yml.sig: .drone.yml
-	drone sign cites-illinois/illinois-shibboleth-sp-img
-	git add $^ $@
-
-clean:
-	make clean -C config
-	make clean -C cron
-	make clean -C httpd
-	make clean -C shibd
-	make clean -C common
-	make clean -C base
-	make clean -C builder
-	make clean -C healthcheck
-	-rm -f cookie.txt
