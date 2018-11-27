@@ -34,8 +34,7 @@
             <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
         </Sessions>
 
-        <Errors supportContact="root@localhost"
-            helpLocation="/about.html"
+        <Errors supportContact="SUPPORT_CONTACT"
             styleSheet="/auth/shibboleth-sp/main.css"/>
         
          <MetadataProvider type="XML" url="https://discovery.itrust.illinois.edu/itrust-metadata/itrust-metadata.xml"

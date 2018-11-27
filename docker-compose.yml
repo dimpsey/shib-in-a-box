@@ -53,6 +53,7 @@ services:
       SHIBD_LOG_LEVEL: INFO
       MOD_SHIB_LOG_LEVEL: INFO
       ENTITY_ID: https://multi-service.as-test.techservices.illinois.edu/shibboleth
+      SUPPORT_CONTACT: root@localhost
     networks:
       - backend
     volumes:
