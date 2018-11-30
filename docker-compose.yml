@@ -20,7 +20,7 @@ services:
       NO_SHIBD: "True"
       displayName: John Doe
       eppn: jkdoe@illinois.edu
-      Shib_Session_ID: 1234
+      Shib-Session-ID: 1234
     depends_on:
       - config
     tmpfs:
