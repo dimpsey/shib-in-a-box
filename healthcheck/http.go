@@ -9,7 +9,7 @@ import (
 
 func httpClient(code int, url string, args Args) error {
 	var err error
-	var resp *http.Response
+	var method string
 
 	// disable redirects
 	client := &http.Client{
@@ -20,11 +20,18 @@ func httpClient(code int, url string, args Args) error {
 
 REDIRECT:
 	if args.get {
-		resp, err = client.Get(url)
+		method = "GET"
 	} else {
-		resp, err = client.Head(url)
+		method = "HEAD"
 	}
 
+	req, err := http.NewRequest(method, url, nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("User-Agent", "HTTP/Healthcheck")
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return err
 	}
