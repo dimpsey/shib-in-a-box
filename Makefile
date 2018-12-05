@@ -72,6 +72,9 @@ pull:
 	docker pull techservicesillinois/shibd
 	docker pull techservicesillinois/httpd
 
+ps:
+	docker-compose ps
+
 CURL=curl -sS -o /dev/null
 REDIRECT_CURL=$(CURL) -b cookie.txt -c cookie.txt -w "%{http_code} %{redirect_url}"
 HTTP_CODE_CURL=$(CURL) -w "%{http_code}"
