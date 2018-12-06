@@ -13,6 +13,7 @@ services:
       - /var/run/nginx
       - /var/cache/nginx
   httpd:
+    read_only: true
     environment:
       ELMR_HOSTNAME: elmr
       LB_HOSTNAME: alb
@@ -39,8 +40,6 @@ services:
       - cron
     networks:
       - backend
-    tmpfs:
-      - /tmp
     volumes_from:
       - config:ro
       - cron:ro
@@ -77,8 +76,6 @@ services:
     image: $ORG/elmr:${ELMR_TAG}
     ports:
       - "8009:8009"
-    tmpfs:
-      - /tmp
     networks:
       - backend
   redis:
