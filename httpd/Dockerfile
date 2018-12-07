@@ -1,8 +1,9 @@
 ARG  TAG=latest
+ARG  HEALTHCHECK_TAG=latest
 
 FROM techservicesillinois/shibd-common:$TAG as common
 FROM techservicesillinois/shibd-builder:$TAG as builder
-FROM techservicesillinois/healthcheck:$TAG as healthcheck
+FROM techservicesillinois/healthcheck:$HEALTHCHECK_TAG as healthcheck
 
 ##########################################
 

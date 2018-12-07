@@ -1,4 +1,4 @@
-IMAGES := builder base common config cron shibd httpd healthcheck
+IMAGES := builder base common config cron shibd httpd
 CLEAN := $(addsuffix .clean,$(IMAGES))
 .PHONY: all login push pull clean $(IMAGES)
 
@@ -22,7 +22,7 @@ base: builder
 config: base
 common: base
 shibd: common
-httpd: common healthcheck
+httpd: common
 
 $(IMAGES):
 	make -C $@
