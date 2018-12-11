@@ -102,7 +102,7 @@ APP_LOGOUT=http://127.0.0.1/elmrsample/logout
 # OK
 200=grep -q 200
 
-test:
+assert:
 	# Expect no content at /
 	$(HTTP_CODE_CURL) http://127.0.0.1 | $(403)
 	# Make sure no welcome page is returned!
