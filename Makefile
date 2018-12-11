@@ -137,6 +137,9 @@ assert:
 	# Test that the client's IP is logged not the LB's!
 	# Note the client IP is hardcoded in the ALB as 1.2.3.4
 	docker-compose logs httpd   | grep -q $(CLIENT_IP)
+	docker-compose logs elmr    | grep -q $(CLIENT_IP) || sleep 1 ; echo "Let's try again!"
+	docker-compose logs elmr    | grep -q $(CLIENT_IP) || sleep 2 ; echo "Let's try again!"
+	docker-compose logs elmr    | grep -q $(CLIENT_IP) || sleep 4 ; echo "Let's try again!"
 	docker-compose logs elmr    | grep -q $(CLIENT_IP)
 	docker-compose logs service | grep -q $(CLIENT_IP)
 	# Ensure httpd redirects when X-Forwarded-Proto is set to http
