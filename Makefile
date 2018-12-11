@@ -139,6 +139,9 @@ assert:
 	docker-compose logs httpd   | grep -q $(CLIENT_IP)
 	docker-compose logs elmr    | grep -q $(CLIENT_IP)
 	docker-compose logs service | grep -q $(CLIENT_IP)
+	# Ensure httpd redirects when X-Forwarded-Proto is set to http
+	# We must connect directly to the httpd container by passing the ALB
+	$(REDIRECT_CURL) -H "X-Forwarded-Proto: http" -H "X-Forwarded-For: 1.2.3.4" -H "X-Forwarded-Port: 443" 127.0.0.1:8080 | grep -q "301 https://127.0.0.1:8080/"
 	#
 	# Test redirects - Do we want to test this? Should config be disabled by
 	# default?

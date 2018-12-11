@@ -22,6 +22,8 @@ services:
       displayName: John Doe
       eppn: jkdoe@illinois.edu
       Shib-Session-ID: 1234
+    ports:
+      - "8080:8080"
     depends_on:
       - config
     tmpfs:
