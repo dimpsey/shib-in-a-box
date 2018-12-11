@@ -1,6 +1,6 @@
 IMAGES := builder base common config cron shibd httpd
 CLEAN := $(addsuffix .clean,$(IMAGES))
-.PHONY: all login push pull clean $(IMAGES)
+.PHONY: all login push pull test clean $(IMAGES)
 
 MAKEFLAGS='-j 4'
 
@@ -75,6 +75,7 @@ pull:
 ps:
 	docker-compose ps
 
+CLIENT_IP="1.2.3.4"
 CURL=curl -sS -o /dev/null
 REDIRECT_CURL=$(CURL) -b cookie.txt -c cookie.txt -w "%{http_code} %{redirect_url}"
 HTTP_CODE_CURL=$(CURL) -w "%{http_code}"
@@ -134,8 +135,10 @@ assert:
 	$(HTTP_CODE_CURL) $(ELMR_LOGOUT)  | $(302)
 	$(HTTP_CODE_CURL) $(APP_LOGOUT)   | $(302)
 	# Test that the client's IP is logged not the LB's!
-	curl -o /dev/null -sLH "X-Forwarded-Proto: https" -H "X-Forwarded-For: 1.2.3.4" -H "X-Forwarded-Port: 443" 127.0.0.1
-	docker-compose logs httpd | grep -q 1.2.3.4
+	# Note the client IP is hardcoded in the ALB as 1.2.3.4
+	docker-compose logs httpd   | grep -q $(CLIENT_IP)
+	docker-compose logs elmr    | grep -q $(CLIENT_IP)
+	docker-compose logs service | grep -q $(CLIENT_IP)
 	#
 	# Test redirects - Do we want to test this? Should config be disabled by
 	# default?
