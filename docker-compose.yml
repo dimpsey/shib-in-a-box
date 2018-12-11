@@ -18,6 +18,7 @@ services:
       ELMR_HOSTNAME: elmr
       LB_HOSTNAME: alb
       ENABLE_ELMR_CONFIG: "True"
+      ENABLE_ENVIRONMENT_PAGE: "True"
       NO_SHIBD: "True"
       displayName: John Doe
       eppn: jkdoe@illinois.edu

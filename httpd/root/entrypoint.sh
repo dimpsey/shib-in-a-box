@@ -10,6 +10,7 @@ TIME=0.1
 
 # By default, disable elmr_config
 [[ -z "$ENABLE_ELMR_CONFIG" ]] && rm /etc/httpd/conf.d/elmr_config.conf
+[[ -z "$ENABLE_ENVIRONMENT_PAGE" ]] && rm /etc/httpd/conf.d/environment.conf
 
 echo "Waiting for $SHIBSP_CONFIG..."
 while [ ! -s "$SHIBSP_CONFIG" ]; do
