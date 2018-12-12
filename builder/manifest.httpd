@@ -1,5 +1,4 @@
 /bin/rm
-/etc/httpd/modules/mod_access_compat.so
 /etc/httpd/modules/mod_alias.so
 /etc/httpd/modules/mod_authn_core.so
 /etc/httpd/modules/mod_authz_core.so
