@@ -13,7 +13,6 @@ services:
       - /var/run/nginx
       - /var/cache/nginx
   httpd:
-    read_only: true
     environment:
       ELMR_HOSTNAME: elmr
       LB_HOSTNAME: alb
@@ -27,8 +26,6 @@ services:
       - "8080:8080"
     depends_on:
       - config
-    tmpfs:
-      - /tmp
     volumes_from:
       - config:ro
     image: $ORG/httpd:$SHIB_IN_A_BOX_TAG
