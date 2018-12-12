@@ -17,9 +17,9 @@ services:
     environment:
       ELMR_HOSTNAME: elmr
       LB_HOSTNAME: alb
-      ENABLE_ELMR_CONFIG: "True"
-      ENABLE_ENVIRONMENT_PAGE: "True"
-      NO_SHIBD: "True"
+      ENABLE_ELMR_CONFIG: $ENABLE_ELMR_CONFIG
+      ENABLE_ENVIRONMENT_PAGE: $ENABLE_ENVIRONMENT_PAGE
+      NO_SHIBD: $ENABLE_MOCK_SHIBD
       displayName: John Doe
       eppn: jkdoe@illinois.edu
       Shib-Session-ID: 1234
