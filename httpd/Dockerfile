@@ -21,8 +21,7 @@ FROM common
 
 ARG TAG
 ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
-    LOG_LEVEL=info \
-    JK_LOG_LEVEL=info
+    LOG_LEVEL=info
 
 COPY --from=builder /httpd/ /
 COPY --from=healthcheck /healthcheck /
