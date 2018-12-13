@@ -1,13 +1,19 @@
-IMAGES := builder base common config cron shibd httpd
-CLEAN := $(addsuffix .clean,$(IMAGES))
-.PHONY: all login push pull test clean $(IMAGES)
+export TAG := $(USER)
+export ORG := techservicesillinois
+export SHIB_IN_A_BOX_TAG := $(TAG)
+
+IMAGES := shibd-cron shibd-config shibd httpd
+PUSH := $(addsuffix .push, $(IMAGES))
+PULL := $(addsuffix .pull, $(IMAGES))
+
+SRC_DIRS := builder base common config cron shibd httpd
+CLEAN := $(addsuffix .clean,$(SRC_DIRS))
+
+.PHONY: all login push pull test clean $(SRC_DIRS)
 
 MAKEFLAGS='-j 4'
 
-export TAG := local
-export SHIB_IN_A_BOX_TAG := $(TAG)
-
-all: $(IMAGES) .drone.yml.sig
+all: $(SRC_DIRS) .drone.yml.sig
 
 up: all
 	docker-compose up -d
@@ -18,17 +24,20 @@ reload: down all
 down:
 	docker-compose down
 
+ps:
+	docker-compose ps
+
 base: builder
 config: base
 common: base
 shibd: common
 httpd: common
 
-$(IMAGES):
+$(SRC_DIRS):
 	make -C $@
 
 .drone.yml.sig: .drone.yml
-	drone sign cites-illinois/illinois-shibboleth-sp-img
+	drone sign techservicesillinois/shib-in-a-box
 	git add $^ $@
 
 builder.clean: base.clean
@@ -44,36 +53,22 @@ clean: $(CLEAN)
 login:
 	docker login
 
-push: .push.base .push.cron .push.shibd .push.config .push.httpd
+push: $(PUSH)
 
-.push.base: base
-	docker push techservicesillinois/shibd-base
+httpd.push: shibd-config.push
+shibd.push: httpd.push
+
+%.push:
+	docker push $(ORG)/$*:$(TAG)
 	@touch $@
 
-.push.cron: cron
-	docker push techservicesillinois/shibd-cron
-	@touch $@
+pull: $(PULL)
 
-.push.shibd: shibd
-	docker push techservicesillinois/shibd
-	@touch $@
+httpd.pull: shibd-config.pull
+shibd.pull: httpd.pull
 
-.push.config: config
-	docker push techservicesillinois/shibd-config
-	@touch $@
-
-.push.httpd: httpd
-	docker push techservicesillinois/httpd
-	@touch $@
-
-pull:
-	docker pull techservicesillinois/shibd-base
-	docker pull techservicesillinois/shibd-cron
-	docker pull techservicesillinois/shibd
-	docker pull techservicesillinois/httpd
-
-ps:
-	docker-compose ps
+%.pull:
+	docker pull $(ORG)/$*:$(TAG)
 
 RED='\033[0;31m'
 NC='\033[0m' # No Color
@@ -104,6 +99,7 @@ APP_LOGOUT=http://127.0.0.1/elmrsample/logout
 302=grep -q 302
 
 # OK
+204=grep -q 204
 200=grep -q 200
 
 test:
@@ -157,3 +153,4 @@ test:
 	# $(REDIRECT_CURL) http://127.0.0.1/elmrsample/config | $(302)
 	# $(REDIRECT_CURL) http://127.0.0.1/auth/elmr/config | $(302)
 	$(HTTP_CODE_CURL) http://127.0.0.1/auth/elmr/config | $(200)
+	$(HTTP_CODE_CURL) http://localhost:8080/auth/elmr/status | $(204)
