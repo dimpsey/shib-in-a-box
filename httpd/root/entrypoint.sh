@@ -11,7 +11,7 @@ TIME=0.1
 # By default, delete config files used for testing
 [[ -z "$ENABLE_ELMR_CONFIG" ]] && rm /etc/httpd/conf.d/elmr_config.conf
 [[ -z "$ENABLE_ENVIRONMENT_PAGE" ]] && rm /etc/httpd/conf.d/environment.conf
-[[ -z "$NO_SHIBD" ]] && rm /etc/httpd/conf.d/mock_shib.conf
+[[ -z "$ENABLE_MOCK_SHIBD" ]] && rm /etc/httpd/conf.d/mock_shib.conf
 
 echo "Waiting for $SHIBSP_CONFIG..."
 while [ ! -s "$SHIBSP_CONFIG" ]; do

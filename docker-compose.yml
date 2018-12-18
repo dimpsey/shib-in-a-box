@@ -18,7 +18,7 @@ services:
       LB_HOSTNAME: alb
       ENABLE_ELMR_CONFIG: $ENABLE_ELMR_CONFIG
       ENABLE_ENVIRONMENT_PAGE: $ENABLE_ENVIRONMENT_PAGE
-      NO_SHIBD: $ENABLE_MOCK_SHIBD
+      ENABLE_MOCK_SHIBD: $ENABLE_MOCK_SHIBD
       AJP_displayName: John Doe
       AJP_eppn: jkdoe@illinois.edu
       AJP_Shib-Session-ID: 1234
