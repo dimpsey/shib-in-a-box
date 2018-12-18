@@ -29,7 +29,8 @@ def before_all(context):
     core.SET_REQ_VARS(context,
         project_root=PROJECT_DIR,
         test_root=DIR)
-    
+
+    return    
     # TODO: Figure out way to see if aws is availble
     p = subprocess.Popen(['docker-compose', 'up', '-d'], 
         cwd=PROJECT_DIR, env=get_environment())
@@ -39,6 +40,7 @@ def before_all(context):
 
 def after_all(context):
     """Clean up environment"""
+    return
     p = subprocess.Popen(['docker-compose', 'down'], cwd=PROJECT_DIR)
     p.wait()
 

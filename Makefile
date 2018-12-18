@@ -130,6 +130,7 @@ test:
 	$(REDIRECT_CURL) $(APP_LOGOUT)   | grep -q "302 $(ELMR_LOGOUT)"  # Should this be a 400 or 401?
 	#
 	# Tests with no cookies
+	exit 1
 	@-rm -f cookie.txt
 	$(HTTP_CODE_CURL) $(ELMR_SESSION) | $(400)
 	$(HTTP_CODE_CURL) $(ELMR_LOGOUT)  | $(302)
