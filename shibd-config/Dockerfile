@@ -50,7 +50,7 @@ ENV SHIBSP_CONFIG=/etc/shibboleth/shibboleth2.xml \
     SHIBD_LOG_LEVEL=INFO \
     MOD_SHIB_LOG_LEVEL=INFO
 
-COPY --from=builder /config/ /
+COPY --from=builder /shibd-config/ /
 COPY --from=golang /go/src/get-shib-keys /usr/local/bin/
 COPY --chown=shibd:shibd --from=itrust /tmp/shibboleth/ /etc/shibboleth/
 

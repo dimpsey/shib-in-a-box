@@ -4,7 +4,7 @@
 set -eu
 
 ROOT=/tmp/fakeroot
-BASE=("manifest.common" "manifest.config")
+BASE=("manifest.common" "manifest.shibd-config")
 COMMON=("manifest.httpd" "manifest.shibd")
 MANIFESTS=("manifest.base" "${BASE[@]}" "${COMMON[@]}")
 
@@ -83,7 +83,7 @@ mv /tmp/sha256sum.txt $ROOT/base/
 # Add some empty directories
 mkdir -m 1777   $ROOT/httpd/tmp
 mkdir -m 1777   $ROOT/shibd/tmp
-mkdir -m 1777   $ROOT/config/tmp
+mkdir -m 1777   $ROOT/shibd-config/tmp
 mkdir -p -m 755 $ROOT/httpd/var/www/html 
 mkdir -p $ROOT/httpd/var/run
 mkdir -p $ROOT/httpd/run

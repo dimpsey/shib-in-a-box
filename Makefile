@@ -6,7 +6,7 @@ IMAGES := shibd-cron shibd-config shibd httpd
 PUSH := $(addsuffix .push, $(IMAGES))
 PULL := $(addsuffix .pull, $(IMAGES))
 
-SRC_DIRS := builder base common config cron shibd httpd
+SRC_DIRS := builder base common shibd-config cron shibd httpd
 CLEAN := $(addsuffix .clean,$(SRC_DIRS))
 
 .PHONY: all login push pull test clean $(SRC_DIRS)
@@ -28,7 +28,7 @@ ps:
 	docker-compose ps
 
 base: builder
-config: base
+shibd-config: base
 common: base
 shibd: common
 httpd: common
@@ -41,7 +41,7 @@ $(SRC_DIRS):
 	git add $^ $@
 
 builder.clean: base.clean
-base.clean: common.clean config.clean
+base.clean: common.clean shibd-config.clean
 common.clean: shibd.clean httpd.clean
 
 clean: $(CLEAN)
