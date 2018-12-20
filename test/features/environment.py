@@ -3,6 +3,7 @@ This environment file serves as the basis for our Behave runs when
 testing our Terraform modules.
 .../as-aws-module/test/features/environment.py
 """
+import boto3
 import os
 import pprint
 import subprocess
@@ -34,9 +35,22 @@ CONFIG.read(os.path.join(DIR, 'config.ini'))
 DEBUG = False
 DISABLE_DOCKER_UP = False
 DISABLE_DOCKER_DOWN = False
-    
+
+
+def check_aws_credentials():
+    ''''''
+    try:
+        boto3.client('sts').get_caller_identity()
+    except:
+        print("\n\n#####################")
+        print("Currenlty selected AWS credentials are invalid!")
+        print("#####################")
+        exit(1)
+
 def before_all(context):
     """Set required module variables."""
+    check_aws_credentials()
+
     global DEBUG, DISABLE_DOCKER_UP, DISABLE_DOCKER_DOWN
 
     DEBUG = context.config.userdata.getbool("DEBUG")
@@ -76,8 +90,17 @@ def after_step(context, step):
 def get_environment():
     ''' Get environement to use '''
     env = os.environ.copy()
+    env.update(CONFIG['Environment'])
 
-    return env.update(CONFIG['Environment'])
+    print("###############") 
+    print("###############") 
+    print("###############") 
+    print('env: ', env)
+    print("###############") 
+    print("###############") 
+    print("###############") 
+
+    return env
 
 	
 def disable_docker():
