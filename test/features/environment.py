@@ -22,8 +22,24 @@ from sdg.test.behave import (
 MODULES = [
 ]
 
+def project_dir():
+    ''' Find the project dir '''
+    cwd = os.getcwd()
+
+    while(True):
+        for f in os.scandir('.'):
+            if f.name == 'docker-compose.yml' and f.is_file():
+                r = os.getcwd() 
+                os.chdir(cwd)     
+                return r
+
+        if os.getcwd != '/':
+            os.chdir("..")
+        else:
+            break
+
 DIR = os.path.abspath(os.path.dirname(__file__))
-PROJECT_DIR = os.path.abspath(os.path.join(DIR, "../../../"))
+PROJECT_DIR = project_dir()
 CONF_DIR = os.path.normpath(os.path.join(DIR, "../../config"))
 
 core.SET_config(path=os.path.join(CONF_DIR, "core.conf")) #Override default core conf values.
@@ -91,14 +107,6 @@ def get_environment():
     ''' Get environement to use '''
     env = os.environ.copy()
     env.update(CONFIG['Environment'])
-
-    print("###############") 
-    print("###############") 
-    print("###############") 
-    print('env: ', env)
-    print("###############") 
-    print("###############") 
-    print("###############") 
 
     return env
 
