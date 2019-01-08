@@ -33,11 +33,12 @@ def project_dir():
                 os.chdir(cwd)     
                 return r
 
-        if os.getcwd != '/':
+        if os.getcwd() != '/':
             os.chdir("..")
         else:
             break
 
+ 
 DIR = os.path.abspath(os.path.dirname(__file__))
 PROJECT_DIR = project_dir()
 CONF_DIR = os.path.normpath(os.path.join(DIR, "../../config"))
@@ -46,11 +47,44 @@ core.SET_config(path=os.path.join(CONF_DIR, "core.conf")) #Override default core
 
 CONFIG = ConfigParser()
 CONFIG.optionxform = str
-CONFIG.read(os.path.join(DIR, 'config.ini'))
 
 DEBUG = False
 DISABLE_DOCKER_UP = False
 DISABLE_DOCKER_DOWN = False
+
+def find_configs(project_dir):
+    ''' Find the config from project dir to bottom '''
+    cwd = os.getcwd()
+    dirs = list()   
+   
+    while(True):
+        for f in os.scandir('.'):
+            if f.name == 'config.ini' and f.is_file():
+                dirs.append(os.path.abspath(f.path))
+
+        cwd = os.getcwd()
+        if cwd == '/':
+            break
+        elif cwd == project_dir:
+            break
+        else:
+            os.chdir("..")
+
+    os.chdir(cwd)    
+    return dirs
+
+
+def load_configs(config, project_dir):
+    paths = find_configs(project_dir)
+
+    while paths:
+        config.read(paths.pop())
+ 
+    #for k, v in config.items('Environment'):       
+    #    print(k, '=', v)
+
+
+load_configs(CONFIG, PROJECT_DIR)
 
 
 def check_aws_credentials():
@@ -118,9 +152,13 @@ def disable_docker():
     except NoSectionError:
         return False
 
+
+
+
 def main():
     pass
 
+
 if __name__ == '__main__':
-  main()
+    main()
     
