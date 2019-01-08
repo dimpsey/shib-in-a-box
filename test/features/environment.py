@@ -54,7 +54,7 @@ DISABLE_DOCKER_DOWN = False
 
 def find_configs(project_dir):
     ''' Find the config from project dir to bottom '''
-    cwd = os.getcwd()
+    cwd_save = os.getcwd()
     dirs = list()   
    
     while(True):
@@ -70,7 +70,7 @@ def find_configs(project_dir):
         else:
             os.chdir("..")
 
-    os.chdir(cwd)    
+    os.chdir(cwd_save)    
     return dirs
 
 
@@ -80,8 +80,8 @@ def load_configs(config, project_dir):
     while paths:
         config.read(paths.pop())
  
-    #for k, v in config.items('Environment'):       
-    #    print(k, '=', v)
+    for k, v in config.items('Environment'):
+        print(k, '=', v)
 
 
 load_configs(CONFIG, PROJECT_DIR)
