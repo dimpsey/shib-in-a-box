@@ -80,9 +80,6 @@ def load_configs(config, project_dir):
     while paths:
         config.read(paths.pop())
  
-    for k, v in config.items('Environment'):
-        print(k, '=', v)
-
 
 load_configs(CONFIG, PROJECT_DIR)
 
