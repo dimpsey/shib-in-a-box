@@ -12,6 +12,7 @@ import time
 
 from configparser import (
     ConfigParser,
+    ExtendedInterpolation,
     NoSectionError
 )
 
@@ -43,7 +44,7 @@ DIR = os.path.abspath(os.path.dirname(__file__))
 PROJECT_DIR = project_dir()
 CONF_DIR = os.path.normpath(os.path.join(PROJECT_DIR, "test", "config"))
 
-CONFIG = ConfigParser()
+CONFIG = ConfigParser(interpolation=ExtendedInterpolation())
 CONFIG.optionxform = str
 
 DEBUG = False
@@ -77,10 +78,9 @@ def load_configs(config, top_dir, bottom_dir):
     while paths:
         config.read(paths.pop())
 
-    for k, v in config.items('Environment'):
-        print(k, '=', v) 
 
-
+CONFIG.add_section('Environment')
+CONFIG['Environment'].update(os.environ)
 load_configs(CONFIG, PROJECT_DIR, DIR)
 
 core.SET_config(path=os.path.join(CONF_DIR, CONFIG['behave']['core'])) #Override default core conf values.
@@ -114,7 +114,7 @@ def before_all(context):
     if not DISABLE_DOCKER_UP and not disable_docker():    
         # TODO: Figure out way to see if aws is availble
         p = subprocess.Popen(['docker-compose', 'up', '-d'], 
-            cwd=PROJECT_DIR, env=get_environment())
+            cwd=PROJECT_DIR, env=CONFIG['Environment'])
         p.wait()
         time.sleep(5)
 
@@ -134,14 +134,6 @@ def after_step(context, step):
 
     if DEBUG and step.status == "failed":
        DISABLE_DOCKER_DOWN = True
- 
-
-def get_environment():
-    ''' Get environement to use '''
-    env = os.environ.copy()
-    env.update(CONFIG['Environment'])
-
-    return env
 
 	
 def disable_docker():
