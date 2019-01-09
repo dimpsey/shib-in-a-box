@@ -41,9 +41,7 @@ def project_dir():
  
 DIR = os.path.abspath(os.path.dirname(__file__))
 PROJECT_DIR = project_dir()
-CONF_DIR = os.path.normpath(os.path.join(DIR, "../../config"))
-
-core.SET_config(path=os.path.join(CONF_DIR, "core.conf")) #Override default core conf values.
+CONF_DIR = os.path.normpath(os.path.join(PROJECT_DIR, "test", "config"))
 
 CONFIG = ConfigParser()
 CONFIG.optionxform = str
@@ -84,6 +82,8 @@ def load_configs(config, top_dir, bottom_dir):
 
 
 load_configs(CONFIG, PROJECT_DIR, DIR)
+
+core.SET_config(path=os.path.join(CONF_DIR, CONFIG['behave']['core'])) #Override default core conf values.
 
 
 def check_aws_credentials():
