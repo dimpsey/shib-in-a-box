@@ -52,20 +52,19 @@ DEBUG = False
 DISABLE_DOCKER_UP = False
 DISABLE_DOCKER_DOWN = False
 
-def find_configs(project_dir):
+def find_configs(top_dir, bottom_dir):
     ''' Find the config from project dir to bottom '''
     cwd_save = os.getcwd()
     dirs = list()   
-   
+
+    os.chdir(bottom_dir)
     while(True):
         for f in os.scandir('.'):
             if f.name == 'config.ini' and f.is_file():
                 dirs.append(os.path.abspath(f.path))
 
         cwd = os.getcwd()
-        if cwd == '/':
-            break
-        elif cwd == project_dir:
+        if cwd == '/' or cwd == top_dir:
             break
         else:
             os.chdir("..")
@@ -74,14 +73,17 @@ def find_configs(project_dir):
     return dirs
 
 
-def load_configs(config, project_dir):
-    paths = find_configs(project_dir)
+def load_configs(config, top_dir, bottom_dir):
+    paths = find_configs(top_dir, bottom_dir)
 
     while paths:
         config.read(paths.pop())
- 
 
-load_configs(CONFIG, PROJECT_DIR)
+    for k, v in config.items('Environment'):
+        print(k, '=', v) 
+
+
+load_configs(CONFIG, PROJECT_DIR, DIR)
 
 
 def check_aws_credentials():
