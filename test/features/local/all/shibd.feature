@@ -1,6 +1,6 @@
-Feature: Common tests
+Feature: Shibd test 
     
-    Scenario: Common tests
+    Scenario: Shibd test
 
         # Check Shibboleth Metadata is accessible
         Given GET url '$(url.base)/auth/Shibboleth.sso/Metadata' 

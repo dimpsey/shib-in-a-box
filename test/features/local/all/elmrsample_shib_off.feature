@@ -1,23 +1,13 @@
-Feature: Local test to ping a url
+Feature: Elmrsample test
     
-    Scenario Outline: Local test to see if pinging a url works
+    Scenario: Elmrsample test
 
         Given allow redirects is set to 'False'  
-
-        Given GET url '<base>' 
-        Then request body does not contain 'Testing 123'
-        Then response status code is '403'
-
-        Given GET url '<base>/cgi-bin/environment'
-        Then response status code is '403'
-
-        Given GET url '<base>/Shibboleth.sso/Metadata' 
-        Then response status code is '403'
-
         Given start new session
 
-        # We are redirected to /auth/elmr/session because we don't have an elmr session
-        Given GET url '<base>/elmrsample/attributes' 
+        # Given a valid SP session
+        # Given no elmr session
+        Given GET url '$(url.base)/elmrsample/attributes' 
         Then response status code is '302'
         And response sets cookies with values
             # This cookie is used by elmr to remember the initial user url to return
@@ -26,9 +16,8 @@ Feature: Local test to ping a url
             #----------------------------------------------------------------------#
             | __edu.illinois.techservices.elmr.serviceUrl | /elmrsample/attributes |
  
-        # We are redirected to the IdP because we don't have a SP session
-        Given redirect to '<base>/auth/elmr/session'
-        # When BREAKPOINT
+        # We are redirected to /auth/elmr/session because we don't have an elmr session
+        Given redirect to '$(url.base)/auth/elmr/session'
         Then response status code is '302'
         And response sets cookies with values
             | name                                                 | 
@@ -36,14 +25,9 @@ Feature: Local test to ping a url
             | __edu.illinois.techservices.elmr.servlets.sessionKey |
 
         # Now we have a valid elmr session so we can access elmrsample
-        Given redirect to '<base>/elmrsample/attributes' 
+        Given redirect to '$(url.base)/elmrsample/attributes' 
         Then response status code is '200'
         And response sets cookies
             | name                                                 | 
             #------------------------------------------------------#
             | JSESSIONID                                           |
-
-        Examples: 
-            |base                                                   |
-            #-------------------------------------------------------#
-            |http://127.0.0.1                                       |                           

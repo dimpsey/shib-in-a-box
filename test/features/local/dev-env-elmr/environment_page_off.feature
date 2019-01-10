@@ -1,1 +1,1 @@
-../common/environment_page_off.feature
+../all/environment_page_off.feature
