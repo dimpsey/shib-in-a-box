@@ -23,8 +23,17 @@ Feature: Elmrsample test
             | name                                                 | 
             #------------------------------------------------------#
             | __edu.illinois.techservices.elmr.servlets.sessionKey |
+# TODO: We need to check that the following are set correctly on the cookie:
+#       Domain = $(url.domain)
+#       Path = "/"
+#       Secure
+#       HttpOnly
+#
+# https://tools.ietf.org/html/rfc6265#section-4.1.2
+# https://tools.ietf.org/html/rfc6265#section-8
 
         # Now we have a valid elmr session so we can access elmrsample
+        # Given a valid elmr session
         Given redirect to '$(url.base)/elmrsample/attributes' 
         Then response status code is '200'
         And response sets cookies

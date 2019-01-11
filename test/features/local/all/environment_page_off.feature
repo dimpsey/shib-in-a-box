@@ -1,6 +1,6 @@
-Feature: Local test that environment page is disabled
+Feature: Test that environment page is disabled
     
-    Scenario: Local test that environment page is disabled
+    Scenario: Test that environment page is disabled
 
         Given allow redirects is set to 'False'  
 

@@ -1,6 +1,6 @@
-Feature: Local test that environment page is enabled and shib protected
+Feature: Test that environment page is enabled and shib protected
     
-    Scenario: Local test that environment page is enabled and shib protected
+    Scenario: Test that environment page is enabled and shib protected
 
         Given allow redirects is set to 'False'  
 

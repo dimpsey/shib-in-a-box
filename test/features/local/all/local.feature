@@ -1,6 +1,6 @@
-Feature: Local test to ping a url
+Feature: Local-only test to ensure that Apache's default page is disabled
     
-    Scenario: Local test to see if pinging a url works
+    Scenario: Local-only test to ensure that Apache's default page is disabled
 
         Given allow redirects is set to 'False'  
 

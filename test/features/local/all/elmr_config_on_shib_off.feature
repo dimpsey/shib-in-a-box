@@ -1,6 +1,6 @@
-Feature: Local test that elmr config is enabled
+Feature: Test that elmr config is enabled
     
-    Scenario: Local test that elmr config is enabled
+    Scenario: Test that elmr config is enabled
 
         Given allow redirects is set to 'False'  
 

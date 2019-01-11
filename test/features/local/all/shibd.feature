@@ -1,6 +1,6 @@
-Feature: Shibd test 
+Feature: Test that shibd is accessible and functioning
     
-    Scenario: Shibd test
+    Scenario: Test that shibd is accessible and functioning
 
         # Check Shibboleth Metadata is accessible
         Given GET url '$(url.base)/auth/Shibboleth.sso/Metadata' 
@@ -9,4 +9,3 @@ Feature: Shibd test
         # Check Shib SP CSS is accessible
         Given GET url '$(url.base)/auth/shibboleth-sp/main.css' 
         Then response status code is '200'
-        
