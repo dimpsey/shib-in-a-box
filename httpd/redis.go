@@ -24,6 +24,9 @@ var (
 // NoEnvVar - Environment variable empty or missing
 const NoEnvVar = 1
 
+// NoRedisKey - Unable to find the redis key
+const NoRedisKey = 2
+
 // Init for logging
 func InitLoggers(logLevel string) {
 
@@ -67,15 +70,19 @@ func getEnv(key string) string {
 	value := os.Getenv(key)
 
 	if value == "" {
-		Error.Println("Environment variable is undef: ", key, "\n\a")
-		os.Exit(NoEnvVar)
+		fmt.Println("{\"error\": \"Environment variable is undef: ", key, "\"}")
+		//   os.Exit(NoEnvVar)
+		os.Exit(0)
 	}
 	return value
 }
 
+// Create new Redis clinet
 func RedisNewClient() *redis.Client {
+	host := getEnv("REDIS_HOSTNAME")
+
 	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     host,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
@@ -87,6 +94,7 @@ func RedisNewClient() *redis.Client {
 	return client
 }
 
+// Retrieve the value for the Elmr session key
 func GetSessionValue(sessionKey string) (string, error) {
 
 	client := RedisNewClient()
@@ -94,20 +102,28 @@ func GetSessionValue(sessionKey string) (string, error) {
 	val, err := client.Get(sessionKey).Result()
 
 	if err != nil {
-		Error.Println(err)
+		Error.Println("No Redis value with key", sessionKey, "found!")
+		return "", err
 	}
 
 	return val, nil
 }
 
 func main() {
-	InitLoggers(os.Getenv("LOG_LEVEL"))
+	// InitLoggers(os.Getenv("LOG_LEVEL"))
 
-	value, err := GetSessionValue(getEnv("AJP_Shib-Session-ID"))
+	// fmt.Println("content-type: application/json; charset=utf-8\n")
+	// value, err := GetSessionValue(getEnv("AJP_Shib_Session_ID"))
+	/*
+		if err != nil {
+	                fmt.Println("{\"error\": \"No Redis key is found\"}")
+			// os.Exit(NoRedisKey)
+			os.Exit(0)
+		}
 
-	if err != nil {
-		Error.Println(err)
-	}
+		fmt.Println(value)
+	*/
 
-	fmt.Println("Session Value:", value)
+	fmt.Println("Content-type: text/plain\n")
+	fmt.Println("{\"a\":\"b\"}")
 }

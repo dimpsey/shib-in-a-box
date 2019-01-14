@@ -22,6 +22,7 @@ services:
       AJP_displayName: John Doe
       AJP_eppn: jkdoe@illinois.edu
       AJP_Shib-Session-ID: 1234
+      REDIS_HOSTNAME: redis
     ports:
       - "8080:8080"
     depends_on:
