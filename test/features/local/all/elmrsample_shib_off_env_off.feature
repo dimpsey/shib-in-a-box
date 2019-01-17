@@ -27,6 +27,12 @@ Feature: Elmrsample test
 # https://tools.ietf.org/html/rfc6265#section-4.1.2
 # https://tools.ietf.org/html/rfc6265#section-8
 
+        And the cookie '__edu.illinois.techservices.elmr.serviceUrl' with domain '$(url.domain)' and path '/' has the following attributes 
+            | attribute      | value               |
+            #--------------------------------------#
+            | Secure         | true                |
+            | HttpOnly       | true                |
+        
         # We are redirected to /auth/elmr/session because we don't have an elmr session
         Given redirect to '$(url.base)/auth/elmr/session'
         Then response status code is '302'
