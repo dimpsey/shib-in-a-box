@@ -1,7 +1,6 @@
-Feature: Elmrsample test
+Feature: Elmrsample test for MOCK_SHIB is true and ENABLE_ENVIRONMENT_PAGE is false 
 
     Scenario: Elmrsample test
-
         Given allow redirects is set to 'False'
         Given start new session
 
@@ -24,7 +23,7 @@ Feature: Elmrsample test
             | Secure         | false               |
             | HttpOnly       | false               |
         
-        # TODO: Fix me. File ticket to fix this issue with not setting the header
+# TODO: Fix me. File ticket to fix this issue with not setting the header
 #        And response sets headers
 #            | header         | value               |
 #            #--------------------------------------#
@@ -58,4 +57,17 @@ Feature: Elmrsample test
             | name                                                 |
             #------------------------------------------------------#
             | JSESSIONID                                           |
-        # TODO: Add tests that Cache-Control header is set to no-cache; no-store
+
+# TODO: Figure out what value we are expecting
+#        And the cookie 'JSESSIONID' with domain '$(url.domain)' and path '/elmrsample' has the following attributes 
+#            | attribute      | value               |
+#            #--------------------------------------#
+#            | Secure         | true                |
+#            | HttpOnly       | true                |
+
+# TODO: Figure out what value we are expecting
+#        And response sets headers
+#            | header         | value               |
+#            #--------------------------------------#
+#            | Cache-Control  | no-cache            |
+#            |                | no-store            |
