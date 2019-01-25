@@ -47,7 +47,6 @@ Feature: Elmrsample test for MOCK_SHIB is true and ENABLE_ENVIRONMENT_PAGE is fa
 # https://tools.ietf.org/html/rfc6265#section-4.1.2
 # https://tools.ietf.org/html/rfc6265#section-8
 
-        # TODO: Need to check that Redis data was stored
 
         # Now we have a valid elmr session so we can access elmrsample
         # Given a valid elmr session

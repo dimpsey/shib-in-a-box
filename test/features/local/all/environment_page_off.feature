@@ -1,10 +1,15 @@
-Feature: Test that environment page is disabled
-    
+Feature: Test that all cgi-bin scripts are disabled
+   
+    Background:
+        # Given a valid SP session
+        Given allow redirects is set to 'False'  
+ 
     Scenario: Test that environment page is disabled
 
-        Given allow redirects is set to 'False'  
-
-        # Given a valid SP session
         Given GET url '$(url.base)/auth/cgi-bin/environment' 
         Then response status code is '403'
-        And response sets no cookies 
+
+    Scenario: Test that redis page is disabled
+
+        Given GET url '$(url.base)/auth/cgi-bin/redis'
+        Then response status code is '403'

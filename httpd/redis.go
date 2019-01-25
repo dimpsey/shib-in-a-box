@@ -45,7 +45,7 @@ func GetSessionValue(sessionKey string) string {
 }
 
 func PrintError(errMsg string, err error) {
-	fmt.Println("Status: 400 Bad Request\n")
+	fmt.Println("\n")
 	if err != nil {
 		fmt.Println("{\"error\": \"" + errMsg + "\", \"redisError\": \"" + err.Error() + "\"}")
 	} else {

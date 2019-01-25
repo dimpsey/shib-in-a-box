@@ -55,3 +55,12 @@ Feature: Elmrsample test
             #------------------------------------------------------#
             | JSESSIONID                                           |
         # TODO: Add tests that Cache-Control header is set to no-cache; no-store
+
+        # Check that Redis data was stored
+        Given GET url '$(url.base)/auth/cgi-bin/redis'
+        Then response status code is '200'
+        Then json body contains 
+            | key                     | value                  |
+            #--------------------------------------------------#
+            | displayName             | $(saml.displayName)    |
+            | eppn                    | $(saml.eppn)           |
