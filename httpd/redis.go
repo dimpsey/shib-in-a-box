@@ -2,6 +2,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 )
@@ -44,8 +45,20 @@ func GetSessionValue(sessionKey string) string {
 	return val
 }
 
+// Kill the Elmr session key
+func KillSession(sessionKey string) int64 {
+	client := RedisNewClient()
+
+	val, err := client.Del(sessionKey).Result()
+
+	if err != nil {
+		PrintError("Redis key not found:"+sessionKey, err)
+	}
+
+	return val
+}
+
 func PrintError(errMsg string, err error) {
-	fmt.Println("\n")
 	if err != nil {
 		fmt.Println("{\"error\": \"" + errMsg + "\", \"redisError\": \"" + err.Error() + "\"}")
 	} else {
@@ -55,9 +68,20 @@ func PrintError(errMsg string, err error) {
 }
 
 func main() {
-	fmt.Println("content-type: application/json; charset=utf-8")
-	value := GetSessionValue(getEnv("AJP_Shib_Session_ID"))
+	// Parse the command line arguments
+	killPtr := flag.Bool("k", false, "a bool to kill")
+	flag.Parse()
 
-	fmt.Println("\n")
-	fmt.Println(value)
+	sessionKey := getEnv("AJP_Shib_Session_ID")
+
+	fmt.Println("content-type: application/json; charset=utf-8\n")
+
+	if *killPtr {
+		KillSession(sessionKey)
+		fmt.Println("{\"success\": \"killed the key\", \"key\": \"" + sessionKey + "\"}")
+	} else {
+		value := GetSessionValue(sessionKey)
+		fmt.Println(value)
+	}
+
 }
