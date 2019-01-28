@@ -11,5 +11,5 @@ Feature: Test that all cgi-bin scripts are disabled
 
     Scenario: Test that redis page is disabled
 
-        Given GET url '$(url.base)/auth/cgi-bin/redis'
+        Given GET url '$(url.base)/auth/cgi-bin/list'
         Then response status code is '403'

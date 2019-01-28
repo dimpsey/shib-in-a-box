@@ -44,8 +44,6 @@ Feature: Elmrsample test
 # https://tools.ietf.org/html/rfc6265#section-4.1.2
 # https://tools.ietf.org/html/rfc6265#section-8
 
-        # TODO Need to check that Redis data was stored
-
         # Now we have a valid elmr session so we can access elmrsample
         # Given a valid elmr session
         Given redirect to '$(url.base)/elmrsample/attributes'
@@ -57,10 +55,26 @@ Feature: Elmrsample test
         # TODO: Add tests that Cache-Control header is set to no-cache; no-store
 
         # Check that Redis data was stored
-        Given GET url '$(url.base)/auth/cgi-bin/redis'
+        Given GET url '$(url.base)/auth/cgi-bin/list'
         Then response status code is '200'
         Then json body contains 
             | key                     | value                  |
             #--------------------------------------------------#
             | displayName             | $(saml.displayName)    |
             | eppn                    | $(saml.eppn)           |
+        
+        Given GET url '$(url.base)/auth/cgi-bin/kill'
+        Then response status code is '200'
+        Then json body contains 
+            | key                     | value                  |
+            #--------------------------------------------------#
+            | success                 | killed the key         |
+
+        # Check if Redis session is deleted
+        Given GET url '$(url.base)/auth/cgi-bin/list'
+        Then response status code is '200'
+        Then json body contains 
+            | key    | value                                      |
+            #-----------------------------------------------------#
+            | error  | Redis key not found:$(saml.shib-session-id)| 
+

@@ -12,5 +12,5 @@ Feature: Test that all cgi-bin scripts are enabled
 
     Scenario: Test that redis  page is enabled
 
-        Given GET url '$(url.base)/auth/cgi-bin/redis' 
+        Given GET url '$(url.base)/auth/cgi-bin/list' 
         Then response status code is '200'

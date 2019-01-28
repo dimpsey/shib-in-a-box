@@ -14,6 +14,6 @@ Feature: Test that all cgi-bin scripts are enabled and shib protected
 
     Scenario: Test that redis page is enabled and shib protected
 
-        Given GET url '$(url.base)/auth/cgi-bin/redis' 
+        Given GET url '$(url.base)/auth/cgi-bin/list' 
         Then response status code is '302'
         And response is a redirect to url starting with 'https://shibboleth.illinois.edu/idp/profile/SAML2/Redirect/SSO'
