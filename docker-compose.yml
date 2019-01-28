@@ -6,7 +6,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
-      - "80:8080"
+      - "$PORT:8080"
     networks:
       - frontend
     tmpfs:
@@ -24,7 +24,7 @@ services:
       AJP_Shib-Session-ID: 1234
       REDIS_HOSTNAME: redis:6379
     ports:
-      - "8080:8080"
+      - "$HTTPD_PORT:8080"
     depends_on:
       - config
     volumes_from:
@@ -75,14 +75,14 @@ services:
       REDIS_HOSTNAME: redis
       DISABLE_SECURE_COOKIES: 'true'
     image: $ORG/elmr:${ELMR_TAG}
-    ports:
-      - "8009:8009"
+#    ports:
+#      - "8009:8009"
     networks:
       - backend
   redis:
     image: redis:4
     ports:
-      - "6379:6379"
+      - "$REDIS_PORT:6379"
     networks:
       - frontend
       - backend
@@ -91,8 +91,8 @@ services:
     image: $ORG/elmrsample:${ELMRSAMPLE_TAG}
     environment:
       REDIS_HOSTNAME: redis
-    ports: 
-      - "8081:8081"
+#    ports:
+#      - "8081:8081"
     networks:
       - frontend
     tmpfs:

@@ -29,7 +29,7 @@ def project_dir():
 
     while(True):
         for f in os.scandir('.'):
-            if f.name == 'docker-compose.yml' and f.is_file():
+            if f.name == '.git' and f.is_dir():
                 r = os.getcwd() 
                 os.chdir(cwd)     
                 return r
@@ -114,7 +114,7 @@ def before_all(context):
     if not DISABLE_DOCKER_UP and not disable_docker():    
         # TODO: Figure out way to see if aws is availble
         p = subprocess.Popen(['docker-compose', 'up', '-d'], 
-            cwd=PROJECT_DIR, env=CONFIG['Environment'])
+            cwd=DIR, env=CONFIG['Environment'])
         p.wait()
         time.sleep(5)
 
@@ -124,7 +124,7 @@ def after_all(context):
     global DISABLE_DOCKER_DOWN
 
     if not DISABLE_DOCKER_DOWN and not disable_docker():    
-        p = subprocess.Popen(['docker-compose', 'down'], cwd=PROJECT_DIR)
+        p = subprocess.Popen(['docker-compose', 'down'], cwd=DIR)
         p.wait()
 
 

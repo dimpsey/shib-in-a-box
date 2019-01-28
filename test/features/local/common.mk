@@ -1,6 +1,6 @@
-.PHONY: all
+.PHONY: all test
 
-TOP_LEVEL := environment.py steps
+TOP_LEVEL := environment.py steps docker-compose.yml .env nginx.conf
 COMMON := local.feature shibd.feature $(TOP_LEVEL)
 
 -ELMR := elmr_config_off.feature
