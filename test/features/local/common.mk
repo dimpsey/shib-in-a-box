@@ -1,5 +1,10 @@
 .PHONY: all test down clean
 
+# +ELMR means http://hostname/auth/elmr/config is expected to be accessiable
+# -ELMR means http://hostname/auth/elmr/config is expected to be inaccessiable
+# +ENV means http://hostname/auth/cgi-bin/* is expected to be accessiable
+# -ENV means http://hostname/auth/cgi-bin/* is expected to be inaccessiable
+
 TOP_LEVEL := environment.py steps docker-compose.yml .env nginx.conf
 COMMON := local.feature shibd.feature $(TOP_LEVEL)
 
