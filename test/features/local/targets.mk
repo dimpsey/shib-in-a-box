@@ -1,6 +1,8 @@
 FEATURES=$(wildcard *.feature)
 TESTS=$(FEATURES:%.feature=%)
 
+export BFLAGS=--color
+
 all: $(DEPS)
 
 %.feature:
@@ -12,18 +14,18 @@ $(TOP_LEVEL):
 	ln -s ../$@
 
 test:
-	@export FLAGS="-D DISABLE_DOCKER_DOWN"; \
-	test -f .up && export FLAGS="-D DISABLE_DOCKER_UP $$FLAGS"; \
+	@export BFLAGS="-D DISABLE_DOCKER_DOWN $$BFLAGS"; \
+	test -f .up && export BFLAGS="-D DISABLE_DOCKER_UP $$BFLAGS"; \
 	touch .up; \
-    echo behave $$FLAGS; \
-	behave $$FLAGS
+    echo behave $$BFLAGS; \
+	behave $$BFLAGS
 
 $(TESTS):
-	@export FLAGS="-D DISABLE_DOCKER_DOWN"; \
-	test -f .up && export FLAGS="-D DISABLE_DOCKER_UP $$FLAGS"; \
+	@export BFLAGS="-D DISABLE_DOCKER_DOWN $$BFLAGS"; \
+	test -f .up && export BFLAGS="-D DISABLE_DOCKER_UP $$BFLAGS"; \
 	touch .up; \
-    echo behave $$FLAGS $@.feature; \
-	behave $$FLAGS $@.feature
+    echo behave $$BFLAGS $@.feature; \
+	behave $$BFLAGS $@.feature
 
 down:
 	-test -f .up && docker-compose down
