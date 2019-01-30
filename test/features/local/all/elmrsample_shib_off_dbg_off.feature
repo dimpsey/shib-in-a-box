@@ -1,4 +1,4 @@
-Feature: Elmrsample test for MOCK_SHIB is true and ENABLE_ENVIRONMENT_PAGE is false 
+Feature: Elmrsample test for MOCK_SHIB is true and ENABLE_DEBUG_PAGES is false 
 
     Scenario: Elmrsample test
         Given allow redirects is set to 'False'

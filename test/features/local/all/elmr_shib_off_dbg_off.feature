@@ -1,4 +1,4 @@
-Feature: Elmr tests for MOCK_SHIB is true and ENABLE_ENVIRONMENT_PAGE is false 
+Feature: Elmr tests for MOCK_SHIB is true and ENABLE_DEBUG_PAGES is false 
 
     Scenario: Elmr test with no serviceUrl cookie set
         Given allow redirects is set to 'False'

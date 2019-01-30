@@ -145,7 +145,7 @@ test:
 	# Ensure httpd redirects when X-Forwarded-Proto is set to http
 	# We must connect directly to the httpd container by passing the ALB
 	$(REDIRECT_CURL) -H "X-Forwarded-Proto: http" -H "X-Forwarded-For: 1.2.3.4" -H "X-Forwarded-Port: 443" 127.0.0.1:8080 | grep -q "301 https://127.0.0.1:8080/"
-	curl -s http://localhost/auth/cgi-bin/environment | grep -q 'HTTP_X_FORWARDED_PROTO="https"' || echo "$(RED)ENABLE_ENVIRONMENT_PAGE is not set$(NC)\a"
+	curl -s http://localhost/auth/cgi-bin/environment | grep -q 'HTTP_X_FORWARDED_PROTO="https"' || echo "$(RED)ENABLE_DEBUG_PAGES is not set$(NC)\a"
 	curl -s http://127.0.0.1/auth/elmr/config | grep -q 'elmr - Apache Configuration' || echo "$(RED)ENABLE_ELMR_CONFIG is not set$(NC)\a"
 	#
 	# Test redirects - Do we want to test this? Should config be disabled by
