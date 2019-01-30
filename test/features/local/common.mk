@@ -1,4 +1,4 @@
-.PHONY: all test
+.PHONY: all test down clean
 
 TOP_LEVEL := environment.py steps docker-compose.yml .env nginx.conf
 COMMON := local.feature shibd.feature $(TOP_LEVEL)
@@ -15,11 +15,3 @@ else # shib_on
     +ENV  := environment_page_on_shib_on.feature
     COMMON := elmrsample_shib_on.feature $(COMMON)
 endif
-
-%.feature:
-	@test -e ../all/$@ || (echo ../all/$@: File does not exist! ; exit 1)
-	ln -s ../all/$@
-
-%:
-	@test -e ../$@ || (echo ../$@: File does not exist! ; exit 1)
-	ln -s ../$@
