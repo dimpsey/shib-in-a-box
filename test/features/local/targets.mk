@@ -26,7 +26,7 @@ $(TESTS):
 	behave $$FLAGS $@.feature
 
 down:
-	docker-compose down
+	-test -f .up && docker-compose down
 	-rm .up
 
 clean: 

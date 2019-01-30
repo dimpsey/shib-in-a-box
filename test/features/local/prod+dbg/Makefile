@@ -1,5 +1,5 @@
 include ../common.mk
 
-DEPS := $(-ELMR) $(+ENV) $(COMMON)
+DEPS := $(-ELMR) $(+DBG) $(COMMON)
 
 include ../targets.mk
