@@ -79,11 +79,9 @@ def load_configs(config, top_dir, bottom_dir):
         config.read(paths.pop())
 
 
-CONFIG.add_section('Environment')
-CONFIG['Environment'].update(os.environ)
+CONFIG.add_section('env')
+CONFIG['env'].update(os.environ)
 load_configs(CONFIG, PROJECT_DIR, DIR)
-
-core.SET_config(path=os.path.join(CONF_DIR, CONFIG['behave']['core'])) #Override default core conf values.
 
 
 def check_aws_credentials():
@@ -95,6 +93,7 @@ def check_aws_credentials():
         print("Currenlty selected AWS credentials are invalid!")
         print("#####################")
         exit(1)
+
 
 def before_all(context):
     """Set required module variables."""
@@ -112,11 +111,19 @@ def before_all(context):
         test_root=DIR)
 
     if not DISABLE_DOCKER_UP and not disable_docker():    
-        # TODO: Figure out way to see if aws is availble
         p = subprocess.Popen(['docker-compose', 'up', '-d'], 
-            cwd=DIR, env=CONFIG['Environment'])
+            cwd=DIR, env=CONFIG['env'])
         p.wait()
         time.sleep(5)
+
+
+def before_feature(context, feature):
+    # Adding config ini to be used in Behave features
+    for section_name in CONFIG.sections():
+        section_data = dict(CONFIG.items(section=section_name))
+        section = context.core.CONFIG['MASTER'].get(section_name, {})
+        section.update(section_data)
+        context.core.CONFIG['MASTER'][section_name] = section
 
 
 def after_all(context):
