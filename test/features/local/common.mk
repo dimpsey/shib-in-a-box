@@ -15,6 +15,7 @@ ifdef MOCK_SHIB # shib_off
     +ELMR := elmr_config_on_shib_off.feature
     +DBG  := elmrsample_shib_off_dbg_on.feature environment_page_on_shib_off.feature
     -DBG  := elmrsample_shib_off_dbg_off.feature $(-DBG)
+    COMMON := elmr_shib_off.feature $(COMMON)
 else # shib_on
     +ELMR := elmr_config_on_shib_on.feature
     +DBG  := environment_page_on_shib_on.feature
