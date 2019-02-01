@@ -13,7 +13,7 @@ COMMON := local.feature shibd.feature $(TOP_LEVEL)
 
 ifdef MOCK_SHIB # shib_off
     +ELMR := elmr_config_on_shib_off.feature
-    +DBG  := elmrsample_shib_off_dbg_on.feature environment_page_on_shib_off.feature
+    +DBG  := elmrsample_shib_off_dbg_on.feature environment_page_on_shib_off_1.feature environment_page_on_shib_off_2.feature
     -DBG  := elmrsample_shib_off_dbg_off.feature $(-DBG)
     COMMON := elmr_shib_off.feature $(COMMON)
 else # shib_on
