@@ -7,10 +7,10 @@ Feature: Test that all cgi-bin scripts are enabled
 
     Scenario: Test that environment page is enabled
 
-        Given GET url '$(url.base)/auth/cgi-bin/environment' 
+        Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/environment' 
         Then response status code is '200'
 
     Scenario: Test that redis  page is enabled
 
-        Given GET url '$(url.base)/auth/cgi-bin/list' 
+        Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/list' 
         Then response status code is '200'

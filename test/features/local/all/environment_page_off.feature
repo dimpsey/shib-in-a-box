@@ -6,10 +6,10 @@ Feature: Test that all cgi-bin scripts are disabled
  
     Scenario: Test that environment page is disabled
 
-        Given GET url '$(url.base)/auth/cgi-bin/environment' 
+        Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/environment' 
         Then response status code is '403'
 
     Scenario: Test that redis page is disabled
 
-        Given GET url '$(url.base)/auth/cgi-bin/list'
+        Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/list'
         Then response status code is '403'

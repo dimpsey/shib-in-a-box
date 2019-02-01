@@ -7,7 +7,7 @@ Feature: Elmrsample test
 
         # Given a valid SP session
         # Given no elmr session
-        Given GET url '$(url.base)/elmrsample/attributes'
+        Given GET url '$(url.base):$(env.PORT)/elmrsample/attributes'
         Then response status code is '302'
         And response sets cookies with values
             # This cookie is used by elmr to remember the initial user url to return
@@ -28,7 +28,7 @@ Feature: Elmrsample test
 # https://tools.ietf.org/html/rfc6265#section-8
 
         # We are redirected to /auth/elmr/session because we don't have an elmr session
-        Given redirect to '$(url.base)/auth/elmr/session'
+        Given redirect to '$(url.base):$(env.PORT)/auth/elmr/session'
         Then response status code is '302'
         And response sets cookies with values
             | name                                                 |
@@ -46,7 +46,7 @@ Feature: Elmrsample test
 
         # Now we have a valid elmr session so we can access elmrsample
         # Given a valid elmr session
-        Given redirect to '$(url.base)/elmrsample/attributes'
+        Given redirect to '$(url.base):$(env.PORT)/elmrsample/attributes'
         Then response status code is '200'
         And response sets cookies
             | name                                                 |
@@ -55,7 +55,7 @@ Feature: Elmrsample test
         # TODO: Add tests that Cache-Control header is set to no-cache; no-store
 
         # Check that Redis data was stored
-        Given GET url '$(url.base)/auth/cgi-bin/list'
+        Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/list'
         Then response status code is '200'
         Then json body contains 
             | key                     | value                  |
@@ -63,7 +63,7 @@ Feature: Elmrsample test
             | displayName             | $(saml.displayName)    |
             | eppn                    | $(saml.eppn)           |
         
-        Given GET url '$(url.base)/auth/cgi-bin/kill'
+        Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/kill'
         Then response status code is '200'
         Then json body contains 
             | key                     | value                  |
@@ -71,7 +71,7 @@ Feature: Elmrsample test
             | success                 | killed the key         |
 
         # Check if Redis session is deleted
-        Given GET url '$(url.base)/auth/cgi-bin/list'
+        Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/list'
         Then response status code is '200'
         Then json body contains 
             | key    | value                                      |

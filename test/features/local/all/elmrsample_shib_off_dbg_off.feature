@@ -6,7 +6,7 @@ Feature: Elmrsample test for MOCK_SHIB is true and ENABLE_DEBUG_PAGES is false
 
         # Given a valid SP session
         # Given no elmr session
-        Given GET url '$(url.base)/elmrsample/attributes'
+        Given GET url '$(url.base):$(env.PORT)/elmrsample/attributes'
         Then response status code is '302'
         And response sets cookies with values
             # This cookie is used by elmr to remember the initial user url to return
@@ -31,7 +31,7 @@ Feature: Elmrsample test for MOCK_SHIB is true and ENABLE_DEBUG_PAGES is false
 #            |                | no-store            |
 
         # We are redirected to /auth/elmr/session because we don't have an elmr session
-        Given redirect to '$(url.base)/auth/elmr/session'
+        Given redirect to '$(url.base):$(env.PORT)/auth/elmr/session'
         Then response status code is '302'
         And response sets cookies with values
             | name                                                 |
@@ -50,7 +50,7 @@ Feature: Elmrsample test for MOCK_SHIB is true and ENABLE_DEBUG_PAGES is false
 
         # Now we have a valid elmr session so we can access elmrsample
         # Given a valid elmr session
-        Given redirect to '$(url.base)/elmrsample/attributes'
+        Given redirect to '$(url.base):$(env.PORT)/elmrsample/attributes'
         Then response status code is '200'
         And response sets cookies
             | name                                                 |

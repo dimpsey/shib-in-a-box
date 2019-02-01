@@ -3,9 +3,7 @@ TEST := $(DIRS:%=%.test)
 DOWN := $(DIRS:%=%.down)
 CLEAN := $(DIRS:%=%.clean)
 
-# TODO this does not work yet... Need to make sure each
-# docker-compose binds to different external ports!
-# MAKEFLAGS='-j 8'
+# MAKEFLAGS='-j 2'
 
 .PHONY: all clean $(DIRS) $(CLEAN)
 
