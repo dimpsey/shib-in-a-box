@@ -10,3 +10,6 @@ behave -D DISABLE_DOCKER_UP DISABLE_DOCKER_DOWN aws.feature
 cd /usr/local/lib/python3.6/site-packages/behave/
 patch -p1 < ~/Source/shib-in-a-box/test/behave.patch
 rm -r __pycache__
+
+# To run the regression test with Behave, clone test-behave-core repo 
+# and pip install -e your-test-behave-core-dir.
