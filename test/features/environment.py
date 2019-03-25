@@ -17,10 +17,12 @@ from configparser import (
 )
 
 from sdg.test.behave import (
-    core
+    core, 
+    web
 )
 
 MODULES = [
+    web
 ]
 
 def project_dir():
