@@ -1,15 +1,17 @@
 DIRS := $(wildcard dev*) $(wildcard prod*)
 TEST := $(DIRS:%=%.test)
 DOWN := $(DIRS:%=%.down)
-CLEAN := $(DIRS:%=%.clean)
+CLEAN := features.clean $(DIRS:%=%.clean)
 
 # MAKEFLAGS='-j 2'
 
-.PHONY: all clean $(DIRS) $(CLEAN)
+.PHONY: all clean features $(DIRS) $(CLEAN)
 
 all: $(DIRS)
 
-$(DIRS):
+$(DIRS): features
+
+features $(DIRS):
 	$(MAKE) -C $@
 
 test: $(TEST)
