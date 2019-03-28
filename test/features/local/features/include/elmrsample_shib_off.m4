@@ -1,4 +1,4 @@
-Feature: Elmrsample test for MOCK_SHIB is true and ENABLE_DEBUG_PAGES is false 
+ifdef(`DEBUG',`Feature: Elmrsample test', `Feature: Elmrsample test for MOCK_SHIB is true and ENABLE_DEBUG_PAGES is false')
 
     Scenario: Elmrsample test
         Given allow redirects is set to 'False'
@@ -16,6 +16,8 @@ Feature: Elmrsample test for MOCK_SHIB is true and ENABLE_DEBUG_PAGES is false
             | __edu.illinois.techservices.elmr.serviceUrl | /elmrsample/attributes |
         #
         # https://tools.ietf.org/html/rfc7234
+        # https://tools.ietf.org/html/rfc6265#section-4.1.2
+        # https://tools.ietf.org/html/rfc6265#section-8
 
         And the cookie '__edu.illinois.techservices.elmr.serviceUrl' with domain '$(url.domain)' and path '/' has the following attributes 
             | attribute      | value               |
@@ -70,3 +72,29 @@ Feature: Elmrsample test for MOCK_SHIB is true and ENABLE_DEBUG_PAGES is false
 #            #--------------------------------------#
 #            | Cache-Control  | no-cache            |
 #            |                | no-store            |
+
+ifdef(`DEBUG', 
+        # Check that Redis data was stored
+        Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/list'
+        Then response status code is '200'
+        Then json body contains 
+            | key                     | value                  |
+            #--------------------------------------------------#
+            | displayName             | $(saml.displayName)    |
+            | eppn                    | $(saml.eppn)           |
+        
+        Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/kill'
+        Then response status code is '200'
+        Then json body contains 
+            | key                     | value                  |
+            #--------------------------------------------------#
+            | success                 | killed the key         |
+
+        # Check if Redis session is deleted
+        Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/list'
+        Then response status code is '200'
+        Then json body contains 
+            | key    | value                                      |
+            #-----------------------------------------------------#
+            | error  | Redis key not found:$(saml.shib-session-id)|
+)
