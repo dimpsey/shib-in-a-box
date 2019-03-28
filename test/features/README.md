@@ -13,3 +13,8 @@ rm -r __pycache__
 
 # This will end up being done by make but to generate feature files from .m4
 m4 elmrsample_shib_off_dbg_on.m4 > elmrsample_shib_off_dbg_on.feature
+
+# To setup the Behave test environment using local Behave modules, install 
+# test-behave-core and test-behave-web
+pip install -e /path_to_test-behave-core 
+pip install -e /path_to_test-behave-web
