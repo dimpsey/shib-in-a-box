@@ -6,7 +6,7 @@ IMAGES := shibd-cron shibd-config shibd httpd
 PUSH := $(addsuffix .push, $(IMAGES))
 PULL := $(addsuffix .pull, $(IMAGES))
 
-SRC_DIRS := builder base common shibd-config cron shibd httpd
+SRC_DIRS := alb builder base common shibd-config cron shibd httpd
 CLEAN := $(addsuffix .clean,$(SRC_DIRS))
 
 .PHONY: all login push pull test clean $(SRC_DIRS)
