@@ -33,6 +33,12 @@ $ pip3 install sdg-test-behave-core --extra-index-url https://pip-test.techservi
 $ pip3 install sdg-test-behave-web --extra-index-url https://pip-test.techservices.illinois.edu/index/test
 ```
 
+Install the m4 templating utility:
+```
+apt-get install m4
+```
+
+
 In /shib-in-a-box/test/features/local, run the following commands 
 to run alll feature files under local
 ```
