@@ -29,8 +29,8 @@ $ make
 
 The install two modules that Behave steps are denpending on. 
 ```
-$ pip install sdg-test-behave-core --extra-index-url https://pip-test.techservices.illinois.edu/index/test
-$ pip install sdg-test-behave-web --extra-index-url https://pip-test.techservices.illinois.edu/index/test
+$ pip3 install sdg-test-behave-core --extra-index-url https://pip-test.techservices.illinois.edu/index/test
+$ pip3 install sdg-test-behave-web --extra-index-url https://pip-test.techservices.illinois.edu/index/test
 ```
 
 In /shib-in-a-box/test/features/local, run the following commands 
