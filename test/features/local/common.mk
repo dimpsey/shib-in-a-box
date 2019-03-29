@@ -5,7 +5,7 @@
 # +DBG means http://hostname/auth/cgi-bin/* is expected to be accessiable
 # -DBG means http://hostname/auth/cgi-bin/* is expected to be inaccessiable
 
-TOP_LEVEL := environment.py steps docker-compose.yml .env nginx.conf
+TOP_LEVEL := environment.py steps docker-compose.yml .env
 COMMON := local.feature shibd.feature $(TOP_LEVEL)
 
 -ELMR := elmr_config_off.feature
