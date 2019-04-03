@@ -38,7 +38,6 @@ Install the m4 templating utility:
 apt-get install m4
 ```
 
-
 In /shib-in-a-box/test/features/local, run the following commands 
 to run alll feature files under local
 ```

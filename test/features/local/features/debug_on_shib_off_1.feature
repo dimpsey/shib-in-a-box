@@ -7,6 +7,8 @@ Feature: Test that all cgi-bin scripts are enabled
 
     Scenario: Test that environment page is enabled
 
+        # TODO: Add from sdg.test.behave.core import Cleaner to the core
+        # Also, add port to the config
         Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/environment' 
         Then response status code is '200'
 
