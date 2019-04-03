@@ -8,3 +8,5 @@ cookie.txt
 *.swp
 
 .python-version
+
+Pipfile*

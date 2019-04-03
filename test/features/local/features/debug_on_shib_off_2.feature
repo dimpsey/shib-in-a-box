@@ -1,7 +1,7 @@
 Feature: Test that all cgi-bin scripts are enabled
 
-    Background: 
-    
+    Background: Get an elmr session
+     
         Given allow redirects is set to 'False'
         Given start new session
 
@@ -23,7 +23,7 @@ Feature: Test that all cgi-bin scripts are enabled
             #------------------------------------------------------#
             | $(elmr.sessionKey) |
 
-    Scenario: Test that list redis page is enabled
+    Scenario: Test that list redis page is enabled and working
 
         Given GET url '$(url.base):$(env.PORT)/auth/cgi-bin/list'
         Then response status code is '200'

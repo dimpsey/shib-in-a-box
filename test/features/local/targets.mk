@@ -6,8 +6,8 @@ export BFLAGS=--color
 all: $(DEPS)
 
 %.feature:
-	@test -e ../all/$@ || (echo ../all/$@: File does not exist! ; exit 1)
-	ln -s ../all/$@
+	@test -e ../features/$@ || (echo ../features/$@: File does not exist! ; exit 1)
+	ln -s ../features/$@
 
 $(TOP_LEVEL):
 	@test -e ../$@ || (echo ../$@: File does not exist! ; exit 1)
