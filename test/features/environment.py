@@ -113,7 +113,7 @@ def before_all(context):
         test_root=DIR)
 
     if not DISABLE_DOCKER_UP and not disable_docker():    
-        p = subprocess.Popen(['docker-compose', 'up', '-d'], 
+        p = subprocess.Popen(['docker-compose', 'up', '-d', '--no-recreate'],
             cwd=DIR, env=CONFIG['env'])
         p.wait()
         time.sleep(5)
