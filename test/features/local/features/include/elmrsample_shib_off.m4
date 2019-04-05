@@ -25,7 +25,7 @@ ifdef(`DEBUG',`Feature: Elmrsample test', `Feature: Elmrsample test for MOCK_SHI
             | Secure         | false               |
             | HttpOnly       | false               |
         
-# TODO: Fix me. File ticket to fix this issue with not setting the header
+# FIXME: https://github.com/techservicesillinois/elmrsample/issues/6
 #        And response sets headers
 #            | header         | value               |
 #            #--------------------------------------#
@@ -40,15 +40,19 @@ ifdef(`DEBUG',`Feature: Elmrsample test', `Feature: Elmrsample test for MOCK_SHI
             #------------------------------------------------------#
             | __edu.illinois.techservices.elmr.servlets.sessionKey |
 
-# TODO: Found a bug in elmrsample. File ticket!
+# FIXME: https://github.com/techservicesillinois/elmr/issues/8
 #        And the cookie '__edu.illinois.techservices.elmr.servlets.sessionKey' with domain '$(url.domain)' and path '/' has the following attributes 
 #            | attribute      | value               |
 #            #--------------------------------------#
 #            | Secure         | true                |
 #            | HttpOnly       | true                |
-# https://tools.ietf.org/html/rfc6265#section-4.1.2
-# https://tools.ietf.org/html/rfc6265#section-8
 
+# FIXME: https://github.com/techservicesillinois/elmr/issues/9
+#        And response sets headers
+#            | header         | value               |
+#            #--------------------------------------#
+#            | Cache-Control  | no-cache            |
+#            |                | no-store            |
 
         # Now we have a valid elmr session so we can access elmrsample
         # Given a valid elmr session
