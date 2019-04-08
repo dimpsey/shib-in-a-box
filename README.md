@@ -21,3 +21,11 @@ $ docker-compose up -d
 $ make test
 $ docker-compose down
 ```
+
+## Install Vagrant
+
+brew cask install vagrant
+vagrant plugin install vagrant-scp
+vagrant scp ~/.ssh/id_rsa shib-in-a-box:~/.ssh
+vagrant scp ~/.aws shib-in-a-box:~
+vagrant scp ~/.aws-login shib-in-a-box:~
