@@ -44,6 +44,11 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder '.', '/vagrant', disabled: true
   end
 
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 3072
+    v.cpus = 2
+  end
+
   #config.vm.provider "virtualbox" do |v|
   #  v.name = "shib-in-a-box"
   #end
