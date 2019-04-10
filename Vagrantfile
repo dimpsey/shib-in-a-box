@@ -36,7 +36,8 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: $script
 
   config.vm.define "shib-in-a-box" do |web|
-    config.vm.box = "ubuntu/bionic64"
+    #config.vm.box = "ubuntu/bionic64"
+    config.vm.box = "debian/stretch64"
   end
 
   #config.vm.provider "virtualbox" do |v|
