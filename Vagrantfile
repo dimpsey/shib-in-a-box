@@ -38,6 +38,10 @@ Vagrant.configure("2") do |config|
   config.vm.define "shib-in-a-box" do |web|
     #config.vm.box = "ubuntu/bionic64"
     config.vm.box = "debian/stretch64"
+
+    # This is must be here for WSL users:
+    # https://github.com/hashicorp/vagrant/issues/10576
+    config.vm.synced_folder '.', '/vagrant', disabled: true
   end
 
   #config.vm.provider "virtualbox" do |v|
