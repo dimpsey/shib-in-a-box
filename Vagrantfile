@@ -35,22 +35,11 @@ SCRIPT
 Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: $script
 
-  config.vm.define "shib-in-a-box" do |web|
-    #config.vm.box = "ubuntu/bionic64"
-    #config.vm.box = "debian/stretch64"
-    config.vm.box = "generic/debian9"
+  config.vm.define "shib-in-a-box"
+  config.vm.box = "generic/debian9"
 
-    # This is must be here for WSL users:
-    # https://github.com/hashicorp/vagrant/issues/10576
-    config.vm.synced_folder '.', '/vagrant', disabled: true
-  end
-
-#  config.vm.provider "virtualbox" do |v|
-#    v.memory = 3072
-#    v.cpus = 2
-#  end
-
-  #config.vm.provider "virtualbox" do |v|
-  #  v.name = "shib-in-a-box"
-  #end
+  config.vm.provision "file", source: "~/.gitconfig", destination: ".gitconfig"
+  config.vm.provision "file", source: "~/.ssh", destination: ".ssh"
+  config.vm.provision "file", source: "~/.aws", destination: ".aws"
+  config.vm.provision "file", source: "~/.aws-login", destination: ".aws-login"
 end
